@@ -6,6 +6,7 @@ export async function GET(request: Request) {
   const code = searchParams.get("code");
   // 인증 후 이동할 페이지
   const next = searchParams.get("next") ?? "/";
+  const safeNext = next.startsWith("/") && !next.startsWith("//") ? next : "/";
 
   if (code) {
     const supabase = await createClient();
@@ -13,7 +14,7 @@ export async function GET(request: Request) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
 
     if (!error) {
-      return NextResponse.redirect(`${origin}${next}`);
+      return NextResponse.redirect(new URL(safeNext, origin));
     }
   }
 

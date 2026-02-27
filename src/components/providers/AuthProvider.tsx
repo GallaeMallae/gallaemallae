@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { useAuthStore } from "@/stores/authStore";
 
@@ -9,8 +9,9 @@ export default function AuthProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const { setUser, setLoading } = useAuthStore();
-  const supabase = createClient();
+  const setUser = useAuthStore((state) => state.setUser);
+  const setLoading = useAuthStore((state) => state.setLoading);
+  const supabase = useMemo(() => createClient(), []);
 
   useEffect(() => {
     // 초기 유저 데이터 확인
