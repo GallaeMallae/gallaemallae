@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import RecommendationCard from "@/components/common/RecommendCard";
 
 export default function Home() {
   return (
@@ -23,13 +24,20 @@ export default function Home() {
 
       <br />
 
-      <div className="flex gap-2">
+      <div className="mb-4 flex gap-2">
         <Button className="bg-symbol-sky-sub text-symbol-sky">Go</Button>
         <Button className="bg-symbol-brown">Go</Button>
         <Button className="bg-festival-sub text-festival">축제</Button>
         <Button className="bg-performance-sub text-performance">공연</Button>
         <Button className="bg-exhibition-sub text-exhibition">전시</Button>
         <Button className="bg-etc-sub text-etc">기타</Button>
+      </div>
+
+      <div className="flex flex-col gap-4">
+        <RecommendationCard recommendLevel="veryPositive" />
+        <RecommendationCard recommendLevel="positive" />
+        <RecommendationCard recommendLevel="neutral" />
+        <RecommendationCard recommendLevel="negative" />
       </div>
     </div>
   );
