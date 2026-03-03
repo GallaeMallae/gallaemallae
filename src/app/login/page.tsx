@@ -41,7 +41,7 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-screen flex-col md:flex-row">
-      <div className="relative min-h-[50vh] w-full md:h-full md:min-h-screen md:w-1/2">
+      <div className="relative hidden flex-1 md:block md:w-1/2">
         <Image
           src="/images/login-page-sparkle-image.jpg"
           alt="Login page Image"
@@ -50,7 +50,7 @@ export default function LoginPage() {
           priority
         />
       </div>
-      <div className="flex min-h-[50vh] w-full flex-col items-center justify-center gap-12 px-4 py-12 md:h-screen md:w-1/2 md:px-8">
+      <div className="flex flex-1 flex-col items-center justify-center gap-24 px-8 py-12 md:w-1/2 md:py-24">
         <div className="flex flex-col items-center justify-center gap-4">
           <Link href={"/"} className="cursor-pointer">
             <Image
@@ -92,6 +92,10 @@ export default function LoginPage() {
             />
             카카오로 계속하기
           </Button>
+        </div>
+        <div className="text-desc2 text-muted-foreground flex gap-2">
+          <Link href={"/"}>이용약관</Link>|
+          <Link href={"/"}>개인정보처리방침</Link>
         </div>
       </div>
     </div>
