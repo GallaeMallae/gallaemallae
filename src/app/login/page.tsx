@@ -69,7 +69,7 @@ export default function LoginPage() {
         <div className="flex w-full flex-col gap-2">
           <Button
             variant="outline"
-            className="border-[#747775 ] text-[#1F1F1F ] flex h-12 w-full cursor-pointer items-center justify-center gap-2 bg-white px-4 text-base hover:bg-[#f8f9fa]"
+            className="flex h-12 w-full cursor-pointer items-center justify-center gap-2 bg-white px-4 text-base hover:bg-[#f8f9fa]"
             onClick={() => signInWithOAuthAction("google")}
           >
             <Image
