@@ -14,9 +14,15 @@ export default function LoginPage() {
   const router = useRouter();
   const error = searchParams.get("error");
 
+  const ERROR_MESSAGE_MAP: Record<string, string> = {
+    config_error: "로그인 설정에 문제가 있습니다. 잠시 후 다시 시도해 주세요.",
+    oauth_signin_failed: "소셜 로그인에 실패했습니다. 다시 시도해 주세요.",
+    unknown_error: "알 수 없는 오류가 발생했습니다.",
+  };
+
   useEffect(() => {
     if (error) {
-      toast.error(error);
+      toast.error(ERROR_MESSAGE_MAP[error] ?? "로그인 중 오류가 발생했습니다.");
       const params = new URLSearchParams(searchParams.toString());
       params.delete("error");
 
@@ -38,7 +44,7 @@ export default function LoginPage() {
           priority
         />
       </div>
-      <div className="flex min-h-[50vh] w-full flex-col items-center justify-center gap-15 px-4 py-12 md:h-screen md:w-1/2 md:px-8">
+      <div className="flex min-h-[50vh] w-full flex-col items-center justify-center gap-12 px-4 py-12 md:h-screen md:w-1/2 md:px-8">
         <div className="flex flex-col items-center justify-center gap-4">
           <Link href={"/"} className="cursor-pointer">
             <Image
