@@ -13,7 +13,15 @@ export async function signInWithOAuthAction(provider: "google" | "kakao") {
     },
   });
 
+  if (error) {
+    console.error("OAuth error:", error.message);
+    // 에러 발생 시 특정 에러 페이지로 리다이렉트하거나 상태를 반환
+    return redirect(`/login?error=${encodeURIComponent(error.message)}`);
+  }
+
   if (data.url) {
     redirect(data.url);
   }
+
+  return redirect("/login?error=unknown_error");
 }

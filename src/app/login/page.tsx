@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { signInWithOAuthAction } from "@/utils/auth/signInWithOAuthAction";
+import { signInWithOAuthAction } from "@/actions/auth/signInWithOAuthAction";
 import { createClient } from "@/utils/supabase/client";
 
 export default function LoginPage() {
