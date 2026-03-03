@@ -18,7 +18,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className={`${pretendard.variable} pb-16 font-sans md:pb-0`}>
+      <body
+        className={`${pretendard.variable} bg-backgroud-base pb-16 font-sans md:pb-0`}
+      >
         <ReactQueryProvider>
           <Header />
           <main>{children}</main>
