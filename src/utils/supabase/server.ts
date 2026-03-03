@@ -25,9 +25,8 @@ export const createClient = async () => {
             cookieStore.set(name, value, options);
           });
         } catch {
-          // The `setAll` method was called from a Server Component.
-          // This can be ignored if you have middleware refreshing
-          // user sessions.
+          // Server Component는 응답 헤더를 수정할 수 없어 cookieStore.set 호출 시 에러가 발생
+          // 세션 갱신 로직이 Middleware에 이미 구현되어 있다면 이 catch문은 무시해도 됨
         }
       },
     },
