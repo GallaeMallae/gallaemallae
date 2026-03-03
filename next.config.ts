@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
         pathname: "/a/**",
       },
       {
-        protocol: "http",
+        protocol: "https",
         hostname: "img1.kakaocdn.net", // 카카오 프로필 이미지 도메인
         port: "",
         pathname: "/**",

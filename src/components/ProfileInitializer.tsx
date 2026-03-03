@@ -1,16 +1,19 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { useAuthStore } from "@/stores/authStore";
 import { useProfileStore } from "@/stores/profileStore";
 
 export default function ProfileInitializer() {
   const user = useAuthStore((state) => state.user);
-  const { setProfile, clearProfile } = useProfileStore();
-  const supabase = createClient();
+  const setProfile = useProfileStore((state) => state.setProfile);
+  const clearProfile = useProfileStore((state) => state.clearProfile);
+  const supabase = useMemo(() => createClient(), []);
 
   useEffect(() => {
+    const controller = new AbortController();
+
     const fetchProfile = async () => {
       if (!user) {
         clearProfile();
@@ -21,9 +24,13 @@ export default function ProfileInitializer() {
         .from("profiles")
         .select("*")
         .eq("id", user.id)
+        .abortSignal(controller.signal)
         .single();
 
       if (error) {
+        if (error.code === "ABORTED" || error.message.includes("abort")) {
+          return;
+        }
         console.error("프로필 로드 에러:", error.message);
         clearProfile();
         return;
@@ -33,6 +40,10 @@ export default function ProfileInitializer() {
     };
 
     fetchProfile();
+
+    return () => {
+      controller.abort();
+    };
   }, [user, supabase, setProfile, clearProfile]);
 
   return null;
