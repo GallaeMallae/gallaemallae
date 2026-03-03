@@ -16,10 +16,14 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (error) {
-      toast.error(decodeURIComponent(error));
+      toast.error(error);
       const params = new URLSearchParams(searchParams.toString());
       params.delete("error");
-      router.replace(`/login?${params.toString()}`, { scroll: false });
+
+      const nextQuery = params.toString();
+      router.replace(nextQuery ? `/login?${nextQuery}` : "/login", {
+        scroll: false,
+      });
     }
   }, [error, searchParams, router]);
 
