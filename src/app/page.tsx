@@ -1,10 +1,18 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import RecommendationCard from "@/components/common/RecommendCard";
 import EventCard from "@/components/common/EventCard";
 import MoreCard from "@/components/common/MoreCard";
+import PeriodFilterTabs from "@/components/common/PeriodFilterTabs";
+import { useState } from "react";
+import { PeriodFilter } from "@/types/common";
 import { MOCK_EVENTS } from "@/mocks/events";
 
 export default function Home() {
+  const [currentPeriodTab, setCurrentPeriodTab] =
+    useState<PeriodFilter>("전체");
+
   return (
     <div className="p-4">
       <p>갈래말래</p>
@@ -43,7 +51,7 @@ export default function Home() {
         <RecommendationCard recommendLevel="negative" />
       </div>
 
-      <div className="flex flex-col gap-4">
+      <div className="mb-4 flex flex-col gap-4">
         {MOCK_EVENTS.map((event) => (
           <EventCard
             key={event.id}
@@ -56,6 +64,13 @@ export default function Home() {
           />
         ))}
         <MoreCard />
+      </div>
+
+      <div>
+        <PeriodFilterTabs
+          value={currentPeriodTab}
+          onChange={setCurrentPeriodTab}
+        />
       </div>
     </div>
   );

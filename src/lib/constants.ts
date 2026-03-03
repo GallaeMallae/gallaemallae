@@ -1,4 +1,15 @@
-import { RecommendLevel, RecommendCardItem } from "@/types/common";
+import {
+  PeriodFilter,
+  RecommendLevel,
+  RecommendCardItem,
+} from "@/types/common";
+
+export const PERIOD_FILTER_TABS: PeriodFilter[] = [
+  "전체",
+  "당일",
+  "주간",
+  "월간",
+];
 
 export const RECOMMEND_CARD_CONFIG: Record<RecommendLevel, RecommendCardItem> =
   {
