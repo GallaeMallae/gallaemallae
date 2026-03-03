@@ -5,7 +5,7 @@ import Image from "next/image";
 
 export default function Header() {
   return (
-    <header className="sticky top-0 w-full border-b bg-white">
+    <header className="sticky top-0 z-10 w-full border-b bg-white">
       <div className="flex h-14 items-center justify-between px-6">
         <Link href="/" aria-label="홈으로 이동">
           <Image

@@ -1,6 +1,6 @@
 "use client";
 
-import { Home, Map, MapPin, CircleUser } from "lucide-react";
+import { House, Map, MapPin, CircleUser } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -19,7 +19,7 @@ export default function MobileBottomNav() {
   const currentMapMode = searchParams.get("mode");
 
   const menus: Menu[] = [
-    { href: "/", name: "홈", icon: Home },
+    { href: "/", name: "홈", icon: House },
     { href: "/map", name: "지도 검색", icon: Map, mode: "all" },
     { href: "/map", name: "주변 검색", icon: MapPin, mode: "near" },
     { href: "/mypage", name: "마이페이지", icon: CircleUser },

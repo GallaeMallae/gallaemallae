@@ -1,5 +1,8 @@
 import { Button } from "@/components/ui/button";
 import RecommendationCard from "@/components/common/RecommendCard";
+import EventCard from "@/components/common/EventCard";
+import MoreCard from "@/components/common/MoreCard";
+import { MOCK_EVENTS } from "@/mocks/events";
 
 export default function Home() {
   return (
@@ -33,11 +36,26 @@ export default function Home() {
         <Button className="bg-etc-sub text-etc">기타</Button>
       </div>
 
-      <div className="flex flex-col gap-4">
+      <div className="mb-4 flex flex-col gap-4">
         <RecommendationCard recommendLevel="veryPositive" />
         <RecommendationCard recommendLevel="positive" />
         <RecommendationCard recommendLevel="neutral" />
         <RecommendationCard recommendLevel="negative" />
+      </div>
+
+      <div className="flex flex-col gap-4">
+        {MOCK_EVENTS.map((event) => (
+          <EventCard
+            key={event.id}
+            title={event.title}
+            location={event.location}
+            startDate={event.startDate}
+            endDate={event.endDate}
+            category={event.category}
+            isLiked={event.isLiked}
+          />
+        ))}
+        <MoreCard />
       </div>
     </div>
   );
