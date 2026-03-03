@@ -61,7 +61,7 @@ export default function LoginPage() {
               className="h-20 w-auto md:h-24"
             />
           </Link>
-          <div className="text-muted-foreground">
+          <div className="text-muted-foreground text-desc2">
             위치 · 날씨 기반 문화 행사 추천 서비스
           </div>
         </div>
@@ -69,7 +69,7 @@ export default function LoginPage() {
         <div className="flex w-full flex-col gap-2">
           <Button
             variant="outline"
-            className="flex h-12 w-full cursor-pointer items-center justify-center gap-2 bg-white px-4 text-base hover:bg-[#f8f9fa]"
+            className="h-12 w-full cursor-pointer bg-white text-base hover:bg-[#f8f9fa]"
             onClick={() => signInWithOAuthAction("google")}
           >
             <Image
@@ -81,7 +81,7 @@ export default function LoginPage() {
             구글로 계속하기
           </Button>
           <Button
-            className="flex h-12 w-full cursor-pointer items-center justify-center gap-2 border-none bg-[#FEE500] px-4 text-base text-black hover:bg-[#FADA00]"
+            className="h-12 w-full cursor-pointer border-none bg-[#FEE500] text-base text-black hover:bg-[#FADA00]"
             onClick={() => signInWithOAuthAction("kakao")}
           >
             <Image
