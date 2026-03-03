@@ -15,7 +15,7 @@ export default function AuthErrorPage() {
 
       if (errorCode) {
         // 로그인 페이지로 에러 코드를 쿼리 파라미터로 전달하며 리다이렉트, 토스트 알림 띄움
-        router.replace(`/login?error=${errorCode}`);
+        router.replace(`/login?error=${encodeURIComponent(errorCode)}`);
         return;
       }
     }

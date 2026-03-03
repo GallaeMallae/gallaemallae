@@ -62,7 +62,7 @@ export default function LoginPage() {
             />
           </Link>
           <div className="text-muted-foreground">
-            갈래말래를 통해 위치, 날씨 기반 행사 추천 서비스를 만나보세요!
+            위치 · 날씨 기반 문화 행사 추천 서비스
           </div>
         </div>
 
