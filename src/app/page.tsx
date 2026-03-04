@@ -54,16 +54,8 @@ export default function Home() {
       </div>
 
       <div className="mb-4 flex flex-col gap-4">
-        {MOCK_EVENTS.map((event) => (
-          <EventCard
-            key={event.id}
-            title={event.title}
-            location={event.location}
-            startDate={event.startDate}
-            endDate={event.endDate}
-            category={event.category}
-            isLiked={event.isLiked}
-          />
+        {MOCK_EVENTS.map((event, index) => (
+          <EventCard key={index} {...event} />
         ))}
         <MoreCard />
       </div>

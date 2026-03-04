@@ -26,7 +26,6 @@ export interface RecommendCardConfigItem {
 // 행사 카드 관련 타입
 // ==============================
 export interface EventCardItem {
-  id: number;
   title: string;
   location: string;
   startDate: string;

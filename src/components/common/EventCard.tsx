@@ -4,16 +4,7 @@ import { Button } from "../ui/button";
 import { Heart, Calendar, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatDateRange } from "@/utils/date";
-import { Category } from "@/types/common";
-
-interface EventCardProps {
-  title: string;
-  location: string;
-  startDate: string | Date;
-  endDate: string | Date;
-  category: Category;
-  isLiked: boolean;
-}
+import { EventCardItem } from "@/types/common";
 
 export default function EventCard({
   title,
@@ -22,7 +13,7 @@ export default function EventCard({
   endDate,
   category,
   isLiked,
-}: EventCardProps) {
+}: EventCardItem) {
   return (
     <Card className="relative rounded-2xl border-0">
       <CardContent>
