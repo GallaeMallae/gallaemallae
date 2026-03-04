@@ -1,17 +1,49 @@
 import {
-  PeriodFilter,
+  LayoutGrid,
+  PartyPopper,
+  Ticket,
+  Landmark,
+  MoreHorizontal,
+  Sun,
+  Cloudy,
+  Umbrella,
+  Snowflake,
+} from "lucide-react";
+import {
+  CategoryMenuCardItem,
   RecommendType,
   RecommendCardConfigItem,
   WeatherType,
   WeatherCardConfigItem,
+  PeriodFilter,
 } from "@/types/common";
-import { Sun, Cloudy, Umbrella, Snowflake } from "lucide-react";
 
-export const PERIOD_FILTER_TABS: PeriodFilter[] = [
-  "전체",
-  "당일",
-  "주간",
-  "월간",
+export const CATEGORY_MENU: CategoryMenuCardItem[] = [
+  {
+    name: "전체",
+    iconBgColor: "bg-symbol-sky",
+    Icon: LayoutGrid,
+  },
+  {
+    name: "축제",
+    iconBgColor: "bg-festival",
+    Icon: PartyPopper,
+  },
+  {
+    name: "공연",
+    iconBgColor: "bg-performance",
+    Icon: Ticket,
+  },
+  {
+    name: "전시",
+    iconBgColor: "bg-exhibition",
+    Icon: Landmark,
+  },
+  {
+    name: "기타",
+    iconBgColor: "bg-etc",
+    Icon: MoreHorizontal,
+  },
 ];
 
 export const RECOMMEND_CARD_CONFIG: Record<
@@ -70,3 +102,10 @@ export const WEATHER_CARD_CONFIG: Record<WeatherType, WeatherCardConfigItem> = {
     ariaLabel: "눈",
   },
 };
+
+export const PERIOD_FILTER_TABS: PeriodFilter[] = [
+  "전체",
+  "당일",
+  "주간",
+  "월간",
+];

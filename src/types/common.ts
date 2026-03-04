@@ -1,10 +1,15 @@
 import { LucideIcon } from "lucide-react";
 
-// 카테고리
+// ==============================
+// 카테고리 관련 타입
+// ==============================
 export type Category = "전체" | "축제" | "공연" | "전시" | "기타";
 
-// 행사 기간 필터 탭
-export type PeriodFilter = "전체" | "당일" | "주간" | "월간";
+export type CategoryMenuCardItem = {
+  name: Category;
+  iconBgColor: string;
+  Icon: LucideIcon;
+};
 
 // ==============================
 // 갈래말래 추천 카드 관련 타입
@@ -53,3 +58,6 @@ export interface WeatherCardItem {
   fineDust: string;
   ultrafineDust: string;
 }
+
+// 행사 기간 필터 탭
+export type PeriodFilter = "전체" | "당일" | "주간" | "월간";
