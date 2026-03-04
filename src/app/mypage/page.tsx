@@ -22,7 +22,6 @@ export default function Mypage() {
         </div>
 
         <div className="rounded-xl bg-white p-6 shadow lg:col-span-3">
-          <h2 className="mb-4 text-xl font-bold">나의 일정 (캘린더)</h2>
           <MypageCalendar />
         </div>
       </div>

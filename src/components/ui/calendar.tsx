@@ -2,12 +2,14 @@
 
 import * as React from "react";
 import {
+  CalendarIcon,
   ChevronDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
 } from "lucide-react";
 import {
   DayPicker,
+  useDayPicker,
   getDefaultClassNames,
   type DayButton,
 } from "react-day-picker";
@@ -31,6 +33,7 @@ function Calendar({
 
   return (
     <DayPicker
+      hideNavigation
       showOutsideDays={showOutsideDays}
       className={cn(
         "group/calendar bg-background p-3 [--cell-size:--spacing(8)] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent",
@@ -38,12 +41,12 @@ function Calendar({
         String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`,
         className,
       )}
-      captionLayout={captionLayout}
-      formatters={{
-        formatMonthDropdown: (date) =>
-          date.toLocaleString("default", { month: "short" }),
-        ...formatters,
-      }}
+      captionLayout="label"
+      // formatters={{
+      //   formatMonthDropdown: (date) =>
+      //     date.toLocaleString("default", { month: "short" }),
+      //   ...formatters,
+      // }}
       classNames={{
         // w-fit -> w-full
         root: cn("w-full", defaultClassNames.root),
@@ -53,43 +56,46 @@ function Calendar({
           defaultClassNames.months,
         ),
         month: cn("flex w-full flex-col gap-4", defaultClassNames.month),
-        nav: cn(
-          "absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1",
-          defaultClassNames.nav,
-        ),
-        button_previous: cn(
-          buttonVariants({ variant: buttonVariant }),
-          "size-(--cell-size) p-0 select-none aria-disabled:opacity-50",
-          defaultClassNames.button_previous,
-        ),
-        button_next: cn(
-          buttonVariants({ variant: buttonVariant }),
-          "size-(--cell-size) p-0 select-none aria-disabled:opacity-50",
-          defaultClassNames.button_next,
-        ),
-        month_caption: cn(
-          "flex h-(--cell-size) w-full items-center justify-center px-(--cell-size)",
-          defaultClassNames.month_caption,
-        ),
-        dropdowns: cn(
-          "flex h-(--cell-size) w-full items-center justify-center gap-1.5 text-sm font-medium",
-          defaultClassNames.dropdowns,
-        ),
-        dropdown_root: cn(
-          "relative rounded-md border border-input shadow-xs has-focus:border-ring has-focus:ring-[3px] has-focus:ring-ring/50",
-          defaultClassNames.dropdown_root,
-        ),
-        dropdown: cn(
-          "absolute inset-0 bg-popover opacity-0",
-          defaultClassNames.dropdown,
-        ),
-        caption_label: cn(
-          "font-medium select-none",
-          captionLayout === "label"
-            ? "text-sm"
-            : "flex h-8 items-center gap-1 rounded-md pr-1 pl-2 text-sm [&>svg]:size-3.5 [&>svg]:text-muted-foreground",
-          defaultClassNames.caption_label,
-        ),
+
+        // month_caption: cn(
+        //   "flex h-(--cell-size) w-full items-center justify-center px-(--cell-size)",
+        //   defaultClassNames.month_caption,
+        // ),
+        // caption_label: cn(
+        //   "font-medium select-none",
+        //   captionLayout === "label"
+        //     ? "text-sm"
+        //     : "flex h-8 items-center gap-1 rounded-md pr-1 pl-2 text-sm [&>svg]:size-3.5 [&>svg]:text-muted-foreground",
+        //   defaultClassNames.caption_label,
+        // ),
+        // nav: cn(
+        //   "absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1",
+        //   defaultClassNames.nav,
+        // ),
+        // button_previous: cn(
+        //   buttonVariants({ variant: buttonVariant }),
+        //   "size-(--cell-size) p-0 select-none aria-disabled:opacity-50",
+        //   defaultClassNames.button_previous,
+        // ),
+        // button_next: cn(
+        //   buttonVariants({ variant: buttonVariant }),
+        //   "size-(--cell-size) p-0 select-none aria-disabled:opacity-50",
+        //   defaultClassNames.button_next,
+        // ),
+
+        // dropdowns: cn(
+        //   "flex h-(--cell-size) w-full items-center justify-center gap-1.5 text-sm font-medium",
+        //   defaultClassNames.dropdowns,
+        // ),
+        // dropdown_root: cn(
+        //   "relative rounded-md border border-input shadow-xs has-focus:border-ring has-focus:ring-[3px] has-focus:ring-ring/50",
+        //   defaultClassNames.dropdown_root,
+        // ),
+        // dropdown: cn(
+        //   "absolute inset-0 bg-popover opacity-0",
+        //   defaultClassNames.dropdown,
+        // ),
+
         table: "w-full border-collapse",
         weekdays: cn("flex", defaultClassNames.weekdays),
         weekday: cn(
@@ -135,6 +141,7 @@ function Calendar({
         ...classNames,
       }}
       components={{
+        MonthCaption: CustomMonthCaption,
         Root: ({ className, rootRef, ...props }) => {
           return (
             <div
@@ -221,7 +228,7 @@ function CalendarDayButton({
       className={cn(
         // h-full w-full로 셀 전체를 채우고, justify-start/items-start로 정렬 변경
         "hover:bg-accent/50 flex h-full w-full flex-col items-start justify-start gap-1 p-2 font-normal transition-colors",
-        // 1. 오늘 날짜 스타일 (선택되지 않았을 때만 배경색 적용)
+        // 오늘 날짜 스타일 (선택되지 않았을 때만 배경색 적용)
         modifiers.today && !modifiers.selected && "bg-muted",
         // 선택된 날짜의 스타일 (배경색 및 글자색)
         modifiers.selected &&
@@ -258,6 +265,43 @@ function CalendarDayButton({
         )}
       </div>
     </Button>
+  );
+}
+
+function CustomMonthCaption({
+  calendarMonth,
+}: {
+  calendarMonth: { date: Date };
+}) {
+  const { goToMonth, nextMonth, previousMonth } = useDayPicker();
+  const date = calendarMonth.date;
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+
+  return (
+    <div className="mb-4 flex w-full items-center justify-between px-1">
+      <div className="flex items-center gap-2">
+        <CalendarIcon className="size-4 text-blue-500" />
+        <span className="text-title2 md:text-title1 font-bold">나의 일정</span>
+      </div>
+      <div className="flex items-center gap-1">
+        <button
+          onClick={() => previousMonth && goToMonth(previousMonth)}
+          className="hover:bg-accent flex h-7 w-7 items-center justify-center rounded"
+        >
+          <ChevronLeftIcon className="size-4" />
+        </button>
+        <span className="min-w-20 text-center text-sm font-bold">
+          {y}. {m}.
+        </span>
+        <button
+          onClick={() => nextMonth && goToMonth(nextMonth)}
+          className="hover:bg-accent flex h-7 w-7 items-center justify-center rounded"
+        >
+          <ChevronRightIcon className="size-4" />
+        </button>
+      </div>
+    </div>
   );
 }
 
