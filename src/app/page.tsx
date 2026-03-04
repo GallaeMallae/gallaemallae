@@ -1,6 +1,20 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
+import RecommendCard from "@/components/common/RecommendCard";
+import EventCard from "@/components/common/EventCard";
+import MoreCard from "@/components/common/MoreCard";
+import WeatherCard from "@/components/common/WeatherCard";
+import PeriodFilterTabs from "@/components/common/PeriodFilterTabs";
+import { useState } from "react";
+import { PeriodFilter } from "@/types/common";
+import { MOCK_EVENTS } from "@/mocks/events";
+import { MOCK_WEATHER } from "@/mocks/weathers";
 
 export default function Home() {
+  const [currentPeriodTab, setCurrentPeriodTab] =
+    useState<PeriodFilter>("전체");
+
   return (
     <div className="p-4">
       <p>갈래말래</p>
@@ -23,13 +37,40 @@ export default function Home() {
 
       <br />
 
-      <div className="flex gap-2">
+      <div className="mb-4 flex gap-2">
         <Button className="bg-symbol-sky-sub text-symbol-sky">Go</Button>
         <Button className="bg-symbol-brown">Go</Button>
         <Button className="bg-festival-sub text-festival">축제</Button>
         <Button className="bg-performance-sub text-performance">공연</Button>
         <Button className="bg-exhibition-sub text-exhibition">전시</Button>
         <Button className="bg-etc-sub text-etc">기타</Button>
+      </div>
+
+      <div className="mb-4 flex flex-col gap-4">
+        <RecommendCard recommendType="veryPositive" />
+        <RecommendCard recommendType="positive" />
+        <RecommendCard recommendType="neutral" />
+        <RecommendCard recommendType="negative" />
+      </div>
+
+      <div className="mb-4 flex flex-col gap-4">
+        {MOCK_EVENTS.map((event, index) => (
+          <EventCard key={index} {...event} />
+        ))}
+        <MoreCard />
+      </div>
+
+      <div className="mb-4 flex flex-col gap-4">
+        {MOCK_WEATHER.map((weather, index) => (
+          <WeatherCard key={index} {...weather} />
+        ))}
+      </div>
+
+      <div>
+        <PeriodFilterTabs
+          value={currentPeriodTab}
+          onChange={setCurrentPeriodTab}
+        />
       </div>
     </div>
   );
