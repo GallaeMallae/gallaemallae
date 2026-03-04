@@ -1,13 +1,15 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import RecommendationCard from "@/components/common/RecommendCard";
+import RecommendCard from "@/components/common/RecommendCard";
 import EventCard from "@/components/common/EventCard";
 import MoreCard from "@/components/common/MoreCard";
+import WeatherCard from "@/components/common/WeatherCard";
 import PeriodFilterTabs from "@/components/common/PeriodFilterTabs";
 import { useState } from "react";
 import { PeriodFilter } from "@/types/common";
 import { MOCK_EVENTS } from "@/mocks/events";
+import { MOCK_WEATHER } from "@/mocks/weathers";
 
 export default function Home() {
   const [currentPeriodTab, setCurrentPeriodTab] =
@@ -45,10 +47,10 @@ export default function Home() {
       </div>
 
       <div className="mb-4 flex flex-col gap-4">
-        <RecommendationCard recommendLevel="veryPositive" />
-        <RecommendationCard recommendLevel="positive" />
-        <RecommendationCard recommendLevel="neutral" />
-        <RecommendationCard recommendLevel="negative" />
+        <RecommendCard recommendType="veryPositive" />
+        <RecommendCard recommendType="positive" />
+        <RecommendCard recommendType="neutral" />
+        <RecommendCard recommendType="negative" />
       </div>
 
       <div className="mb-4 flex flex-col gap-4">
@@ -64,6 +66,12 @@ export default function Home() {
           />
         ))}
         <MoreCard />
+      </div>
+
+      <div className="mb-4 flex flex-col gap-4">
+        {MOCK_WEATHER.map((weather, index) => (
+          <WeatherCard key={index} {...weather} />
+        ))}
       </div>
 
       <div>

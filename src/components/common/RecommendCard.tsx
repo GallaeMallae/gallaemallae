@@ -1,14 +1,14 @@
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
-import { RecommendLevel } from "@/types/common";
+import { RecommendType } from "@/types/common";
 import { RECOMMEND_CARD_CONFIG } from "@/lib/constants";
 
-export default function RecommendationCard({
-  recommendLevel,
+export default function RecommendCard({
+  recommendType,
 }: {
-  recommendLevel: RecommendLevel;
+  recommendType: RecommendType;
 }) {
-  const recommendCard = RECOMMEND_CARD_CONFIG[recommendLevel];
+  const recommendCard = RECOMMEND_CARD_CONFIG[recommendType];
 
   return (
     <Card
@@ -21,7 +21,7 @@ export default function RecommendationCard({
 
         <Image
           src={recommendCard.emojiSrc}
-          alt={`${recommendLevel} 이모지`}
+          alt={`${recommendType} 이모지`}
           width={72}
           height={72}
         />

@@ -1,3 +1,5 @@
+import { LucideIcon } from "lucide-react";
+
 // 카테고리
 export type Category = "전체" | "축제" | "공연" | "전시" | "기타";
 
@@ -7,13 +9,13 @@ export type PeriodFilter = "전체" | "당일" | "주간" | "월간";
 // ==============================
 // 갈래말래 추천 카드 관련 타입
 // ==============================
-export type RecommendLevel =
+export type RecommendType =
   | "veryPositive"
   | "positive"
   | "neutral"
   | "negative";
 
-export interface RecommendCardItem {
+export interface RecommendCardConfigItem {
   bgColor: string;
   textColor: string;
   emojiSrc: string;
@@ -31,4 +33,24 @@ export interface EventCardItem {
   endDate: string;
   category: Category;
   isLiked: boolean;
+}
+
+// ==============================
+// 날씨 카드 관련 타입
+// ==============================
+export type WeatherType = "sunny" | "cloudy" | "rainy" | "snowy";
+
+export interface WeatherCardConfigItem {
+  bgColor: string;
+  textColor: string;
+  Icon: LucideIcon;
+  ariaLabel: string;
+}
+
+export interface WeatherCardItem {
+  weatherType: WeatherType;
+  location: string;
+  temperature: number;
+  fineDust: string;
+  ultrafineDust: string;
 }
