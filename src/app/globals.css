@@ -134,8 +134,8 @@
 }
 
 @theme {
-  /* Backgroud Base Color */
-  --color-backgroud-base: #f9fafb;
+  /* Background Base Color */
+  --color-background-base: #f9fafb;
 
   /* Team Symbol Color */
   --color-symbol-sky: #0da3e4;

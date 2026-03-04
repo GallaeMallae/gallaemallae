@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body
-        className={`${pretendard.variable} bg-backgroud-base pb-16 font-sans md:pb-0`}
+        className={`${pretendard.variable} bg-background-base pb-16 font-sans md:pb-0`}
       >
         <ReactQueryProvider>
           <Header />
