@@ -7,6 +7,7 @@ import { useProfileStore } from "@/stores/profileStore";
 
 export default function ProfileInitializer() {
   const user = useAuthStore((state) => state.user);
+  const isAuthLoading = useAuthStore((state) => state.isLoading);
   const setProfile = useProfileStore((state) => state.setProfile);
   const clearProfile = useProfileStore((state) => state.clearProfile);
   const supabase = useMemo(() => createClient(), []);
@@ -15,6 +16,10 @@ export default function ProfileInitializer() {
     const controller = new AbortController();
 
     const fetchProfile = async () => {
+      if (isAuthLoading) {
+        return;
+      }
+
       if (!user) {
         clearProfile();
         return;
@@ -44,7 +49,7 @@ export default function ProfileInitializer() {
     return () => {
       controller.abort();
     };
-  }, [user, supabase, setProfile, clearProfile]);
+  }, [user, isAuthLoading, supabase, setProfile, clearProfile]);
 
   return null;
 }
