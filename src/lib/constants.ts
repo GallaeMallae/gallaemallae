@@ -40,7 +40,7 @@ export const RECOMMEND_CARD_CONFIG: Record<
     bgColor: "bg-red-100",
     textColor: "text-red-500",
     emojiSrc: "/images/emoji-negative.png",
-    message: "외출은 고민해보아요",
+    message: "외출은 고민해 보아요",
   },
 };
 
