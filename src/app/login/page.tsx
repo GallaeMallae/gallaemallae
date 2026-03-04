@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 import Image from "next/image";
 import Link from "next/link";
+import { Separator } from "@/components/ui/separator";
 
 const ERROR_MESSAGE_MAP: Record<string, string> = {
   config_error: "로그인 설정에 문제가 있습니다. 잠시 후 다시 시도해 주세요.",
@@ -94,7 +95,8 @@ export default function LoginPage() {
           </Button>
         </div>
         <div className="text-desc2 text-muted-foreground flex gap-2">
-          <Link href={"/"}>이용약관</Link>|
+          <Link href={"/"}>이용약관</Link>
+          <Separator orientation="vertical" />
           <Link href={"/"}>개인정보처리방침</Link>
         </div>
       </div>
