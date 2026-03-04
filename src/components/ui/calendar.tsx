@@ -112,7 +112,7 @@ function Calendar({
           defaultClassNames.week_number,
         ),
         day: cn(
-          "group/day relative aspect-square h-full w-full p-0 text-center select-none [&:last-child[data-selected=true]_button]:rounded-r-md",
+          "group/day relative aspect-square h-full w-full p-0 text-center select-none [&:last-child[data-selected=true]_button]:rounded-r-md min-w-0",
           props.showWeekNumber
             ? "[&:nth-child(2)[data-selected=true]_button]:rounded-l-md"
             : "[&:first-child[data-selected=true]_button]:rounded-l-md",
@@ -225,12 +225,21 @@ function CalendarDayButton({
       //   defaultClassNames.day,
       //   className,
       // )}
+      // className={cn(
+      //   // h-full w-full로 셀 전체를 채우고, justify-start/items-start로 정렬 변경
+      //   "hover:bg-accent/50 flex h-full w-full flex-col items-start justify-start gap-1 p-2 font-normal transition-colors",
+      //   // 오늘 날짜 스타일 (선택되지 않았을 때만 배경색 적용)
+      //   modifiers.today && !modifiers.selected && "bg-muted",
+      //   // 선택된 날짜의 스타일 (배경색 및 글자색)
+      //   modifiers.selected &&
+      //     "bg-symbol-sky-sub text-symbol-sky hover:bg-muted",
+      //   modifiers.outside && "text-muted-foreground opacity-50",
+      //   className,
+      // )}
       className={cn(
-        // h-full w-full로 셀 전체를 채우고, justify-start/items-start로 정렬 변경
-        "hover:bg-accent/50 flex h-full w-full flex-col items-start justify-start gap-1 p-2 font-normal transition-colors",
-        // 오늘 날짜 스타일 (선택되지 않았을 때만 배경색 적용)
+        // items-center(모바일 중앙) -> md:items-start(데스크탑 좌측)로 변경
+        "hover:bg-accent/50 flex h-full w-full flex-col items-center justify-start gap-1 p-2 font-normal transition-colors md:items-start",
         modifiers.today && !modifiers.selected && "bg-muted",
-        // 선택된 날짜의 스타일 (배경색 및 글자색)
         modifiers.selected &&
           "bg-symbol-sky-sub text-symbol-sky hover:bg-muted",
         modifiers.outside && "text-muted-foreground opacity-50",
@@ -238,7 +247,7 @@ function CalendarDayButton({
       )}
       {...props}
     >
-      {/* 날짜 표시 (상단 좌측) */}
+      {/* 날짜 표시 md이상이면 상단 좌측, 미만이면 상단 중앙 */}
       <span
         className={cn(
           "text-sm font-semibold",
@@ -249,19 +258,38 @@ function CalendarDayButton({
         {day.date.getDate()}
       </span>
 
-      {/* 이벤트 배지 영역 (아래쪽) */}
-      <div className="mt-1 flex w-full flex-col gap-1 overflow-hidden">
-        {/* 임시 이벤트 배지 예시 (실제 데이터 맵핑 필요) */}
+      {/* 이벤트 배지 영역 - 실제로는 데이터 받아와서 표시해야함 */}
+      <div className="mt-1 flex w-full min-w-0 flex-row flex-wrap justify-center gap-1 overflow-hidden md:flex-col md:justify-start">
+        {/* 축제 이벤트 예시 */}
         {dateKey === 5 && (
-          <div className="truncate rounded-r border-l-4 border-blue-500 bg-blue-100 px-1.5 py-0.5 text-[10px] text-blue-700">
-            <div>Art Workshop</div>
-            <div>시간 표시</div>
-          </div>
+          <>
+            <div
+              className="text-festival bg-festival-sub border-festival hidden w-full min-w-0 truncate rounded-r border-l-4 px-1.5 py-0.5 text-left text-[10px] md:block"
+              title="금호강 정월대보름축제"
+            >
+              금호강 정월대보름축제
+            </div>
+            <div
+              className="bg-festival h-1.5 w-1.5 rounded-full md:hidden"
+              title="금호강 정월대보름축제"
+            />
+          </>
         )}
+
+        {/* 전시 이벤트 예시 */}
         {dateKey === 11 && (
-          <div className="truncate rounded border border-purple-200 bg-purple-100 px-1.5 py-0.5 text-[10px] text-purple-700">
-            Tech Meetup
-          </div>
+          <>
+            <div
+              className="border-exhibition bg-exhibition-sub text-exhibition hidden w-full min-w-0 truncate rounded-r border-l-4 px-1.5 py-0.5 text-left text-[10px] md:block"
+              title="현대 미술 특별전"
+            >
+              현대 미술 특별전
+            </div>
+            <div
+              className="bg-exhibition h-1.5 w-1.5 rounded-full md:hidden"
+              title="현대 미술 특별전"
+            />
+          </>
         )}
       </div>
     </Button>
