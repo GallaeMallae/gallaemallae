@@ -24,7 +24,7 @@ export default function RootLayout({
       >
         <ReactQueryProvider>
           <Header />
-          <main>{children}</main>
+          <main className="mx-auto max-w-7xl p-6">{children}</main>
           <Footer />
           <Suspense fallback={null}>
             <MobileBottomNav />
