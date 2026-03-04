@@ -281,7 +281,7 @@ function CustomMonthCaption({
   return (
     <div className="mb-4 flex w-full items-center justify-between px-1">
       <div className="flex items-center gap-2">
-        <CalendarIcon className="size-4 text-blue-500" />
+        <CalendarIcon className="text-symbol-sky size-4 md:size-6" />
         <span className="text-title2 md:text-title1 font-bold">나의 일정</span>
       </div>
       <div className="flex items-center gap-1">
