@@ -111,8 +111,16 @@ function Calendar({
           "text-[0.8rem] text-muted-foreground select-none",
           defaultClassNames.week_number,
         ),
+        // day: cn(
+        //   "group/day relative aspect-square h-full w-full p-0 text-center select-none [&:last-child[data-selected=true]_button]:rounded-r-md min-w-0",
+        //   props.showWeekNumber
+        //     ? "[&:nth-child(2)[data-selected=true]_button]:rounded-l-md"
+        //     : "[&:first-child[data-selected=true]_button]:rounded-l-md",
+        //   defaultClassNames.day,
+        // ),
         day: cn(
-          "group/day relative aspect-square h-full w-full p-0 text-center select-none [&:last-child[data-selected=true]_button]:rounded-r-md min-w-0",
+          "group/day relative h-full w-full p-0 text-center select-none [&:last-child[data-selected=true]_button]:rounded-r-md min-w-0",
+          "min-h-12 aspect-square",
           props.showWeekNumber
             ? "[&:nth-child(2)[data-selected=true]_button]:rounded-l-md"
             : "[&:first-child[data-selected=true]_button]:rounded-l-md",
@@ -238,7 +246,7 @@ function CalendarDayButton({
       // )}
       className={cn(
         // items-center(모바일 중앙) -> md:items-start(데스크탑 좌측)로 변경
-        "hover:bg-accent/50 flex h-full w-full flex-col items-center justify-start gap-1 p-2 font-normal transition-colors md:items-start",
+        "hover:bg-accent/50 flex h-full w-full flex-col items-center justify-start gap-1 p-1 font-normal transition-colors md:items-start md:p-2",
         modifiers.today && !modifiers.selected && "bg-muted",
         modifiers.selected &&
           "bg-symbol-sky-sub text-symbol-sky hover:bg-muted",
