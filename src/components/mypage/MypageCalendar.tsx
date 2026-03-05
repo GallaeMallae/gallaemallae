@@ -22,7 +22,6 @@ export function MypageCalendar({
       onSelect={onDateChange}
       month={month}
       onMonthChange={onMonthChange}
-      className="rounded-lg"
       captionLayout="dropdown"
     />
   );

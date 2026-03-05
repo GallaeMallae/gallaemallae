@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export default function MypageProfileCard() {
   return (
-    <Card className="flex h-full flex-col justify-between">
+    <Card className="flex h-full flex-col justify-between rounded-2xl">
       <CardContent className="flex h-full flex-col items-center justify-center gap-4">
         <div className="flex h-full flex-col items-center justify-center gap-4 md:gap-2 lg:flex-row lg:gap-4">
           <div className="flex shrink-0 items-center justify-center">

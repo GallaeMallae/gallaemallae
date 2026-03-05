@@ -12,7 +12,7 @@ export default function MypageSelectedDateEventsCard({
   events,
 }: MypageDailyAgendaCardProps) {
   return (
-    <Card className="md:hidden">
+    <Card className="rounded-2xl md:hidden">
       <CardContent className="flex flex-col gap-4">
         <div className="font-bold">
           {selectedDate?.toLocaleDateString("ko-KR", {

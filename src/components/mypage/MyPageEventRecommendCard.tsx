@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Heart, Calendar, MapPin } from "lucide-react";
@@ -15,7 +15,7 @@ export default function MyPageEventRecommendCard({
   isLiked,
 }: EventCardItem) {
   return (
-    <Card className="relative rounded-2xl border-0">
+    <Card className="relative rounded-2xl border">
       <CardContent>
         <Button
           className="absolute top-6 right-6 hover:bg-transparent"

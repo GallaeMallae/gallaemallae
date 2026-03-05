@@ -61,7 +61,7 @@ export default function Mypage() {
           />
         </div>
 
-        <div className="rounded-xl bg-white p-6 shadow lg:col-span-3">
+        <div className="rounded-2xl border bg-white p-6 shadow-sm lg:col-span-3">
           <MypageCalendar
             selectedDate={selectedDate}
             onDateChange={setSelectedDate}
