@@ -3,6 +3,7 @@
 import MainBanner from "@/components/home/MainBanner";
 import CategoryMenu from "@/components/home/CategoryMenu";
 import UpcomingEvents from "@/components/home/UpcomingEvents";
+import NearEvents from "@/components/home/NearEvents";
 import { useState } from "react";
 import { WeatherCardItem, RecommendType, PeriodFilter } from "@/types/common";
 import { MOCK_EVENTS } from "@/mocks/events";
@@ -30,6 +31,7 @@ export default function Home() {
         period={selectedPeriodTab}
         onPeriodChange={setSelectedPeriodTab}
       />
+      <NearEvents events={MOCK_EVENTS} />
     </div>
   );
 }
