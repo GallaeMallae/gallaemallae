@@ -17,6 +17,7 @@ interface MypageEventSectionCardProps {
   iconName: "bookmark" | "heart";
   iconClassName?: string;
   events: EventCardItem[];
+  onEventClick: (date: string) => void;
 }
 
 export default function MypageEventSectionCard({
@@ -24,6 +25,7 @@ export default function MypageEventSectionCard({
   iconName,
   iconClassName,
   events,
+  onEventClick,
 }: MypageEventSectionCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const displayedEvents = isExpanded ? events : events.slice(0, 3);
@@ -51,7 +53,11 @@ export default function MypageEventSectionCard({
       <CardContent className="flex flex-col gap-2">
         {events.length > 0 ? (
           displayedEvents.map((event, index) => (
-            <MypageEventListCard key={index} {...event} />
+            <MypageEventListCard
+              key={index}
+              {...event}
+              onClick={() => onEventClick(event.startDate)}
+            />
           ))
         ) : (
           <div className="text-muted-foreground py-4 text-center text-sm">

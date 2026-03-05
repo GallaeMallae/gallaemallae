@@ -1,16 +1,27 @@
 "use client";
 
-import * as React from "react";
 import { Calendar } from "@/components/ui/calendar";
 
-export function MypageCalendar() {
-  const [date, setDate] = React.useState<Date | undefined>(new Date());
+interface MypageCalendarProps {
+  selectedDate: Date | undefined;
+  onDateChange: (date: Date | undefined) => void;
+  month: Date;
+  onMonthChange: (date: Date) => void;
+}
 
+export function MypageCalendar({
+  selectedDate,
+  onDateChange,
+  month,
+  onMonthChange,
+}: MypageCalendarProps) {
   return (
     <Calendar
       mode="single"
-      selected={date}
-      onSelect={setDate}
+      selected={selectedDate}
+      onSelect={onDateChange}
+      month={month}
+      onMonthChange={onMonthChange}
       className="rounded-lg"
       captionLayout="dropdown"
     />

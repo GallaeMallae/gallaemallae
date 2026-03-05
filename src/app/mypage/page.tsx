@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import WeatherCard from "@/components/common/WeatherCard";
 import { MypageCalendar } from "@/components/mypage/MypageCalendar";
 import { MOCK_WEATHER } from "@/mocks/weathers";
@@ -7,6 +10,17 @@ import MypageProfileCard from "@/components/mypage/MypageProfileCard";
 import MypageEventSectionCard from "@/components/mypage/MyPageEventSectionCard";
 
 export default function Mypage() {
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
+    new Date(),
+  );
+  const [month, setMonth] = useState<Date>(new Date());
+
+  const handleEventClick = (dateString: string) => {
+    const newDate = new Date(dateString);
+    setSelectedDate(newDate);
+    setMonth(newDate);
+  };
+
   const weatherData = MOCK_WEATHER[1];
   const eventData = MOCK_EVENTS[1];
 
@@ -25,17 +39,24 @@ export default function Mypage() {
             iconName="bookmark"
             iconClassName="text-symbol-sky"
             events={MOCK_EVENTS}
+            onEventClick={handleEventClick}
           />
           <MypageEventSectionCard
             title="나의 관심 목록"
             iconName="heart"
             iconClassName="text-red-500"
             events={MOCK_EVENTS}
+            onEventClick={handleEventClick}
           />
         </div>
 
         <div className="rounded-xl bg-white p-6 shadow lg:col-span-3">
-          <MypageCalendar />
+          <MypageCalendar
+            selectedDate={selectedDate}
+            onDateChange={setSelectedDate}
+            month={month}
+            onMonthChange={setMonth}
+          />
         </div>
       </div>
     </div>
