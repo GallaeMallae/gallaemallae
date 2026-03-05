@@ -17,3 +17,38 @@ export function formatDateRange(start: string | Date, end: string | Date) {
 
   return `${startFormatted} ~ ${endFormatted}`;
 }
+
+export function formatToKoreanMonthDay(date: string | Date) {
+  const d = new Date(date);
+
+  const month = d.getMonth() + 1;
+  const day = d.getDate();
+
+  return `${month}월 ${day}일`;
+}
+
+export function calculateDDay(targetDate?: string | Date | null) {
+  if (!targetDate) return "일정 미정";
+
+  const DAY = 86400000;
+
+  const today = new Date();
+  const target = new Date(targetDate);
+
+  const todayMid = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate(),
+  );
+  const targetMid = new Date(
+    target.getFullYear(),
+    target.getMonth(),
+    target.getDate(),
+  );
+
+  const diffDays = Math.ceil((targetMid.getTime() - todayMid.getTime()) / DAY);
+
+  if (diffDays === 0) return "D-Day";
+  if (diffDays > 0) return `D-${diffDays}`;
+  return `D+${Math.abs(diffDays)}`;
+}

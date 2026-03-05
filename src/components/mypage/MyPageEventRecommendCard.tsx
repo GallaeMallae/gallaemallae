@@ -1,4 +1,4 @@
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Heart, Calendar, MapPin } from "lucide-react";
@@ -32,16 +32,23 @@ export default function MyPageEventRecommendCard({
           />
         </Button>
 
-        <Badge className="mb-2 rounded-sm" variant={category}>
-          {category}
-        </Badge>
+        <div className="mb-2 flex items-center gap-2">
+          <Badge className="rounded-sm" variant={category}>
+            {category}
+          </Badge>
+          <p className="text-symbol-sky text-caption font-bold">
+            이런 행사는 어때요?
+          </p>
+        </div>
 
         <h3 className="text-title2 mb-4 font-bold">{title}</h3>
 
         <div className="text-desc2 text-etc mb-4 flex flex-col">
           <div className="flex items-center gap-2">
             <Calendar className="h-4 w-4" />
-            <span>{formatDateRange(startDate, endDate)}</span>
+            <span className="truncate text-sm whitespace-nowrap">
+              {formatDateRange(startDate, endDate)}
+            </span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -52,7 +59,7 @@ export default function MyPageEventRecommendCard({
 
         <div className="flex gap-2">
           <Button size={"sm"} className="hover:bg-symbol-sky">
-            나의 일정에 추가
+            일정에 추가
           </Button>
           <Button size={"sm"} variant={"outline"}>
             행사 정보

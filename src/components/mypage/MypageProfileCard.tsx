@@ -5,9 +5,9 @@ export default function MypageProfileCard() {
   return (
     <Card className="flex h-full flex-col justify-between">
       <CardContent className="flex h-full flex-col items-center justify-center gap-4">
-        <div className="flex h-full flex-col items-center justify-center gap-4 sm:gap-6 lg:flex-row">
+        <div className="flex h-full flex-col items-center justify-center gap-4 md:gap-2 lg:flex-row lg:gap-4">
           <div className="flex shrink-0 items-center justify-center">
-            <div className="h-20 w-20 rounded-full bg-red-300" />
+            <div className="size-16 rounded-full bg-red-300 md:size-14 lg:size-20" />
           </div>
           <div className="flex h-full flex-col items-center justify-center overflow-hidden">
             <div className="text-title2 w-full text-center font-bold">
