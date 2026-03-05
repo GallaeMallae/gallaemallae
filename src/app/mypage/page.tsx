@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import WeatherCard from "@/components/common/WeatherCard";
 import { MypageCalendar } from "@/components/mypage/MypageCalendar";
 import { MOCK_WEATHER } from "@/mocks/weathers";
 import { MOCK_EVENTS } from "@/mocks/events";
+import WeatherCard from "@/components/common/WeatherCard";
 import MyPageEventRecommendCard from "@/components/mypage/MyPageEventRecommendCard";
 import MypageProfileCard from "@/components/mypage/MypageProfileCard";
 import MypageEventSectionCard from "@/components/mypage/MyPageEventSectionCard";
+import MypageSelectedDateEventsCard from "@/components/mypage/MypageSelectedDateEventsCard";
 
 export default function Mypage() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
@@ -21,6 +22,14 @@ export default function Mypage() {
     setMonth(newDate);
   };
 
+  const selectedDateString = selectedDate
+    ? selectedDate.toLocaleDateString("en-CA")
+    : "";
+
+  const dailyEvents = MOCK_EVENTS.filter(
+    (event) => event.startDate === selectedDateString,
+  );
+
   const weatherData = MOCK_WEATHER[1];
   const eventData = MOCK_EVENTS[1];
 
@@ -29,7 +38,9 @@ export default function Mypage() {
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         <MypageProfileCard />
         <WeatherCard {...weatherData} />
-        <MyPageEventRecommendCard {...eventData} />
+        <div className="hidden md:block">
+          <MyPageEventRecommendCard {...eventData} />
+        </div>
       </div>
 
       <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-4">
@@ -58,6 +69,12 @@ export default function Mypage() {
             onMonthChange={setMonth}
           />
         </div>
+        {dailyEvents.length > 0 && (
+          <MypageSelectedDateEventsCard
+            selectedDate={selectedDate}
+            events={dailyEvents}
+          />
+        )}
       </div>
     </div>
   );
