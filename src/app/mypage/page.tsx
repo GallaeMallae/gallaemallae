@@ -26,9 +26,12 @@ export default function Mypage() {
     ? selectedDate.toLocaleDateString("en-CA")
     : "";
 
-  const dailyEvents = MOCK_EVENTS.filter(
-    (event) => event.startDate === selectedDateString,
-  );
+  const dailyEvents = MOCK_EVENTS.filter((event) => {
+    return (
+      selectedDateString >= event.startDate &&
+      selectedDateString <= event.endDate
+    );
+  });
 
   const weatherData = MOCK_WEATHER[1];
   const eventData = MOCK_EVENTS[1];
@@ -44,7 +47,7 @@ export default function Mypage() {
       </div>
 
       <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-4">
-        <div className="flex flex-col gap-6 lg:col-span-1">
+        <div className="order-2 flex flex-col gap-6 lg:order-1 lg:col-span-1">
           <MypageEventSectionCard
             title="나의 일정 목록"
             iconName="bookmark"
@@ -61,20 +64,23 @@ export default function Mypage() {
           />
         </div>
 
-        <div className="rounded-2xl border bg-white p-6 shadow-sm lg:col-span-3">
-          <MypageCalendar
-            selectedDate={selectedDate}
-            onDateChange={setSelectedDate}
-            month={month}
-            onMonthChange={setMonth}
-          />
+        <div className="order-1 flex flex-col gap-6 lg:order-2 lg:col-span-3">
+          <div className="rounded-2xl border bg-white p-6 shadow-sm">
+            <MypageCalendar
+              selectedDate={selectedDate}
+              onDateChange={setSelectedDate}
+              month={month}
+              onMonthChange={setMonth}
+            />
+          </div>
+
+          {dailyEvents.length > 0 && (
+            <MypageSelectedDateEventsCard
+              selectedDate={selectedDate}
+              events={dailyEvents}
+            />
+          )}
         </div>
-        {dailyEvents.length > 0 && (
-          <MypageSelectedDateEventsCard
-            selectedDate={selectedDate}
-            events={dailyEvents}
-          />
-        )}
       </div>
     </div>
   );

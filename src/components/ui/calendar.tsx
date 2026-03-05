@@ -15,15 +15,43 @@ import {
 } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
+import { MOCK_EVENTS } from "@/mocks/events";
+
+const CATEGORY_STYLES: Record<
+  string,
+  { dot: string; sub: string; text: string; border: string }
+> = {
+  축제: {
+    dot: "bg-festival",
+    sub: "bg-festival-sub",
+    text: "text-festival",
+    border: "border-festival",
+  },
+  공연: {
+    dot: "bg-performance",
+    sub: "bg-performance-sub",
+    text: "text-performance",
+    border: "border-performance",
+  },
+  전시: {
+    dot: "bg-exhibition",
+    sub: "bg-exhibition-sub",
+    text: "text-exhibition",
+    border: "border-exhibition",
+  },
+  기타: {
+    dot: "bg-etc",
+    sub: "bg-etc-sub",
+    text: "text-etc",
+    border: "border-etc",
+  },
+};
 
 function Calendar({
   className,
   classNames,
   showOutsideDays = true,
-  captionLayout = "label",
-  buttonVariant = "ghost",
-  formatters,
   components,
   ...props
 }: React.ComponentProps<typeof DayPicker> & {
@@ -42,11 +70,6 @@ function Calendar({
         className,
       )}
       captionLayout="label"
-      // formatters={{
-      //   formatMonthDropdown: (date) =>
-      //     date.toLocaleString("default", { month: "short" }),
-      //   ...formatters,
-      // }}
       classNames={{
         // w-fit -> w-full
         root: cn("w-full", defaultClassNames.root),
@@ -56,47 +79,7 @@ function Calendar({
           defaultClassNames.months,
         ),
         month: cn("flex w-full flex-col gap-4", defaultClassNames.month),
-
-        // month_caption: cn(
-        //   "flex h-(--cell-size) w-full items-center justify-center px-(--cell-size)",
-        //   defaultClassNames.month_caption,
-        // ),
-        // caption_label: cn(
-        //   "font-medium select-none",
-        //   captionLayout === "label"
-        //     ? "text-sm"
-        //     : "flex h-8 items-center gap-1 rounded-md pr-1 pl-2 text-sm [&>svg]:size-3.5 [&>svg]:text-muted-foreground",
-        //   defaultClassNames.caption_label,
-        // ),
-        // nav: cn(
-        //   "absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1",
-        //   defaultClassNames.nav,
-        // ),
-        // button_previous: cn(
-        //   buttonVariants({ variant: buttonVariant }),
-        //   "size-(--cell-size) p-0 select-none aria-disabled:opacity-50",
-        //   defaultClassNames.button_previous,
-        // ),
-        // button_next: cn(
-        //   buttonVariants({ variant: buttonVariant }),
-        //   "size-(--cell-size) p-0 select-none aria-disabled:opacity-50",
-        //   defaultClassNames.button_next,
-        // ),
-
-        // dropdowns: cn(
-        //   "flex h-(--cell-size) w-full items-center justify-center gap-1.5 text-sm font-medium",
-        //   defaultClassNames.dropdowns,
-        // ),
-        // dropdown_root: cn(
-        //   "relative rounded-md border border-input shadow-xs has-focus:border-ring has-focus:ring-[3px] has-focus:ring-ring/50",
-        //   defaultClassNames.dropdown_root,
-        // ),
-        // dropdown: cn(
-        //   "absolute inset-0 bg-popover opacity-0",
-        //   defaultClassNames.dropdown,
-        // ),
-
-        table: "w-full border-collapse",
+        table: "w-full border-collapse border-spacing-0",
         weekdays: cn("flex", defaultClassNames.weekdays),
         weekday: cn(
           "flex-1 rounded-md text-[0.8rem] font-normal text-muted-foreground select-none",
@@ -206,15 +189,19 @@ function CalendarDayButton({
   modifiers,
   ...props
 }: React.ComponentProps<typeof DayButton>) {
-  const defaultClassNames = getDefaultClassNames();
-
   const ref = React.useRef<HTMLButtonElement>(null);
   React.useEffect(() => {
     if (modifiers.focused) ref.current?.focus();
   }, [modifiers.focused]);
 
-  // 예시: 해당 날짜의 이벤트를 가져오는 로직 (실제로는 props 등으로 전달받아야 함)
-  const dateKey = day.date.getDate();
+  // 날짜 비교를 위한 포맷팅 en-CA(YYYY-MM-DD)
+  const currentDayStr = day.date.toLocaleDateString("en-CA");
+  const isSunday = day.date.getDay() === 0;
+
+  const dayEvents = MOCK_EVENTS.filter(
+    (event) =>
+      currentDayStr >= event.startDate && currentDayStr <= event.endDate,
+  );
 
   return (
     <Button
@@ -237,7 +224,7 @@ function CalendarDayButton({
       //   className,
       // )}
       className={cn(
-        "hover:bg-accent/50 flex h-full w-full flex-col items-center justify-start gap-1 p-1 font-normal transition-colors md:items-start md:p-2",
+        "hover:bg-accent/50 flex h-full w-full flex-col items-center justify-start gap-1 px-0 py-1 font-normal transition-colors md:items-start md:py-2",
 
         modifiers.today && !modifiers.selected && "bg-muted",
         modifiers.outside && "text-muted-foreground opacity-50",
@@ -247,7 +234,7 @@ function CalendarDayButton({
     >
       <span
         className={cn(
-          "flex shrink-0 items-center justify-center text-sm font-semibold",
+          "flex shrink-0 items-center justify-center text-sm font-semibold md:ml-2",
 
           modifiers.selected && "text-symbol-sky",
           modifiers.today &&
@@ -257,39 +244,43 @@ function CalendarDayButton({
         {day.date.getDate()}
       </span>
 
-      {/* 이벤트 배지 영역 - 실제로는 데이터 받아와서 표시해야함 */}
+      {/* 이벤트 뱃지 렌더링 */}
       <div className="mt-1 flex w-full min-w-0 flex-row flex-wrap justify-center gap-1 overflow-hidden md:flex-col md:justify-start">
-        {/* 축제 이벤트 예시 */}
-        {dateKey === 5 && (
-          <>
-            <div
-              className="text-festival bg-festival-sub border-festival hidden w-full min-w-0 truncate rounded-r border-l-4 px-1.5 py-0.5 text-left text-[10px] md:block"
-              title="금호강 정월대보름축제"
-            >
-              금호강 정월대보름축제
-            </div>
-            <div
-              className="bg-festival h-1.5 w-1.5 rounded-full md:hidden"
-              title="금호강 정월대보름축제"
-            />
-          </>
-        )}
+        {dayEvents.map((event, index) => {
+          const style =
+            CATEGORY_STYLES[event.category] || CATEGORY_STYLES["기타"];
 
-        {/* 전시 이벤트 예시 */}
-        {dateKey === 11 && (
-          <>
-            <div
-              className="border-exhibition bg-exhibition-sub text-exhibition hidden w-full min-w-0 truncate rounded-r border-l-4 px-1.5 py-0.5 text-left text-[10px] md:block"
-              title="현대 미술 특별전"
-            >
-              현대 미술 특별전
-            </div>
-            <div
-              className="bg-exhibition h-1.5 w-1.5 rounded-full md:hidden"
-              title="현대 미술 특별전"
-            />
-          </>
-        )}
+          // 뱃지 렌더링 판별 로직
+          const isStart = currentDayStr === event.startDate;
+          // 주가 바뀌었거나(일요일) 시작일인 경우에만 텍스트 노출
+          const shouldShowTitle = isStart || isSunday;
+
+          return (
+            <React.Fragment key={`${event.title}-${index}`}>
+              {/* 데스크톱: 연속된 바 */}
+              <div
+                className={cn(
+                  "text-caption hidden h-6 w-full items-center px-2 font-bold md:flex",
+                  style.sub,
+                  style.text,
+
+                  isStart ? "border-l-4 " + style.border : "border-l-0",
+                  !shouldShowTitle && "text-transparent",
+                )}
+                title={event.title}
+              >
+                <span className="truncate">
+                  {shouldShowTitle ? event.title : ""}
+                </span>
+              </div>
+
+              {/* 모바일: 점 */}
+              <div
+                className={cn("h-1.5 w-1.5 rounded-full md:hidden", style.dot)}
+              />
+            </React.Fragment>
+          );
+        })}
       </div>
     </Button>
   );
@@ -309,12 +300,12 @@ function CustomMonthCaption({
     <div className="mb-4 flex w-full items-center justify-between px-1">
       <div className="flex items-center gap-2">
         <CalendarIcon className="text-symbol-sky size-4 md:size-6" />
-        <span className="text-title2 md:text-title1 font-bold">나의 일정</span>
+        <span className="text-title2 font-bold">나의 일정</span>
       </div>
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-2">
         <button
           onClick={() => previousMonth && goToMonth(previousMonth)}
-          className="hover:bg-accent flex h-7 w-7 items-center justify-center rounded"
+          className="hover:bg-accent flex size-6 items-center justify-center rounded"
         >
           <ChevronLeftIcon className="size-4" />
         </button>
@@ -323,7 +314,7 @@ function CustomMonthCaption({
         </span>
         <button
           onClick={() => nextMonth && goToMonth(nextMonth)}
-          className="hover:bg-accent flex h-7 w-7 items-center justify-center rounded"
+          className="hover:bg-accent flex size-6 items-center justify-center rounded"
         >
           <ChevronRightIcon className="size-4" />
         </button>
