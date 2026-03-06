@@ -15,7 +15,7 @@ export default function EventCard({
   isLiked,
 }: EventCardItem) {
   return (
-    <Card className="relative cursor-pointer rounded-2xl border-0">
+    <Card className="relative cursor-pointer rounded-2xl">
       <CardContent>
         <Button
           className="absolute top-6 right-6 hover:bg-transparent"

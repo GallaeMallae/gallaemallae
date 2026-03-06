@@ -11,9 +11,7 @@ export default function RecommendCard({
   const recommendCard = RECOMMEND_CARD_CONFIG[recommendType];
 
   return (
-    <Card
-      className={`rounded-2xl border-0 shadow-none ${recommendCard.bgColor}`}
-    >
+    <Card className={`rounded-2xl ${recommendCard.bgColor}`}>
       <CardContent className="flex flex-col items-center gap-2">
         <p className={`text-desc1 font-semibold ${recommendCard.textColor}`}>
           갈래말래

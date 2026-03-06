@@ -13,7 +13,7 @@ export default function CategoryMenu() {
           return (
             <Card
               key={`category-${name}`}
-              className="cursor-pointer border-none bg-transparent py-0 shadow-none md:rounded-xl md:bg-white md:py-6"
+              className="cursor-pointer border-none bg-transparent py-0 shadow-none md:rounded-xl md:border md:bg-white md:py-6 md:shadow-sm"
             >
               <CardContent className="flex flex-col items-center gap-2 p-0">
                 <div

@@ -15,7 +15,7 @@ export default function WeatherCard({
 
   return (
     <Card
-      className={`relative overflow-hidden rounded-2xl border-0 shadow-none ${bgColor} text-white`}
+      className={`relative overflow-hidden rounded-2xl ${bgColor} text-white`}
     >
       {/* 배경 원 장식 */}
       <div className="absolute -top-10 -left-5 h-32 w-32 rounded-full bg-white/15" />

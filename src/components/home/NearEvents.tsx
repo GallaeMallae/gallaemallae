@@ -30,7 +30,7 @@ export default function NearEvents({ events }: { events: EventCardItem[] }) {
 
             {/* 모바일 더보기 */}
             <div className="md:hidden">
-              <Card className="cursor-pointer rounded-2xl border-0">
+              <Card className="cursor-pointer rounded-2xl">
                 <CardContent className="flex items-center justify-center">
                   <span className="text-caption text-symbol-sky font-bold">
                     더보기
