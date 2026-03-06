@@ -27,10 +27,10 @@ export default function MypageSelectedDateEventsCard({
         const dotColorClass = CATEGORY_STYLES[event.category].dot || "bg-etc";
 
         return (
-          <div key={index} className="flex items-start gap-2">
+          <div key={index} className="flex gap-2">
             <div className={cn("mt-2 size-2 rounded-full", dotColorClass)} />
 
-            <Card className="flex-1 rounded-2xl shadow-sm">
+            <Card className="min-w-0 flex-1 rounded-2xl shadow-sm">
               <CardContent>
                 <MypageAgendaCard {...event} />
               </CardContent>
