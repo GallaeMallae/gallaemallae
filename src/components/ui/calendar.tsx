@@ -260,7 +260,7 @@ function CalendarDayButton({
               {/* 데스크톱: 연속된 바 */}
               <div
                 className={cn(
-                  "text-caption hidden h-6 w-full items-center px-2 font-bold md:flex",
+                  "text-caption hidden h-6 w-full items-center px-2 font-semibold md:flex",
                   style.sub,
                   style.text,
 
