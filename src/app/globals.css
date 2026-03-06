@@ -134,6 +134,9 @@
 }
 
 @theme {
+  /* shadcn calendar 컴포넌트 위해 중단점(Breakpoint) 추가 */
+  --breakpoint-xs: 480px;
+
   /* Background Base Color */
   --color-background-base: #f9fafb;
 
