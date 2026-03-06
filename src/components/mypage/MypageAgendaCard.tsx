@@ -25,7 +25,7 @@ export default function MypageAgendaCard({
 
   return (
     <div
-      className="hover:bg-muted cursor-pointer rounded-xl p-2"
+      className="hover:bg-muted flex cursor-pointer flex-col gap-1 rounded-xl p-2"
       onClick={onClick}
     >
       <div className="flex items-center justify-between">
@@ -34,10 +34,11 @@ export default function MypageAgendaCard({
         </Badge>
         <div className="text-desc2 text-symbol-sky font-semibold">{dDay}</div>
       </div>
-
-      <div className="text-desc2 truncate font-semibold">{title}</div>
-      <div className="text-desc2 text-muted-foreground">
-        {selectedDate ? selectedDate : formatStartDate}, {location}
+      <div>
+        <div className="text-desc2 truncate font-semibold">{title}</div>
+        <div className="text-desc2 text-muted-foreground truncate">
+          {selectedDate ? selectedDate : formatStartDate}, {location}
+        </div>
       </div>
     </div>
   );

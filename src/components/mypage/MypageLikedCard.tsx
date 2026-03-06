@@ -19,7 +19,7 @@ export default function MypageLikedCard({
 
   return (
     <div
-      className="hover:bg-muted cursor-pointer rounded-xl p-2"
+      className="hover:bg-muted flex cursor-pointer flex-col gap-1 rounded-xl p-2"
       onClick={onClick}
     >
       <div className="flex items-center justify-between">
@@ -28,12 +28,14 @@ export default function MypageLikedCard({
         </Badge>
         <div className="text-desc2 text-symbol-sky font-semibold">{dDay}</div>
       </div>
-      <div className="text-desc2 truncate font-semibold">{title}</div>
-      <div className="text-desc2 text-etc flex items-center gap-2">
-        <Calendar className="h-4 w-4 shrink-0" />
-        <span className="truncate leading-none">
-          {formatDateRange(startDate, endDate)}
-        </span>
+      <div>
+        <div className="text-desc2 truncate font-semibold">{title}</div>
+        <div className="text-desc2 text-muted-foreground flex items-center gap-2">
+          <Calendar className="h-4 w-4 shrink-0" />
+          <span className="truncate leading-none">
+            {formatDateRange(startDate, endDate)}
+          </span>
+        </div>
       </div>
     </div>
   );
