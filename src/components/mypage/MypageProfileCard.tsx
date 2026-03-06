@@ -28,17 +28,15 @@ export default function MypageProfileCard() {
   return (
     <Card className="flex h-full flex-col justify-between rounded-2xl">
       <CardContent className="flex h-full flex-col items-center justify-center gap-4">
-        <div className="flex h-full flex-col items-center justify-center gap-4 md:gap-2 lg:flex-row lg:gap-4">
+        <div className="flex h-full flex-col items-center justify-center gap-4 md:gap-2">
           <div className="flex shrink-0 items-center justify-center">
-            <div className="size-16 rounded-full bg-red-300 md:size-14 lg:size-20" />
+            <div className="size-16 rounded-full bg-red-300 md:size-14" />
           </div>
-
           <div className="flex h-full flex-col items-center justify-center overflow-hidden">
-            <div className="text-title2 w-full text-center font-bold">
+            <div className="text-desc1 w-full text-center font-bold">
               닉네임
             </div>
-
-            <div className="text-muted-foreground w-full truncate text-center text-sm sm:text-left">
+            <div className="text-muted-foreground text-caption w-full truncate text-center sm:text-left">
               test1234@email.com
             </div>
           </div>

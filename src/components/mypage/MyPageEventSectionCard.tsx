@@ -5,7 +5,6 @@ import MypageEventListCard from "@/components/mypage/MypageEventListCard";
 import { Bookmark, Heart, LucideIcon } from "lucide-react";
 import { EventCardItem } from "@/types/common";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
 
 const ICON_MAP: Record<string, LucideIcon> = {
   bookmark: Bookmark,
@@ -27,32 +26,21 @@ export default function MypageEventSectionCard({
   events,
   onEventClick,
 }: MypageEventSectionCardProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const displayedEvents = isExpanded ? events : events.slice(0, 3);
-
   const Icon = ICON_MAP[iconName];
 
   return (
-    <Card className="rounded-2xl">
-      <CardHeader>
+    <Card className="flex h-full flex-col overflow-hidden rounded-2xl">
+      <CardHeader className="shrink-0">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             {Icon && <Icon className={cn("h-4 w-4", iconClassName)} />}
             <span className="font-bold">{title}</span>
           </div>
-          {events.length > 3 && (
-            <div
-              onClick={() => setIsExpanded(!isExpanded)}
-              className="text-symbol-sky text-caption cursor-pointer font-bold"
-            >
-              {isExpanded ? "접기" : "더보기"}
-            </div>
-          )}
         </div>
       </CardHeader>
-      <CardContent className="flex flex-col gap-2">
+      <CardContent className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto">
         {events.length > 0 ? (
-          displayedEvents.map((event, index) => (
+          events.map((event, index) => (
             <MypageEventListCard
               key={index}
               {...event}
