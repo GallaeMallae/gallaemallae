@@ -33,15 +33,18 @@ export default function MyPageEventRecommendCard({
         </Button>
 
         <div className="mb-2 flex items-center gap-2">
-          <Badge className="rounded-sm" variant={category}>
-            {category}
-          </Badge>
-          <p className="text-symbol-sky text-caption font-bold">
+          <p className="text-symbol-sky text-desc1 font-semibold">
+            {/* todo: AI의 추천 멘트 한마디 넣기 */}
             이런 행사는 어때요?
           </p>
         </div>
 
-        <h3 className="text-title2 mb-4 font-bold">{title}</h3>
+        <div className="mb-4 flex items-center gap-2">
+          <h3 className="text-title2 font-bold">{title}</h3>
+          <Badge className="rounded-sm" variant={category}>
+            {category}
+          </Badge>
+        </div>
 
         <div className="text-desc2 text-etc mb-4 flex flex-col">
           <div className="flex items-center gap-2">
