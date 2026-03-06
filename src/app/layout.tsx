@@ -23,9 +23,11 @@ export default function RootLayout({
         className={`${pretendard.variable} bg-background-base pb-16 font-sans md:pb-0`}
       >
         <ReactQueryProvider>
-          <Header />
-          <main className="mx-auto max-w-7xl p-6">{children}</main>
-          <Footer />
+          <div className="flex min-h-screen flex-col">
+            <Header />
+            <main className="mx-auto max-w-7xl flex-1 p-6">{children}</main>
+            <Footer />
+          </div>
           <Suspense fallback={null}>
             <MobileBottomNav />
           </Suspense>

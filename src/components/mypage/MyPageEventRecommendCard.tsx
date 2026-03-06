@@ -18,7 +18,7 @@ export default function MyPageEventRecommendCard({
     <Card className="relative rounded-2xl border">
       <CardContent>
         <Button
-          className="absolute top-6 right-6 hover:bg-transparent"
+          className="absolute top-4 right-4 hover:bg-transparent"
           variant="ghost"
           size="icon"
           aria-label="좋아요"
