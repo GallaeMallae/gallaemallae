@@ -18,7 +18,10 @@ export default function MypageAgendaCard({
 }: MypageAgendaCardItem) {
   // todo: 지금은 startDate로 보여주지만 나중에는 사용자가 지정한 날짜를 보여줘야함
   const formatStartDate = formatDate(startDate);
-  const dDay = calculateDDay(startDate);
+
+  const dDay = selectedDate
+    ? calculateDDay(selectedDate)
+    : calculateDDay(startDate);
 
   return (
     <div

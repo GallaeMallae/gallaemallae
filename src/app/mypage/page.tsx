@@ -83,7 +83,7 @@ export default function Mypage() {
             />
           </div>
 
-          {dailyEvents.length > 0 && (
+          {selectedDate && dailyEvents.length > 0 && (
             <MypageSelectedDateEventsCard
               selectedDate={selectedDate}
               events={dailyEvents}

@@ -14,11 +14,13 @@ export default function MypageSelectedDateEventsCard({
   events,
   selectedDate,
 }: MypageDailyAgendaCardProps) {
-  const dateString = formatDate(selectedDate.toLocaleDateString("en-CA"));
+  const formattedSelectedDate = formatDate(
+    selectedDate.toLocaleDateString("en-CA"),
+  );
 
   const selectedDateEvents = events.map((event) => ({
     ...event,
-    selectedDate: dateString,
+    selectedDate: formattedSelectedDate,
   }));
 
   return (
