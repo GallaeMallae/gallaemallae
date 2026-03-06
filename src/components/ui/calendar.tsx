@@ -102,8 +102,8 @@ function Calendar({
         //   defaultClassNames.day,
         // ),
         day: cn(
-          "group/day relative h-full w-full p-0 text-center select-none min-w-0",
-          "xs:aspect-square min-h-12",
+          "group/day relative h-full w-full p-0 text-center select-none min-w-0 overflow-hidden",
+          "xs:aspect-square min-h-10 xs:min-h-0",
           "data-[selected=true]:bg-symbol-sky-sub data-[selected=true]:hover:bg-muted",
           "data-[selected=true]:rounded-md",
 
@@ -269,7 +269,7 @@ function CalendarDayButton({
                 )}
                 title={event.title}
               >
-                <span className="truncate">
+                <span className="text-caption truncate">
                   {shouldShowTitle ? event.title : ""}
                 </span>
               </div>
@@ -300,9 +300,9 @@ function CustomMonthCaption({
     <div className="mb-4 flex w-full items-center justify-between px-1">
       <div className="flex items-center gap-2">
         <CalendarIcon className="text-symbol-sky size-4 md:size-6" />
-        <span className="text-title2 font-bold">나의 일정</span>
+        <span className="md:text-title2 font-bold">나의 일정</span>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-0 md:gap-2">
         <button
           onClick={() => previousMonth && goToMonth(previousMonth)}
           className="hover:bg-accent flex size-6 items-center justify-center rounded"

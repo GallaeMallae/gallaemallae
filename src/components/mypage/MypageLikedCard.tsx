@@ -1,12 +1,13 @@
 import { Badge } from "@/components/ui/badge";
 import { EventCardItem } from "@/types/common";
-import { calculateDDay, formatToKoreanMonthDay } from "@/utils/date";
+import { calculateDDay, formatDateRange } from "@/utils/date";
+import { Calendar } from "lucide-react";
 
 interface MypageEventCardItem extends Omit<EventCardItem, "isLiked"> {
   onClick?: () => void;
 }
 
-export default function MypageEventListCard({
+export default function MypageLikedCard({
   title,
   location,
   startDate,
@@ -14,7 +15,6 @@ export default function MypageEventListCard({
   category,
   onClick,
 }: MypageEventCardItem) {
-  const formatStartDate = formatToKoreanMonthDay(startDate);
   const dDay = calculateDDay(startDate);
 
   return (
@@ -29,9 +29,13 @@ export default function MypageEventListCard({
         <div className="text-desc2 text-symbol-sky font-semibold">{dDay}</div>
       </div>
 
-      <div className="text-desc2 font-semibold">{title}</div>
-      <div className="text-desc2 text-muted-foreground">
-        {formatStartDate}, {location}
+      <div className="text-desc2 line-clamp-1 font-semibold">{title}</div>
+
+      <div className="text-desc2 text-etc flex items-center gap-2">
+        <Calendar className="h-4 w-4 shrink-0" />
+        <span className="truncate leading-none">
+          {formatDateRange(startDate, endDate)}
+        </span>
       </div>
     </div>
   );

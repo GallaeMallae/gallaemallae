@@ -18,15 +18,6 @@ export function formatDateRange(start: string | Date, end: string | Date) {
   return `${startFormatted} ~ ${endFormatted}`;
 }
 
-export function formatToKoreanMonthDay(date: string | Date) {
-  const d = new Date(date);
-
-  const month = d.getMonth() + 1;
-  const day = d.getDate();
-
-  return `${month}월 ${day}일`;
-}
-
 export function calculateDDay(targetDate?: string | Date | null) {
   if (!targetDate) return "일정 미정";
 

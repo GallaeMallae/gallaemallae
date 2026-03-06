@@ -1,4 +1,4 @@
-import MypageEventListCard from "@/components/mypage/MypageEventListCard";
+import MypageEventListCard from "@/components/mypage/MypageAgendaCard";
 import { Card, CardContent } from "@/components/ui/card";
 import { EventCardItem } from "@/types/common";
 import { cn } from "@/lib/utils";

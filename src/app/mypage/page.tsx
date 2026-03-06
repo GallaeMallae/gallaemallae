@@ -53,20 +53,20 @@ export default function Mypage() {
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-4 lg:items-stretch">
         <div className="order-2 flex flex-col gap-6 lg:order-1 lg:col-span-1 lg:h-0 lg:min-h-full">
-          <div className="min-h-0 flex-1">
+          <div className="min-h-0 lg:flex-1">
             <MypageEventSectionCard
               title="나의 일정 목록"
               iconName="bookmark"
-              iconClassName="text-symbol-sky"
+              iconClassName="text-symbol-sky fill-symbol-sky"
               events={MOCK_EVENTS}
               onEventClick={handleEventClick}
             />
           </div>
-          <div className="min-h-0 flex-1">
+          <div className="min-h-0 lg:flex-1">
             <MypageEventSectionCard
               title="나의 관심 목록"
               iconName="heart"
-              iconClassName="text-red-500"
+              iconClassName="text-red-500 fill-red-500"
               events={MOCK_EVENTS}
               onEventClick={handleEventClick}
             />
