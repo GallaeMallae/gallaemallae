@@ -15,7 +15,7 @@ export default function EventCard({
   isLiked,
 }: EventCardItem) {
   return (
-    <Card className="relative rounded-2xl border-0">
+    <Card className="relative cursor-pointer rounded-2xl">
       <CardContent>
         <Button
           className="absolute top-6 right-6 hover:bg-transparent"
@@ -36,7 +36,7 @@ export default function EventCard({
           {category}
         </Badge>
 
-        <h3 className="text-title2 mb-4 font-bold">{title}</h3>
+        <h3 className="text-title2 mb-4 line-clamp-1 font-bold">{title}</h3>
 
         <div className="text-desc2 text-etc flex flex-col">
           <div className="flex items-center gap-2">

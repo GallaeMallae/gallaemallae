@@ -2,7 +2,7 @@ import { EventCardItem } from "@/types/common";
 
 export const MOCK_EVENTS: EventCardItem[] = [
   {
-    title: "BTS 컴백 라이브: ARIRANG",
+    title: "BTS 컴백 라이브: ARIRANG BTS 컴백 라이브: ARIRANG",
     location: "광화문 광장",
     startDate: "2026-03-21",
     endDate: "2026-03-21",
