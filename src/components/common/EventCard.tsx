@@ -18,7 +18,7 @@ export default function EventCard({
     <Card className="relative cursor-pointer rounded-2xl">
       <CardContent>
         <Button
-          className="absolute top-6 right-6 hover:bg-transparent"
+          className="absolute top-4 right-4 hover:bg-transparent"
           variant="ghost"
           size="icon"
           aria-label="좋아요"
@@ -41,12 +41,14 @@ export default function EventCard({
         <div className="text-desc2 text-etc flex flex-col">
           <div className="flex items-center gap-2">
             <Calendar className="h-4 w-4" />
-            <span>{formatDateRange(startDate, endDate)}</span>
+            <span className="line-clamp-1">
+              {formatDateRange(startDate, endDate)}
+            </span>
           </div>
 
           <div className="flex items-center gap-2">
             <MapPin className="h-4 w-4" />
-            <span>{location}</span>
+            <span className="line-clamp-1">{location}</span>
           </div>
         </div>
       </CardContent>
