@@ -58,6 +58,7 @@ export default function MypageEventSectionCard({
           </div>
         </div>
       </CardHeader>
+      {/* todo: Tanstack Query 적용되면 데스크탑 버전에서는 무한 스크롤 방식 적용하기 */}
       <CardContent className="flex min-h-0 flex-1 flex-col gap-2 lg:overflow-y-auto">
         {events.length > 0 ? (
           <>

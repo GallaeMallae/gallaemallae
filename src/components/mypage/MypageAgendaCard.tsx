@@ -2,8 +2,9 @@ import { Badge } from "@/components/ui/badge";
 import { EventCardItem } from "@/types/common";
 import { calculateDDay, formatDate } from "@/utils/date";
 
-interface MypageEventCardItem extends Omit<EventCardItem, "isLiked"> {
+interface MypageAgendaCardItem extends Omit<EventCardItem, "isLiked"> {
   onClick?: () => void;
+  selectedDate?: string;
 }
 
 export default function MypageAgendaCard({
@@ -11,9 +12,10 @@ export default function MypageAgendaCard({
   location,
   startDate,
   endDate,
+  selectedDate,
   category,
   onClick,
-}: MypageEventCardItem) {
+}: MypageAgendaCardItem) {
   // todo: 지금은 startDate로 보여주지만 나중에는 사용자가 지정한 날짜를 보여줘야함
   const formatStartDate = formatDate(startDate);
   const dDay = calculateDDay(startDate);
@@ -30,9 +32,9 @@ export default function MypageAgendaCard({
         <div className="text-desc2 text-symbol-sky font-semibold">{dDay}</div>
       </div>
 
-      <div className="text-desc2 line-clamp-1 font-semibold">{title}</div>
+      <div className="text-desc2 truncate font-semibold">{title}</div>
       <div className="text-desc2 text-muted-foreground">
-        {formatStartDate}, {location}
+        {selectedDate ? selectedDate : formatStartDate}, {location}
       </div>
     </div>
   );

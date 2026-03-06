@@ -17,36 +17,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { MOCK_EVENTS } from "@/mocks/events";
-
-const CATEGORY_STYLES: Record<
-  string,
-  { dot: string; sub: string; text: string; border: string }
-> = {
-  축제: {
-    dot: "bg-festival",
-    sub: "bg-festival-sub",
-    text: "text-festival",
-    border: "border-festival",
-  },
-  공연: {
-    dot: "bg-performance",
-    sub: "bg-performance-sub",
-    text: "text-performance",
-    border: "border-performance",
-  },
-  전시: {
-    dot: "bg-exhibition",
-    sub: "bg-exhibition-sub",
-    text: "text-exhibition",
-    border: "border-exhibition",
-  },
-  기타: {
-    dot: "bg-etc",
-    sub: "bg-etc-sub",
-    text: "text-etc",
-    border: "border-etc",
-  },
-};
+import { CATEGORY_STYLES } from "@/lib/constants";
 
 function Calendar({
   className,

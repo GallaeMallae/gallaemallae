@@ -28,9 +28,7 @@ export default function MypageLikedCard({
         </Badge>
         <div className="text-desc2 text-symbol-sky font-semibold">{dDay}</div>
       </div>
-
-      <div className="text-desc2 line-clamp-1 font-semibold">{title}</div>
-
+      <div className="text-desc2 truncate font-semibold">{title}</div>
       <div className="text-desc2 text-etc flex items-center gap-2">
         <Calendar className="h-4 w-4 shrink-0" />
         <span className="truncate leading-none">

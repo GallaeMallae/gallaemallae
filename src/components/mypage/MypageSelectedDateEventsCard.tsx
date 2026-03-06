@@ -1,26 +1,30 @@
-import MypageEventListCard from "@/components/mypage/MypageAgendaCard";
+import MypageAgendaCard from "@/components/mypage/MypageAgendaCard";
 import { Card, CardContent } from "@/components/ui/card";
 import { EventCardItem } from "@/types/common";
 import { cn } from "@/lib/utils";
-
-const CATEGORY_DOT_COLORS: Record<string, string> = {
-  축제: "bg-festival",
-  공연: "bg-performance",
-  전시: "bg-exhibition",
-};
+import { CATEGORY_STYLES } from "@/lib/constants";
+import { formatDate } from "@/utils/date";
 
 interface MypageDailyAgendaCardProps {
-  selectedDate: Date | undefined;
+  selectedDate: Date;
   events: EventCardItem[];
 }
 
 export default function MypageSelectedDateEventsCard({
   events,
+  selectedDate,
 }: MypageDailyAgendaCardProps) {
+  const dateString = formatDate(selectedDate.toLocaleDateString("en-CA"));
+
+  const selectedDateEvents = events.map((event) => ({
+    ...event,
+    selectedDate: dateString,
+  }));
+
   return (
     <div className="flex flex-col gap-4 md:hidden">
-      {events.map((event, index) => {
-        const dotColorClass = CATEGORY_DOT_COLORS[event.category] || "bg-etc";
+      {selectedDateEvents.map((event, index) => {
+        const dotColorClass = CATEGORY_STYLES[event.category].dot || "bg-etc";
 
         return (
           <div key={index} className="flex items-start gap-2">
@@ -28,7 +32,7 @@ export default function MypageSelectedDateEventsCard({
 
             <Card className="flex-1 rounded-2xl shadow-sm">
               <CardContent>
-                <MypageEventListCard {...event} />
+                <MypageAgendaCard {...event} />
               </CardContent>
             </Card>
           </div>
