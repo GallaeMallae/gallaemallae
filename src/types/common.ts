@@ -5,7 +5,15 @@ import { LucideIcon } from "lucide-react";
 // ==============================
 export type Category = "전체" | "축제" | "공연" | "전시" | "기타";
 
+export type CategoryId =
+  | "all"
+  | "festival"
+  | "performance"
+  | "exhibition"
+  | "etc";
+
 export type CategoryMenuCardItem = {
+  id: CategoryId;
   name: Category;
   iconBgColor: string;
   Icon: LucideIcon;
@@ -58,6 +66,9 @@ export interface WeatherCardItem {
   fineDust: string;
   ultrafineDust: string;
 }
+
+// 지도에서 행사 찾기 / 내 주변 행사 찾기
+export type MapMode = "all" | "near";
 
 // 행사 기간 필터 탭
 export type PeriodFilter = "전체" | "당일" | "주간" | "월간";
