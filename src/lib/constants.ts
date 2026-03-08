@@ -31,26 +31,31 @@ import {
 
 export const CATEGORY_MENU: CategoryMenuCardItem[] = [
   {
+    id: "all",
     name: "전체",
     iconBgColor: "bg-symbol-sky",
     Icon: LayoutGrid,
   },
   {
+    id: "festival",
     name: "축제",
     iconBgColor: "bg-festival",
     Icon: PartyPopper,
   },
   {
+    id: "performance",
     name: "공연",
     iconBgColor: "bg-performance",
     Icon: Ticket,
   },
   {
+    id: "exhibition",
     name: "전시",
     iconBgColor: "bg-exhibition",
     Icon: Landmark,
   },
   {
+    id: "etc",
     name: "기타",
     iconBgColor: "bg-etc",
     Icon: MoreHorizontal,

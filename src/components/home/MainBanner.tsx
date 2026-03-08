@@ -8,11 +8,15 @@ import { WeatherCardItem, RecommendType } from "@/types/common";
 interface MainBannerProps {
   weather: WeatherCardItem;
   recommendType: RecommendType;
+  onMapAllClick: () => void;
+  onMapNearClick: () => void;
 }
 
 export default function MainBanner({
   weather,
   recommendType,
+  onMapAllClick,
+  onMapNearClick,
 }: MainBannerProps) {
   return (
     <section>
@@ -46,11 +50,15 @@ export default function MainBanner({
             </div>
 
             <div className="flex gap-4">
-              <Button className="rounded-xl">
+              <Button className="rounded-xl" onClick={onMapAllClick}>
                 <Map className="h-4 w-4" />
                 지도에서 행사 찾기
               </Button>
-              <Button className="rounded-xl" variant="outline">
+              <Button
+                className="rounded-xl"
+                variant="outline"
+                onClick={onMapNearClick}
+              >
                 <MapPin className="h-4 w-4" />내 주변 행사 찾기
               </Button>
             </div>

@@ -1,19 +1,25 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { CategoryId } from "@/types/common";
 import { CATEGORY_MENU } from "@/lib/constants";
 
-export default function CategoryMenu() {
+export default function CategoryMenu({
+  onSelectCategory,
+}: {
+  onSelectCategory: (categoryId: CategoryId) => void;
+}) {
   return (
     <section>
       <h3 className="text-title2 mb-2 font-bold">카테고리 검색</h3>
 
       <div className="flex justify-between md:grid md:grid-cols-5 md:gap-4">
         {CATEGORY_MENU.map((category) => {
-          const { name, iconBgColor, Icon } = category;
+          const { id, name, iconBgColor, Icon } = category;
 
           return (
             <Card
-              key={`category-${name}`}
+              key={`category-${id}`}
               className="cursor-pointer border-none bg-transparent py-0 shadow-none md:rounded-xl md:border md:bg-white md:py-6 md:shadow-sm"
+              onClick={() => onSelectCategory(id)}
             >
               <CardContent className="flex flex-col items-center gap-2 p-0">
                 <div
