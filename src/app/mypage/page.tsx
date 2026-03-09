@@ -59,9 +59,9 @@ export default function Mypage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-4 lg:items-stretch">
-        <div className="order-2 flex flex-col gap-6 lg:order-1 lg:col-span-1 lg:h-0 lg:min-h-full">
-          <div className="min-h-0 lg:flex-1">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-4 md:items-stretch">
+        <div className="flex flex-col gap-6 md:col-span-1 md:h-0 md:min-h-full">
+          <div className="min-h-0 md:flex-1">
             <MypageEventSectionCard
               title="나의 일정 목록"
               iconName="bookmark"
@@ -70,7 +70,7 @@ export default function Mypage() {
               onEventClick={handleEventClick}
             />
           </div>
-          <div className="min-h-0 lg:flex-1">
+          <div className="min-h-0 md:flex-1">
             <MypageEventSectionCard
               title="나의 관심 목록"
               iconName="heart"
@@ -81,7 +81,7 @@ export default function Mypage() {
           </div>
         </div>
 
-        <div className="order-1 flex flex-col gap-6 lg:order-2 lg:col-span-3">
+        <div className="flex flex-col gap-6 md:col-span-3">
           <div className="flex-1 rounded-2xl border bg-white p-6 shadow-sm">
             <MypageCalendar
               selectedDate={selectedDate}

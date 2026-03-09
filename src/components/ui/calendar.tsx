@@ -50,7 +50,8 @@ function Calendar({
           defaultClassNames.months,
         ),
         month: cn("flex w-full flex-col gap-4", defaultClassNames.month),
-        table: "w-full border-collapse border-spacing-0",
+        // react-day-picker에서는 table 대신 month_grid로 변경됐음. 그래서 table-fixed가 적용 안 되고 있던 것
+        month_grid: "w-full border-collapse border-spacing-0 table-fixed",
         weekdays: cn("flex", defaultClassNames.weekdays),
         weekday: cn(
           "flex-1 rounded-md text-[0.8rem] font-normal text-muted-foreground select-none",
@@ -195,8 +196,7 @@ function CalendarDayButton({
       //   className,
       // )}
       className={cn(
-        "hover:bg-accent/50 flex h-full w-full flex-col items-center justify-start gap-1 px-0 py-1 font-normal transition-colors md:items-start md:py-2",
-
+        "hover:bg-accent/50 flex h-full w-full max-w-full min-w-0 flex-col items-center justify-start gap-1 px-0 py-1 font-normal transition-colors md:items-start md:py-2",
         modifiers.today && !modifiers.selected && "bg-muted",
         modifiers.outside && "text-muted-foreground opacity-50",
         className,
@@ -205,7 +205,7 @@ function CalendarDayButton({
     >
       <span
         className={cn(
-          "flex shrink-0 items-center justify-center text-sm font-semibold md:ml-2",
+          "text-desc2 flex shrink-0 items-center justify-center font-semibold md:ml-2",
 
           modifiers.selected && "text-symbol-sky",
           modifiers.today &&
