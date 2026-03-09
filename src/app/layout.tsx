@@ -4,7 +4,7 @@ import { pretendard } from "./fonts/fonts";
 import ReactQueryProvider from "@/components/providers/ReactQueryProvider";
 import ProfileInitializer from "@/components/ProfileInitializer";
 import AuthProvider from "@/components/providers/AuthProvider";
-import { Toaster } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "갈래말래",
@@ -18,9 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body
-        className={`${pretendard.variable} bg-background-base pb-16 font-sans md:pb-0`}
-      >
+      <body className={`${pretendard.variable} bg-background-base font-sans`}>
         <ReactQueryProvider>
           <AuthProvider>
             <ProfileInitializer />

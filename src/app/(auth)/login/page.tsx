@@ -32,7 +32,7 @@ export default function LoginPage() {
   }, [error, searchParams, router]);
 
   return (
-    <div className="flex min-h-screen flex-col md:flex-row">
+    <div className="flex flex-1 flex-col md:flex-row">
       <div className="relative hidden flex-1 md:block md:w-1/2">
         <Image
           src="/images/login-page-sparkle-image.jpg"
