@@ -1,3 +1,5 @@
+import { differenceInCalendarDays, isValid, parseISO } from "date-fns";
+
 export function formatDate(date: string | Date) {
   const d = new Date(date);
   const yyyy = d.getFullYear();
@@ -18,26 +20,23 @@ export function formatDateRange(start: string | Date, end: string | Date) {
   return `${startFormatted} ~ ${endFormatted}`;
 }
 
-export function calculateDDay(targetDate?: string | Date | null) {
-  if (!targetDate) return "일정 미정";
+export const parseSafeDate = (
+  dateInput: string | Date | null | undefined,
+): Date | null => {
+  if (!dateInput) return null;
 
-  const DAY = 86400000;
+  const parsedDate =
+    typeof dateInput === "string" ? parseISO(dateInput) : dateInput;
+
+  return isValid(parsedDate) ? parsedDate : null;
+};
+
+export function calculateDDay(targetDate?: string | Date | null): string {
+  const target = parseSafeDate(targetDate);
+  if (!target) return "일정 미정";
 
   const today = new Date();
-  const target = new Date(targetDate);
-
-  const todayMid = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    today.getDate(),
-  );
-  const targetMid = new Date(
-    target.getFullYear(),
-    target.getMonth(),
-    target.getDate(),
-  );
-
-  const diffDays = Math.ceil((targetMid.getTime() - todayMid.getTime()) / DAY);
+  const diffDays = differenceInCalendarDays(target, today);
 
   if (diffDays === 0) return "D-Day";
   if (diffDays > 0) return `D-${diffDays}`;

@@ -6,6 +6,7 @@ import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
 import MobileBottomNav from "@/components/common/MobileBottomNav";
 import { Suspense } from "react";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "갈래말래",
@@ -28,6 +29,7 @@ export default function RootLayout({
             <main className="mx-auto max-w-7xl flex-1 p-6">{children}</main>
             <Footer />
           </div>
+          <Toaster />
           <Suspense fallback={null}>
             <MobileBottomNav />
           </Suspense>

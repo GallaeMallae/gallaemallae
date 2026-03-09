@@ -9,6 +9,8 @@ import MyPageEventRecommendCard from "@/components/mypage/MyPageEventRecommendCa
 import MypageProfileCard from "@/components/mypage/MypageProfileCard";
 import MypageEventSectionCard from "@/components/mypage/MyPageEventSectionCard";
 import MypageSelectedDateEventsCard from "@/components/mypage/MypageSelectedDateEventsCard";
+import { parseSafeDate } from "@/utils/date";
+import { toast } from "sonner";
 
 export default function Mypage() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
@@ -17,9 +19,15 @@ export default function Mypage() {
   const [month, setMonth] = useState<Date>(new Date());
 
   const handleEventClick = (dateString: string) => {
-    const newDate = new Date(dateString);
-    setSelectedDate(newDate);
-    setMonth(newDate);
+    const newDate = parseSafeDate(dateString);
+
+    if (newDate) {
+      setSelectedDate(newDate);
+      setMonth(newDate);
+    } else {
+      console.error("Invalid date string provided:", dateString);
+      toast.error("유효하지 않은 날짜 형식입니다.");
+    }
   };
 
   const selectedDateString = selectedDate
