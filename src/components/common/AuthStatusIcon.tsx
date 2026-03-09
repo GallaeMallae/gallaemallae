@@ -1,0 +1,78 @@
+"use client";
+
+import { useProfileStore } from "@/stores/profileStore";
+import Link from "next/link";
+import Image from "next/image";
+import { Button } from "../ui/button";
+import { LogOutIcon, User } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { createClient } from "@/utils/supabase/client";
+import { useRouter } from "next/navigation";
+
+export default function AuthStatusIcon() {
+  const router = useRouter();
+  const { profile, isProfileLoading, clearProfile } = useProfileStore();
+  const supabase = createClient();
+
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+
+    if (!error) clearProfile();
+
+    router.replace("/");
+    // refresh 해야 바뀐 쿠키 상태를 반영할 수 있음
+    router.refresh();
+  };
+
+  if (isProfileLoading) {
+    return <Skeleton className="h-10 w-10 rounded-full" />;
+  }
+
+  if (profile) {
+    return (
+      <div className="bg-etc-sub relative flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-full border">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            {profile?.avatar_url ? (
+              <Image
+                src={profile.avatar_url}
+                alt="프로필"
+                fill
+                className="object-cover"
+              />
+            ) : (
+              <User strokeWidth={1.2} className="text-etc h-10 w-10" />
+            )}
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuGroup>
+              <Link href="/mypage">
+                <DropdownMenuItem>
+                  <User />
+                  마이페이지
+                </DropdownMenuItem>
+              </Link>
+            </DropdownMenuGroup>
+            <DropdownMenuItem variant="destructive">
+              <LogOutIcon />
+              <button onClick={handleLogout}>로그아웃</button>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    );
+  }
+
+  return (
+    <Button className="hover:bg-symbol-sky" size="sm" asChild>
+      <Link href="/login">로그인</Link>
+    </Button>
+  );
+}

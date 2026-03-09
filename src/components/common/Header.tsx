@@ -2,6 +2,7 @@ import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import Link from "next/link";
 import Image from "next/image";
+import AuthStatusIcon from "@/components/common/AuthStatusIcon";
 
 export default function Header() {
   return (
@@ -42,7 +43,7 @@ export default function Header() {
           </div>
 
           <Button className="hover:bg-symbol-sky" size="sm" asChild>
-            <Link href="/login">로그인</Link>
+            <AuthStatusIcon />
           </Button>
         </nav>
       </div>
