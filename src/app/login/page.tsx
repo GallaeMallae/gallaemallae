@@ -9,18 +9,7 @@ import { toast } from "sonner";
 import Image from "next/image";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
-
-const ERROR_MESSAGE_MAP: Record<string, string> = {
-  config_error: "로그인 설정에 문제가 있습니다. 잠시 후 다시 시도해 주세요.",
-  oauth_signin_failed: "소셜 로그인에 실패했습니다. 다시 시도해 주세요.",
-  unknown_error: "알 수 없는 오류가 발생했습니다.",
-  access_denied: "로그인이 취소되었습니다. 다시 시도해 주세요.", // 사용자가 소셜 로그인에서 '취소' 버튼을 누른 경우
-  provider_disabled:
-    "현재 해당 소셜 로그인을 사용할 수 없습니다. 관리자에게 문의해 주세요.", // Supabase 대시보드에서 비활성화된 경우
-  email_conflict: "이미 동일한 이메일로 가입된 다른 계정이 존재합니다.",
-  callback_failed: "인증 응답을 처리하는 중 오류가 발생했습니다.", // 콜백 URL 처리 실패 시
-  session_expired: "로그인 세션이 만료되었습니다. 다시 시도해 주세요.",
-};
+import { ERROR_MESSAGE_CONFIG } from "@/lib/constants";
 
 export default function LoginPage() {
   const searchParams = useSearchParams();
@@ -29,7 +18,9 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (error) {
-      toast.error(ERROR_MESSAGE_MAP[error] ?? "로그인 중 오류가 발생했습니다.");
+      toast.error(
+        ERROR_MESSAGE_CONFIG[error] ?? "로그인 중 오류가 발생했습니다.",
+      );
       const params = new URLSearchParams(searchParams.toString());
       params.delete("error");
 
