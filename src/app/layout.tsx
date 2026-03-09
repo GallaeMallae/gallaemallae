@@ -2,10 +2,6 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { pretendard } from "./fonts/fonts";
 import ReactQueryProvider from "@/components/providers/ReactQueryProvider";
-import Header from "@/components/common/Header";
-import Footer from "@/components/common/Footer";
-import MobileBottomNav from "@/components/common/MobileBottomNav";
-import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "갈래말래",
@@ -22,14 +18,7 @@ export default function RootLayout({
       <body
         className={`${pretendard.variable} bg-background-base pb-16 font-sans md:pb-0`}
       >
-        <ReactQueryProvider>
-          <Header />
-          <main className="mx-auto max-w-7xl p-6">{children}</main>
-          <Footer />
-          <Suspense fallback={null}>
-            <MobileBottomNav />
-          </Suspense>
-        </ReactQueryProvider>
+        <ReactQueryProvider>{children}</ReactQueryProvider>
       </body>
     </html>
   );
