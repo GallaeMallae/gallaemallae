@@ -26,7 +26,9 @@ export default function RootLayout({
         <ReactQueryProvider>
           <div className="flex min-h-screen flex-col">
             <Header />
-            <main className="mx-auto max-w-7xl flex-1 p-6">{children}</main>
+            <main className="flex-1">
+              <div className="mx-auto max-w-7xl p-6">{children}</div>
+            </main>
             <Footer />
           </div>
           <Toaster />

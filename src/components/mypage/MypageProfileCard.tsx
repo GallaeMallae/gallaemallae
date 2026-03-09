@@ -75,7 +75,7 @@ export default function MypageProfileCard() {
 
               <div className="space-y-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="name" className="text-sm font-medium">
+                  <Label htmlFor="name" className="text-desc2 font-medium">
                     별명
                   </Label>
                   <Input
@@ -86,7 +86,7 @@ export default function MypageProfileCard() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="email" className="text-sm font-medium">
+                  <Label htmlFor="email" className="text-desc2 font-medium">
                     이메일
                   </Label>
                   <Input

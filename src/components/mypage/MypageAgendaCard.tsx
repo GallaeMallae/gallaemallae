@@ -2,7 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { EventCardItem } from "@/types/common";
 import { calculateDDay, formatDate } from "@/utils/date";
 
-interface MypageAgendaCardItem extends Omit<EventCardItem, "isLiked"> {
+interface MypageAgendaCardProps extends Omit<EventCardItem, "isLiked"> {
   onClick?: () => void;
   selectedDate?: string;
 }
@@ -15,7 +15,7 @@ export default function MypageAgendaCard({
   selectedDate,
   category,
   onClick,
-}: MypageAgendaCardItem) {
+}: MypageAgendaCardProps) {
   // todo: 지금은 startDate로 보여주지만 나중에는 사용자가 지정한 날짜를 보여줘야함
   const formatStartDate = formatDate(startDate);
 

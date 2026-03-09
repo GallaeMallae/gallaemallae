@@ -275,6 +275,8 @@ function CustomMonthCaption({
       </div>
       <div className="flex items-center gap-0 md:gap-2">
         <button
+          type="button"
+          aria-label="이전 달"
           onClick={() => previousMonth && goToMonth(previousMonth)}
           className="hover:bg-accent flex size-6 items-center justify-center rounded"
         >
@@ -284,6 +286,8 @@ function CustomMonthCaption({
           {y}. {m}.
         </span>
         <button
+          type="button"
+          aria-label="다음 달"
           onClick={() => nextMonth && goToMonth(nextMonth)}
           className="hover:bg-accent flex size-6 items-center justify-center rounded"
         >

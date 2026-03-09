@@ -26,7 +26,7 @@ export default function MypageSelectedDateEventsCard({
   return (
     <div className="flex flex-col gap-4 md:hidden">
       {selectedDateEvents.map((event, index) => {
-        const dotColorClass = CATEGORY_STYLES[event.category].dot || "bg-etc";
+        const dotColorClass = CATEGORY_STYLES[event.category]?.dot || "bg-etc";
 
         return (
           <div key={index} className="flex gap-2">

@@ -49,7 +49,7 @@ export default function MyPageEventRecommendCard({
         <div className="text-desc2 text-etc mb-4 flex flex-col">
           <div className="flex items-center gap-2">
             <Calendar className="h-4 w-4" />
-            <span className="truncate text-sm whitespace-nowrap">
+            <span className="text-desc2 truncate whitespace-nowrap">
               {formatDateRange(startDate, endDate)}
             </span>
           </div>

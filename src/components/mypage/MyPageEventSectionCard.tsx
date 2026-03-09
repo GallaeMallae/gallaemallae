@@ -74,7 +74,7 @@ export default function MypageEventSectionCard({
                 ))}
 
                 {hasMore && (
-                  <div className="pt-2 lg:hidden" onClick={handleSeeMore}>
+                  <button className="pt-2 lg:hidden" onClick={handleSeeMore}>
                     <Card className="hover:bg-accent/50 cursor-pointer rounded-2xl border-2 border-dashed transition-colors">
                       <CardContent className="flex items-center justify-center py-3">
                         <span className="text-caption text-symbol-sky font-bold">
@@ -82,11 +82,11 @@ export default function MypageEventSectionCard({
                         </span>
                       </CardContent>
                     </Card>
-                  </div>
+                  </button>
                 )}
               </>
             ) : (
-              <div className="text-muted-foreground py-4 text-center text-sm">
+              <div className="text-muted-foreground text-desc2 py-4 text-center">
                 행사를 추가해 보아요
               </div>
             )}
