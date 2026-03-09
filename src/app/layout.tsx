@@ -2,13 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { pretendard } from "./fonts/fonts";
 import ReactQueryProvider from "@/components/providers/ReactQueryProvider";
-import AuthProvider from "@/components/providers/AuthProvider";
-import { Toaster } from "@/components/ui/sonner";
 import ProfileInitializer from "@/components/ProfileInitializer";
-import Header from "@/components/common/Header";
-import Footer from "@/components/common/Footer";
-import MobileBottomNav from "@/components/common/MobileBottomNav";
-import { Suspense } from "react";
+import AuthProvider from "@/components/providers/AuthProvider";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "갈래말래",
@@ -28,12 +24,7 @@ export default function RootLayout({
         <ReactQueryProvider>
           <AuthProvider>
             <ProfileInitializer />
-            <Header />
-            <main className="mx-auto max-w-7xl p-6">{children}</main>
-            <Footer />
-            <Suspense fallback={null}>
-              <MobileBottomNav />
-            </Suspense>
+            {children}
           </AuthProvider>
         </ReactQueryProvider>
         <Toaster />
