@@ -205,8 +205,8 @@ function CalendarDayButton({
     >
       <span
         className={cn(
-          "text-desc2 flex shrink-0 items-center justify-center font-semibold md:ml-2",
-
+          // 이벤트 뱃지가 선택일 혹은 당일인 경우 높낮이 안 맞아서 h-6 추가
+          "text-desc2 flex h-6 shrink-0 items-center justify-center font-semibold md:ml-2",
           modifiers.selected && "text-symbol-sky",
           modifiers.today &&
             "bg-primary text-primary-foreground size-6 rounded-full",
