@@ -11,6 +11,7 @@ import {
 } from "@tanstack/react-query";
 import { createClient } from "@/utils/supabase/server";
 import { getProfile } from "@/lib/api/profile/getProfile";
+import { QUERY_KEYS } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "갈래말래",
@@ -30,13 +31,13 @@ export default async function RootLayout({
   } = await supabase.auth.getUser();
 
   await queryClient.prefetchQuery({
-    queryKey: ["user"],
+    queryKey: QUERY_KEYS.USER,
     queryFn: () => user ?? null,
   });
 
   if (user) {
     await queryClient.prefetchQuery({
-      queryKey: ["profile", user.id],
+      queryKey: QUERY_KEYS.PROFILE(user.id),
       queryFn: () => getProfile(supabase, user.id),
     });
   }
@@ -46,7 +47,7 @@ export default async function RootLayout({
       <body className={`${pretendard.variable} bg-background-base font-sans`}>
         <ReactQueryProvider>
           <HydrationBoundary state={dehydrate(queryClient)}>
-            <AuthProvider>{children}</AuthProvider>
+            <AuthProvider initialUserId={user?.id}>{children}</AuthProvider>
           </HydrationBoundary>
         </ReactQueryProvider>
         <Toaster />

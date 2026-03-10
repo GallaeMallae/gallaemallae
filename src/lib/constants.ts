@@ -127,3 +127,8 @@ export const ERROR_MESSAGE_CONFIG: Record<string, string> = {
     "보안 연결 설정 중 오류가 발생했습니다. 브라우저의 '시크릿 모드'를 해제하거나 쿠키 허용 설정을 확인해 주세요.",
   server_error: "소셜 서비스 서버에 일시적인 문제가 발생했습니다.",
 };
+
+export const QUERY_KEYS = {
+  USER: ["user"],
+  PROFILE: (userId?: string) => (userId ? ["profile", userId] : ["profile"]),
+} as const;
