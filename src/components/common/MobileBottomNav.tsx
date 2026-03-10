@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import type { LucideIcon } from "lucide-react";
+import { useUserData } from "@/hooks/queries/useUserData";
 
 type Menu = {
   href: string;
@@ -17,6 +18,8 @@ export default function MobileBottomNav() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const currentMapMode = searchParams.get("mode");
+
+  const { data: user } = useUserData();
 
   const menus: Menu[] = [
     { href: "/", name: "홈", icon: House },
@@ -44,12 +47,16 @@ export default function MobileBottomNav() {
     >
       <div className="flex h-16 items-center justify-around">
         {menus.map((menu) => {
-          const href =
+          let href =
             menu.mode !== undefined
               ? `${menu.href}?mode=${menu.mode}`
               : menu.href;
-          const Icon = menu.icon;
 
+          if (menu.name === "마이페이지" && !user) {
+            href = "/login?next=/mypage";
+          }
+
+          const Icon = menu.icon;
           const active = isActive(menu);
 
           return (

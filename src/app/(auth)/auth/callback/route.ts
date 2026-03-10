@@ -9,10 +9,12 @@ export async function GET(request: Request) {
   const next = searchParams.get("next") ?? "/";
   const safeNext = next.startsWith("/") && !next.startsWith("//") ? next : "/";
 
+  // 에러코드가 있는 에러(lib/contsants에 정리)
   if (errorCode) {
-    return NextResponse.redirect(
-      new URL(`/login?error=${encodeURIComponent(errorCode)}`, origin),
-    );
+    const errorUrl = new URL("/login", origin);
+    errorUrl.searchParams.set("error", errorCode);
+    errorUrl.searchParams.set("next", safeNext);
+    return NextResponse.redirect(errorUrl);
   }
 
   if (code) {
@@ -24,6 +26,9 @@ export async function GET(request: Request) {
     }
   }
 
-  // 에러 발생 시 에러 코드를 가지고 로그인 페이지로 리다이렉트
-  return NextResponse.redirect(new URL(`/login?error=callback_failed`, origin));
+  // 세션 교환 실패 등 기타 에러
+  const fallbackUrl = new URL("/login", origin);
+  fallbackUrl.searchParams.set("error", "callback_failed");
+  fallbackUrl.searchParams.set("next", safeNext);
+  return NextResponse.redirect(fallbackUrl);
 }

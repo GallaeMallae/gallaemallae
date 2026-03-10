@@ -3,7 +3,10 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 
-export async function signInWithOAuthAction(provider: "google" | "kakao") {
+export async function signInWithOAuthAction(
+  provider: "google" | "kakao",
+  next: string = "/",
+) {
   const supabase = await createClient();
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
@@ -11,10 +14,13 @@ export async function signInWithOAuthAction(provider: "google" | "kakao") {
     return redirect("/login?error=config_error");
   }
 
+  const callbackUrl = new URL("/auth/callback", siteUrl);
+  callbackUrl.searchParams.set("next", next);
+
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider,
     options: {
-      redirectTo: new URL("/auth/callback", siteUrl).toString(),
+      redirectTo: callbackUrl.toString(),
     },
   });
 

@@ -36,6 +36,9 @@ function ErrorToastHandler() {
 }
 
 export default function LoginPage() {
+  const searchParams = useSearchParams();
+  const next = searchParams.get("next") ?? "/";
+
   return (
     <div className="flex flex-1 flex-col md:flex-row">
       <div className="relative hidden flex-1 md:block md:w-1/2">
@@ -67,7 +70,7 @@ export default function LoginPage() {
           <Button
             variant="outline"
             className="h-12 w-full cursor-pointer bg-white text-base hover:bg-[#f8f9fa]"
-            onClick={() => signInWithOAuthAction("google")}
+            onClick={() => signInWithOAuthAction("google", next)}
           >
             <Image
               src="/images/google-logo.svg"
@@ -79,7 +82,7 @@ export default function LoginPage() {
           </Button>
           <Button
             className="h-12 w-full cursor-pointer border-none bg-[#FEE500] text-base text-black hover:bg-[#FADA00]"
-            onClick={() => signInWithOAuthAction("kakao")}
+            onClick={() => signInWithOAuthAction("kakao", next)}
           >
             <Image
               src="/images/kakao-logo.svg"
