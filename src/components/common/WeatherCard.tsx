@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "../ui/separator";
+import { Separator } from "@/components/ui/separator";
 import { WeatherCardItem } from "@/types/common";
 import { WEATHER_CARD_CONFIG } from "@/lib/constants";
 

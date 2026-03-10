@@ -1,9 +1,9 @@
+import "@/app/globals.css";
+import { pretendard } from "@/app/fonts/fonts";
+import { Toaster } from "@/components/ui/sonner";
 import type { Metadata } from "next";
-import "./globals.css";
-import { pretendard } from "./fonts/fonts";
 import ReactQueryProvider from "@/components/providers/ReactQueryProvider";
 import AuthProvider from "@/components/providers/AuthProvider";
-import { Toaster } from "@/components/ui/sonner";
 import {
   dehydrate,
   HydrationBoundary,

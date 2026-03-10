@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "../ui/badge";
-import { Button } from "../ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Heart, Calendar, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatDateRange } from "@/utils/date";

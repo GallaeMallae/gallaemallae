@@ -1,4 +1,4 @@
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import WeatherCard from "@/components/common/WeatherCard";
 import RecommendCard from "@/components/common/RecommendCard";
 import { Map, MapPin } from "lucide-react";

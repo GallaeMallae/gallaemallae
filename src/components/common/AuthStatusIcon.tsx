@@ -1,12 +1,6 @@
 "use client";
 
-import { useProfileData } from "@/hooks/queries/useProfileData";
-import { useQueryClient } from "@tanstack/react-query";
-import Link from "next/link";
 import Image from "next/image";
-import { Button } from "../ui/button";
-import { LogOutIcon, User } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,10 +8,16 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
+import { LogOutIcon, User } from "lucide-react";
+import { useProfileData } from "@/hooks/queries/useProfileData";
+import { useQueryClient } from "@tanstack/react-query";
+import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { useUserData } from "@/hooks/queries/useUserData";
-import { toast } from "sonner";
 
 export default function AuthStatusIcon() {
   const router = useRouter();

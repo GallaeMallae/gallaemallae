@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardContent } from "../ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import EventCard from "@/components/common/EventCard";
 import MoreCard from "@/components/common/MoreCard";
 import { EventCardItem } from "@/types/common";
