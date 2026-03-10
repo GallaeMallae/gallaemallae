@@ -1,16 +1,16 @@
 "use client";
 
-import { useState } from "react";
 import { MypageCalendar } from "@/components/mypage/MypageCalendar";
-import { MOCK_WEATHER } from "@/mocks/weathers";
-import { MOCK_EVENTS } from "@/mocks/events";
 import WeatherCard from "@/components/common/WeatherCard";
 import MyPageEventRecommendCard from "@/components/mypage/MyPageEventRecommendCard";
 import MypageProfileCard from "@/components/mypage/MypageProfileCard";
 import MypageEventSectionCard from "@/components/mypage/MyPageEventSectionCard";
 import MypageSelectedDateEventsCard from "@/components/mypage/MypageSelectedDateEventsCard";
-import { parseSafeDate } from "@/utils/date";
 import { toast } from "sonner";
+import { useState } from "react";
+import { MOCK_WEATHER } from "@/mocks/weathers";
+import { MOCK_EVENTS } from "@/mocks/events";
+import { parseSafeDate } from "@/utils/date";
 
 export default function Mypage() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(

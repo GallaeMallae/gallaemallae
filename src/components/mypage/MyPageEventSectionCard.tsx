@@ -4,10 +4,10 @@ import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import MypageAgendaCard from "@/components/mypage/MypageAgendaCard";
 import MypageLikedCard from "@/components/mypage/MypageLikedCard";
 import { Bookmark, Heart, LucideIcon } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { EventCardItem } from "@/types/common";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 const ICON_MAP: Record<string, LucideIcon> = {
   bookmark: Bookmark,
