@@ -9,16 +9,15 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/a/**",
       },
+      // 카카오: 구형 URL은 http로 이미지가 내려오는 경우가 있어 일부 허용
       {
-        protocol: "https",
-        hostname: "img1.kakaocdn.net", // 카카오 프로필 이미지 도메인
-        port: "",
+        protocol: "http",
+        hostname: "*.kakaocdn.net",
         pathname: "/**",
       },
       {
         protocol: "https",
-        hostname: "*.kakaocdn.net", // 카카오 모든 서브도메인 대응
-        port: "",
+        hostname: "*.kakaocdn.net",
         pathname: "/**",
       },
     ],
