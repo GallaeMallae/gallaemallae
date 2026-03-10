@@ -2,10 +2,6 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { pretendard } from "./fonts/fonts";
 import ReactQueryProvider from "@/components/providers/ReactQueryProvider";
-import Header from "@/components/common/Header";
-import Footer from "@/components/common/Footer";
-import MobileBottomNav from "@/components/common/MobileBottomNav";
-import { Suspense } from "react";
 import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
@@ -20,22 +16,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body
-        className={`${pretendard.variable} bg-background-base pb-16 font-sans md:pb-0`}
-      >
-        <ReactQueryProvider>
-          <div className="flex min-h-screen flex-col">
-            <Header />
-            <main className="flex-1">
-              <div className="mx-auto max-w-7xl p-6">{children}</div>
-            </main>
-            <Footer />
-          </div>
-          <Toaster />
-          <Suspense fallback={null}>
-            <MobileBottomNav />
-          </Suspense>
-        </ReactQueryProvider>
+      <body className={`${pretendard.variable} bg-background-base font-sans`}>
+        <ReactQueryProvider>{children}</ReactQueryProvider>
+        <Toaster />
       </body>
     </html>
   );
