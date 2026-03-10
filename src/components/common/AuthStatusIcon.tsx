@@ -45,7 +45,7 @@ export default function AuthStatusIcon() {
       <div className="bg-etc-sub relative flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-full border">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button
+            <Button
               type="button"
               aria-label="사용자 메뉴 열기"
               className="bg-etc-sub relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border"
@@ -60,7 +60,7 @@ export default function AuthStatusIcon() {
               ) : (
                 <User strokeWidth={1.2} className="text-etc h-10 w-10" />
               )}
-            </button>
+            </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuGroup>
