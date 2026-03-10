@@ -13,17 +13,21 @@ export function useInitLocation() {
   useEffect(() => {
     if (isInitialized) return;
     if (!navigator.geolocation) {
-      setLocation(DEFAULT_LOCATION.latitude, DEFAULT_LOCATION.longitude);
+      setLocation(DEFAULT_LOCATION.latitude, DEFAULT_LOCATION.longitude, true);
       return;
     }
 
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const { latitude, longitude } = pos.coords;
-        setLocation(latitude, longitude);
+        setLocation(latitude, longitude, false);
       },
       () => {
-        setLocation(DEFAULT_LOCATION.latitude, DEFAULT_LOCATION.longitude);
+        setLocation(
+          DEFAULT_LOCATION.latitude,
+          DEFAULT_LOCATION.longitude,
+          true,
+        );
       },
       {
         timeout: 5000,

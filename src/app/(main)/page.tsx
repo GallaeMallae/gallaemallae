@@ -12,18 +12,20 @@ import {
   RecommendType,
   PeriodFilter,
 } from "@/types/common";
+import { useLocationStore } from "@/stores/locationStore";
 import { useInitLocation } from "@/hooks/useInitLocation";
 import { useWeatherData } from "@/hooks/queries/useWeatherData";
+import { useLocationNameData } from "@/hooks/queries/useLocationNameData";
+import { mapWeatherCard } from "@/utils/mapper";
 import { MOCK_EVENTS } from "@/mocks/events";
 
 export default function Home() {
   useInitLocation();
+
   const router = useRouter();
-  const {
-    data: weatherData,
-    isLoading: isWeatherLoading,
-    isError: isWeatherError,
-  } = useWeatherData();
+  const { isDefaultLocation } = useLocationStore();
+  const { data: weatherData } = useWeatherData();
+  const { data: locationNameData } = useLocationNameData();
 
   const [selectedPeriodTab, setSelectedPeriodTab] =
     useState<PeriodFilter>("전체");
@@ -38,17 +40,20 @@ export default function Home() {
     router.push(`/map?category=${categoryId}`);
   };
 
-  if (isWeatherLoading || !weatherData) {
+  if (!weatherData || !locationNameData) {
     return <div>날씨 정보 불러오는 중...</div>;
   }
-  if (isWeatherError) {
-    return <div>날씨 정보를 불러올 수 없습니다.</div>;
-  }
+
+  const weather = mapWeatherCard(
+    weatherData,
+    locationNameData,
+    isDefaultLocation,
+  );
 
   return (
     <div className="flex flex-col gap-8">
       <MainBanner
-        weather={weatherData}
+        weather={weather}
         recommendType={recommendType}
         onMapAllClick={() => handleMapClick("all")}
         onMapNearClick={() => handleMapClick("near")}
