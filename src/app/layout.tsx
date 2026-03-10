@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { pretendard } from "./fonts/fonts";
 import ReactQueryProvider from "@/components/providers/ReactQueryProvider";
-import ProfileInitializer from "@/components/ProfileInitializer";
 import AuthProvider from "@/components/providers/AuthProvider";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -20,10 +19,7 @@ export default function RootLayout({
     <html lang="ko">
       <body className={`${pretendard.variable} bg-background-base font-sans`}>
         <ReactQueryProvider>
-          <AuthProvider>
-            <ProfileInitializer />
-            {children}
-          </AuthProvider>
+          <AuthProvider>{children}</AuthProvider>
         </ReactQueryProvider>
         <Toaster />
       </body>

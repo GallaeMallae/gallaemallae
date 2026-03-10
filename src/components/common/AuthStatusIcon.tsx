@@ -1,6 +1,7 @@
 "use client";
 
-import { useProfileStore } from "@/stores/profileStore";
+import { useProfileData } from "@/hooks/queries/useProfileData";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "../ui/button";
@@ -18,8 +19,10 @@ import { useRouter } from "next/navigation";
 
 export default function AuthStatusIcon() {
   const router = useRouter();
-  const { profile, isProfileLoading, clearProfile } = useProfileStore();
+  const queryClient = useQueryClient();
   const supabase = createClient();
+
+  const { data: profile, isLoading: isProfileLoading } = useProfileData();
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -29,7 +32,7 @@ export default function AuthStatusIcon() {
       return;
     }
 
-    clearProfile();
+    queryClient.removeQueries({ queryKey: ["profile"] });
 
     router.replace("/");
     // refresh 해야 바뀐 쿠키 상태를 반영할 수 있음
