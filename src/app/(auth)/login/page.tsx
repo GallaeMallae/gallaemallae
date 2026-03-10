@@ -40,7 +40,7 @@ export default function LoginPage() {
     <div className="flex flex-1 flex-col md:flex-row">
       <div className="relative hidden flex-1 md:block md:w-1/2">
         <Image
-          src="/images/login-page-sparkle-image.jpg"
+          src="/images/login-banner-image1.jpg"
           alt="Login page Image"
           fill
           className="object-cover"
@@ -51,8 +51,8 @@ export default function LoginPage() {
         <div className="flex flex-col items-center justify-center gap-4">
           <Link href={"/"} className="cursor-pointer">
             <Image
-              src="/images/gallaemallae-full-logo.svg"
-              alt="Gallaemallae Full Logo"
+              src="/images/logo.svg"
+              alt="갈래말래"
               width={200}
               height={60}
               className="h-20 w-auto md:h-24"
