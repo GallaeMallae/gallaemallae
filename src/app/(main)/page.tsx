@@ -9,25 +9,24 @@ import { useState } from "react";
 import {
   MapMode,
   CategoryId,
-  WeatherCardItem,
   RecommendType,
   PeriodFilter,
 } from "@/types/common";
+import { useInitLocation } from "@/hooks/useInitLocation";
+import { useWeatherData } from "@/hooks/queries/useWeatherData";
 import { MOCK_EVENTS } from "@/mocks/events";
 
 export default function Home() {
+  useInitLocation();
   const router = useRouter();
+  const {
+    data: weatherData,
+    isLoading: isWeatherLoading,
+    isError: isWeatherError,
+  } = useWeatherData();
 
   const [selectedPeriodTab, setSelectedPeriodTab] =
     useState<PeriodFilter>("전체");
-
-  const weatherData: WeatherCardItem = {
-    weatherType: "cloudy",
-    location: "수원시 권선구",
-    temperature: 4,
-    fineDust: "좋음",
-    ultrafineDust: "보통",
-  };
 
   const recommendType: RecommendType = "positive";
 
@@ -38,6 +37,13 @@ export default function Home() {
   const handleCategoryClick = (categoryId: CategoryId) => {
     router.push(`/map?category=${categoryId}`);
   };
+
+  if (isWeatherLoading || !weatherData) {
+    return <div>날씨 정보 불러오는 중...</div>;
+  }
+  if (isWeatherError) {
+    return <div>날씨 정보를 불러올 수 없습니다.</div>;
+  }
 
   return (
     <div className="flex flex-col gap-8">
