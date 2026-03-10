@@ -24,7 +24,12 @@ export default function AuthStatusIcon() {
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
 
-    if (!error) clearProfile();
+    if (error) {
+      console.error("로그아웃 실패:", error.message);
+      return;
+    }
+
+    clearProfile();
 
     router.replace("/");
     // refresh 해야 바뀐 쿠키 상태를 반영할 수 있음

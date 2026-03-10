@@ -7,6 +7,7 @@ export async function GET(request: Request) {
   const errorCode = searchParams.get("error");
   // 인증 후 이동할 페이지
   const next = searchParams.get("next") ?? "/";
+  const safeNext = next.startsWith("/") && !next.startsWith("//") ? next : "/";
 
   if (errorCode) {
     return NextResponse.redirect(
@@ -19,7 +20,7 @@ export async function GET(request: Request) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
 
     if (!error) {
-      return NextResponse.redirect(new URL(next, origin));
+      return NextResponse.redirect(new URL(safeNext, origin));
     }
   }
 
