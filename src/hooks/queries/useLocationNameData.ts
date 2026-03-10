@@ -1,17 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
 import { useLocationStore } from "@/stores/locationStore";
-import { fetchWeather } from "@/lib/api/weather";
+import { fetchLocationName } from "@/lib/api/location";
 
-export function useWeatherData() {
+export function useLocationNameData() {
   const { coords } = useLocationStore();
 
   const latitude = coords?.latitude;
   const longitude = coords?.longitude;
 
   return useQuery({
-    queryKey: ["weather", latitude, longitude],
-    queryFn: () => fetchWeather(latitude!, longitude!),
+    queryKey: ["locationName", latitude, longitude],
+    queryFn: () => fetchLocationName(latitude!, longitude!),
     enabled: !!coords,
-    staleTime: 1000 * 60 * 10,
+    staleTime: Infinity,
   });
 }
