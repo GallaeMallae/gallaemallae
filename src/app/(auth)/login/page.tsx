@@ -58,7 +58,7 @@ export default function LoginPage() {
               className="h-20 w-auto md:h-24"
             />
           </Link>
-          <div className="text-muted-foreground text-desc2">
+          <div className="text-etc text-desc2">
             위치 · 날씨 기반 문화 행사 추천 서비스
           </div>
         </div>
@@ -90,7 +90,7 @@ export default function LoginPage() {
             카카오로 계속하기
           </Button>
         </div>
-        <div className="text-desc2 text-muted-foreground flex gap-2">
+        <div className="text-desc2 text-etc flex gap-2">
           <Link href={"/"}>이용약관</Link>
           <Separator orientation="vertical" />
           <Link href={"/"}>개인정보처리방침</Link>

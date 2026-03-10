@@ -26,7 +26,7 @@ export default function AuthErrorPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center">
-      <p className="text-muted-foreground">인증 상태를 확인 중입니다...</p>
+      <p className="text-etc">인증 상태를 확인 중입니다...</p>
     </div>
   );
 }
