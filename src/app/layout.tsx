@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { pretendard } from "./fonts/fonts";
 import ReactQueryProvider from "@/components/providers/ReactQueryProvider";
+import AlertModal from "@/components/modal/AlertModal";
 
 export const metadata: Metadata = {
   title: "갈래말래",
@@ -16,7 +17,10 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={`${pretendard.variable} bg-background-base font-sans`}>
-        <ReactQueryProvider>{children}</ReactQueryProvider>
+        <ReactQueryProvider>
+          {children}
+          <AlertModal />
+        </ReactQueryProvider>
       </body>
     </html>
   );
