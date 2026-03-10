@@ -40,29 +40,35 @@ export default function AuthStatusIcon() {
       <div className="bg-etc-sub relative flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-full border">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            {profile?.avatar_url ? (
-              <Image
-                src={profile.avatar_url}
-                alt="프로필"
-                fill
-                className="object-cover"
-              />
-            ) : (
-              <User strokeWidth={1.2} className="text-etc h-10 w-10" />
-            )}
+            <button
+              type="button"
+              aria-label="사용자 메뉴 열기"
+              className="bg-etc-sub relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border"
+            >
+              {profile.avatar_url ? (
+                <Image
+                  src={profile.avatar_url}
+                  alt="프로필"
+                  fill
+                  className="object-cover"
+                />
+              ) : (
+                <User strokeWidth={1.2} className="text-etc h-10 w-10" />
+              )}
+            </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuGroup>
-              <Link href="/mypage">
-                <DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/mypage">
                   <User />
                   마이페이지
-                </DropdownMenuItem>
-              </Link>
+                </Link>
+              </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuItem variant="destructive">
+            <DropdownMenuItem variant="destructive" onSelect={handleLogout}>
               <LogOutIcon />
-              <button onClick={handleLogout}>로그아웃</button>
+              로그아웃
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
