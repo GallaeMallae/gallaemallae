@@ -28,18 +28,15 @@ export default function MobileBottomNav() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const currentMapMode = searchParams.get("mode");
-  const openAlert = useOpenAlertModal();
-  const router = useRouter();
 
-  const { data: user, isLoading } = useUserData();
+  const router = useRouter();
+  const openAlert = useOpenAlertModal();
+
+  const { data: user, isLoading: isUserLoading } = useUserData();
 
   const isActive = (menu: Menu) => {
-    if (menu.href === "/") {
-      return pathname === "/";
-    }
-
-    if (menu.href === "/map") {
-      return pathname === "/map" && currentMapMode === menu.mode;
+    if (menu.mode) {
+      return pathname === menu.href && currentMapMode === menu.mode;
     }
 
     return pathname === menu.href;
@@ -49,18 +46,20 @@ export default function MobileBottomNav() {
     e: React.MouseEvent<HTMLAnchorElement>,
     menu: Menu,
   ) => {
-    if (menu.requireAuth && !isLoading && !user) {
+    if (menu.requireAuth && !user) {
       e.preventDefault();
 
       openAlert({
         title: "로그인이 필요한 기능입니다.",
         description: "로그인 페이지로 이동하시겠습니까?",
         onAction: () => {
-          router.push("/login?next=/mypage");
+          router.push(`/login?next=${menu.href}`);
         },
       });
     }
   };
+
+  if (isUserLoading) return null;
 
   return (
     <nav
