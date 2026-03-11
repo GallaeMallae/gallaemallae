@@ -4,8 +4,8 @@ import { WeatherCardItem } from "@/types/common";
 import { WEATHER_CARD_CONFIG } from "@/lib/constants";
 
 export default function WeatherCard({
-  weatherType,
   location,
+  weatherType,
   temperature,
   fineDust,
   ultrafineDust,
