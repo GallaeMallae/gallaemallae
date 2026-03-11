@@ -1,7 +1,7 @@
 "use client";
 
 import { useUserData } from "@/hooks/queries/useUserData";
-import { getProfile } from "@/lib/api/profile/getProfile";
+import { fetchProfile } from "@/lib/api/profile";
 import { QUERY_KEYS } from "@/lib/constants";
 import { createClient } from "@/utils/supabase/client";
 import { useQuery } from "@tanstack/react-query";
@@ -12,7 +12,7 @@ export function useProfileData() {
 
   return useQuery({
     queryKey: QUERY_KEYS.PROFILE(user?.id),
-    queryFn: () => getProfile(supabase, user!.id),
+    queryFn: () => fetchProfile(supabase, user!.id),
     enabled: !!user,
     // 5분
     staleTime: 1000 * 60 * 5,

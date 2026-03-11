@@ -18,6 +18,7 @@ import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { useUserData } from "@/hooks/queries/useUserData";
+import { QUERY_KEYS } from "@/lib/constants";
 
 export default function AuthStatusIcon() {
   const router = useRouter();
@@ -35,8 +36,8 @@ export default function AuthStatusIcon() {
       return;
     }
 
-    queryClient.removeQueries({ queryKey: ["profile"] });
-    queryClient.removeQueries({ queryKey: ["user"] });
+    queryClient.removeQueries({ queryKey: QUERY_KEYS.PROFILE() });
+    queryClient.removeQueries({ queryKey: QUERY_KEYS.USER });
 
     router.replace("/");
     // refresh 해야 바뀐 쿠키 상태를 반영할 수 있음

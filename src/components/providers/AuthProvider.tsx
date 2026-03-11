@@ -28,7 +28,7 @@ export default function AuthProvider({
       const currentUserId = currentUser?.id;
 
       // 유저 데이터 캐시 업데이트
-      queryClient.setQueryData(["user"], currentUser);
+      queryClient.setQueryData(QUERY_KEYS.USER, currentUser);
 
       // 로그아웃 시 프로필 정보도 함께 날림
       if (event === "SIGNED_OUT") {

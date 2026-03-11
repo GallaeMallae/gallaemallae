@@ -12,13 +12,14 @@ type Menu = {
   name: string;
   icon: LucideIcon;
   mode?: string;
+  requireAuth?: boolean;
 };
 
 const MENUS: Menu[] = [
   { href: "/", name: "홈", icon: House },
   { href: "/map", name: "지도 검색", icon: Map, mode: "all" },
   { href: "/map", name: "주변 검색", icon: MapPin, mode: "near" },
-  { href: "/mypage", name: "마이페이지", icon: CircleUser },
+  { href: "/mypage", name: "마이페이지", icon: CircleUser, requireAuth: true },
 ];
 
 export default function MobileBottomNav() {
@@ -26,7 +27,7 @@ export default function MobileBottomNav() {
   const searchParams = useSearchParams();
   const currentMapMode = searchParams.get("mode");
 
-  const { data: user } = useUserData();
+  const { data: user, isLoading } = useUserData();
 
   const isActive = (menu: Menu) => {
     if (menu.href === "/") {
@@ -52,7 +53,7 @@ export default function MobileBottomNav() {
               ? `${menu.href}?mode=${menu.mode}`
               : menu.href;
 
-          if (menu.name === "마이페이지" && !user) {
+          if (menu.requireAuth && !isLoading && !user) {
             href = "/login?next=/mypage";
           }
 

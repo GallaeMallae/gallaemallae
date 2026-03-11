@@ -3,7 +3,7 @@ import { Database, Tables } from "@/types/supabase";
 
 type Profile = Tables<"profiles">;
 
-export async function getProfile(
+export async function fetchProfile(
   supabase: SupabaseClient<Database>,
   userId: string,
 ): Promise<Profile | null> {

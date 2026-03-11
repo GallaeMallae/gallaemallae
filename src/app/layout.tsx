@@ -1,6 +1,7 @@
 import "@/app/globals.css";
 import { pretendard } from "@/app/fonts/fonts";
 import { Toaster } from "@/components/ui/sonner";
+import AlertModal from "@/components/modal/AlertModal";
 import type { Metadata } from "next";
 import ReactQueryProvider from "@/components/providers/ReactQueryProvider";
 import AuthProvider from "@/components/providers/AuthProvider";
@@ -10,9 +11,8 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 import { createClient } from "@/utils/supabase/server";
-import { getProfile } from "@/lib/api/profile/getProfile";
+import { fetchProfile } from "@/lib/api/profile";
 import { QUERY_KEYS } from "@/lib/constants";
-import AlertModal from "@/components/modal/AlertModal";
 
 export const metadata: Metadata = {
   title: "갈래말래",
@@ -31,15 +31,12 @@ export default async function RootLayout({
     data: { user },
   } = await supabase.auth.getUser();
 
-  await queryClient.prefetchQuery({
-    queryKey: QUERY_KEYS.USER,
-    queryFn: () => user ?? null,
-  });
+  queryClient.setQueryData(QUERY_KEYS.USER, user ?? null);
 
   if (user) {
     await queryClient.prefetchQuery({
       queryKey: QUERY_KEYS.PROFILE(user.id),
-      queryFn: () => getProfile(supabase, user.id),
+      queryFn: () => fetchProfile(supabase, user.id),
     });
   }
 
