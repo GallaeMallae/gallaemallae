@@ -6,6 +6,7 @@ import {
   ChevronDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  MoreHorizontal,
 } from "lucide-react";
 import {
   DayPicker,
@@ -78,6 +79,8 @@ function Calendar({
           "xs:aspect-square min-h-10 xs:min-h-0",
           "data-[selected=true]:bg-symbol-sky-sub data-[selected=true]:hover:bg-muted",
           "data-[selected=true]:rounded-md",
+          // 너비 좁아지면 이벤트 뱃지 글자 숨기기 위해 추가
+          "@container",
 
           props.showWeekNumber
             ? "[&:nth-child(2)[data-selected=true]_button]:rounded-l-md"
@@ -175,6 +178,10 @@ function CalendarDayButton({
       currentDayStr >= event.startDate && currentDayStr <= event.endDate,
   );
 
+  const MAX_EVENTS = 2;
+  const visibleEvents = dayEvents.slice(0, MAX_EVENTS);
+  const remainingCount = dayEvents.length - MAX_EVENTS;
+
   return (
     <Button
       ref={ref}
@@ -203,55 +210,70 @@ function CalendarDayButton({
       )}
       {...props}
     >
-      <span
-        className={cn(
-          // 이벤트 뱃지가 선택일 혹은 당일인 경우 높낮이 안 맞아서 h-6 추가
-          "text-desc2 flex h-6 shrink-0 items-center justify-center font-semibold md:ml-2",
-          modifiers.selected && "text-symbol-sky",
-          modifiers.today &&
-            "bg-primary text-primary-foreground size-6 rounded-full",
+      <div className="flex w-full items-center justify-center md:justify-between">
+        <div
+          className={cn(
+            // 이벤트 뱃지가 선택일 혹은 당일인 경우 높낮이 안 맞아서 h-6 추가
+            "text-desc2 flex h-6 shrink-0 items-center justify-center font-semibold md:ml-2",
+            modifiers.selected && "text-symbol-sky",
+            modifiers.today &&
+              "bg-primary text-primary-foreground size-6 rounded-full",
+          )}
+        >
+          <div> {day.date.getDate()}</div>
+        </div>
+        {dayEvents.length >= 3 && (
+          <div className="hidden md:mr-2 md:block">
+            <MoreHorizontal className="text-symbol-sky size-4" />
+          </div>
         )}
-      >
-        {day.date.getDate()}
-      </span>
+      </div>
 
       {/* 이벤트 뱃지 렌더링 */}
-      <div className="mt-1 flex w-full min-w-0 flex-row flex-wrap justify-center gap-1 overflow-hidden md:flex-col md:justify-start">
-        {dayEvents.map((event, index) => {
-          const style =
-            CATEGORY_STYLES[event.category] || CATEGORY_STYLES["기타"];
+      <div className="mt-1 flex w-full min-w-0 flex-1 flex-col gap-1 overflow-hidden">
+        {/* 데스크탑은 이벤트 배지 출력 */}
+        <div className="hidden w-full flex-1 flex-col gap-1 md:flex">
+          {visibleEvents.map((event, index) => {
+            const style =
+              CATEGORY_STYLES[event.category] || CATEGORY_STYLES["기타"];
 
-          // 뱃지 렌더링 판별 로직
-          const isStart = currentDayStr === event.startDate;
-          // 주가 바뀌었거나(일요일) 시작일인 경우에만 텍스트 노출
-          const shouldShowTitle = isStart || isSunday;
+            const isStart = currentDayStr === event.startDate;
+            const shouldShowTitle = isStart || isSunday;
 
-          return (
-            <React.Fragment key={`${event.title}-${index}`}>
-              {/* 데스크톱: 연속된 바 */}
+            return (
               <div
+                key={`desktop-${event.title}-${index}`}
                 className={cn(
-                  "text-caption hidden h-6 w-full items-center px-2 font-semibold md:flex",
+                  "text-caption flex h-[40%] max-h-6 w-full items-center px-2 font-semibold",
                   style.sub,
                   style.text,
-
                   isStart ? "border-l-4 " + style.border : "border-l-0",
                   !shouldShowTitle && "text-transparent",
                 )}
                 title={event.title}
               >
-                <span className="text-caption truncate">
+                <span className="text-desc2 hidden truncate @[100px]:block">
                   {shouldShowTitle ? event.title : ""}
                 </span>
               </div>
+            );
+          })}
+        </div>
 
-              {/* 모바일: 점 */}
-              <div
-                className={cn("h-1.5 w-1.5 rounded-full md:hidden", style.dot)}
-              />
-            </React.Fragment>
-          );
-        })}
+        {/* 모바일은 점 하나만 출력 */}
+        {dayEvents.length > 0 && (
+          <div className="flex w-full justify-center md:hidden">
+            {(() => {
+              const firstEvent = dayEvents[0];
+              const style =
+                CATEGORY_STYLES[firstEvent.category] || CATEGORY_STYLES["기타"];
+
+              return (
+                <div className={cn("h-1.5 w-1.5 rounded-full", style.dot)} />
+              );
+            })()}
+          </div>
+        )}
       </div>
     </Button>
   );

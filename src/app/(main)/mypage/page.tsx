@@ -60,7 +60,7 @@ export default function Mypage() {
       </div>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-4 md:items-stretch">
-        <div className="flex flex-col gap-6 md:col-span-1 md:h-0 md:min-h-full">
+        <div className="order-2 flex flex-col gap-6 md:order-1 md:col-span-1 md:h-0 md:min-h-full">
           <div className="min-h-0 md:flex-1">
             <MypageEventSectionCard
               title="나의 일정 목록"
@@ -81,7 +81,7 @@ export default function Mypage() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-6 md:col-span-3">
+        <div className="order-1 flex flex-col gap-6 md:order-2 md:col-span-3">
           <div className="flex-1 rounded-2xl border bg-white p-6 shadow-sm">
             <MypageCalendar
               selectedDate={selectedDate}
