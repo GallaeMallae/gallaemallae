@@ -14,19 +14,19 @@ type Menu = {
   mode?: string;
 };
 
+const MENUS: Menu[] = [
+  { href: "/", name: "홈", icon: House },
+  { href: "/map", name: "지도 검색", icon: Map, mode: "all" },
+  { href: "/map", name: "주변 검색", icon: MapPin, mode: "near" },
+  { href: "/mypage", name: "마이페이지", icon: CircleUser },
+];
+
 export default function MobileBottomNav() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const currentMapMode = searchParams.get("mode");
 
   const { data: user } = useUserData();
-
-  const menus: Menu[] = [
-    { href: "/", name: "홈", icon: House },
-    { href: "/map", name: "지도 검색", icon: Map, mode: "all" },
-    { href: "/map", name: "주변 검색", icon: MapPin, mode: "near" },
-    { href: "/mypage", name: "마이페이지", icon: CircleUser },
-  ];
 
   const isActive = (menu: Menu) => {
     if (menu.href === "/") {
@@ -46,7 +46,7 @@ export default function MobileBottomNav() {
       aria-label="모바일 하단 네비게이션"
     >
       <div className="flex h-16 items-center justify-around">
-        {menus.map((menu) => {
+        {MENUS.map((menu) => {
           let href =
             menu.mode !== undefined
               ? `${menu.href}?mode=${menu.mode}`
