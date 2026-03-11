@@ -16,6 +16,7 @@ import { useLocationStore } from "@/stores/locationStore";
 import { useInitLocation } from "@/hooks/useInitLocation";
 import { useWeatherData } from "@/hooks/queries/useWeatherData";
 import { useLocationNameData } from "@/hooks/queries/useLocationNameData";
+import { useAirPollutionData } from "@/hooks/queries/useAirPollutionData";
 import { mapWeatherCard } from "@/utils/mapper";
 import { MOCK_EVENTS } from "@/mocks/events";
 
@@ -24,8 +25,9 @@ export default function Home() {
 
   const router = useRouter();
   const { isDefaultLocation } = useLocationStore();
-  const { data: weatherData } = useWeatherData();
   const { data: locationNameData } = useLocationNameData();
+  const { data: weatherData } = useWeatherData();
+  const { data: airPollutionData } = useAirPollutionData();
 
   const [selectedPeriodTab, setSelectedPeriodTab] =
     useState<PeriodFilter>("전체");
@@ -40,13 +42,14 @@ export default function Home() {
     router.push(`/map?category=${categoryId}`);
   };
 
-  if (!weatherData || !locationNameData) {
+  if (!weatherData || !locationNameData || !airPollutionData) {
     return <div>날씨 정보 불러오는 중...</div>;
   }
 
   const weather = mapWeatherCard(
-    weatherData,
     locationNameData,
+    weatherData,
+    airPollutionData,
     isDefaultLocation,
   );
 

@@ -61,8 +61,8 @@ export interface WeatherCardConfigItem {
 }
 
 export interface WeatherCardItem {
-  weatherType: WeatherType;
   location: string;
+  weatherType: WeatherType;
   temperature: number;
   fineDust: string;
   ultrafineDust: string;
