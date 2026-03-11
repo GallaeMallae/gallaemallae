@@ -12,6 +12,7 @@ import {
 import { createClient } from "@/utils/supabase/server";
 import { getProfile } from "@/lib/api/profile/getProfile";
 import { QUERY_KEYS } from "@/lib/constants";
+import AlertModal from "@/components/modal/AlertModal";
 
 export const metadata: Metadata = {
   title: "갈래말래",
@@ -47,10 +48,13 @@ export default async function RootLayout({
       <body className={`${pretendard.variable} bg-background-base font-sans`}>
         <ReactQueryProvider>
           <HydrationBoundary state={dehydrate(queryClient)}>
-            <AuthProvider initialUserId={user?.id}>{children}</AuthProvider>
+            <AuthProvider initialUserId={user?.id}>
+              {children}
+              <AlertModal />
+              <Toaster />
+            </AuthProvider>
           </HydrationBoundary>
         </ReactQueryProvider>
-        <Toaster />
       </body>
     </html>
   );
