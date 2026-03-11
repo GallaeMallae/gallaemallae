@@ -139,3 +139,25 @@ export const CATEGORY_STYLES: Record<
     border: "border-etc",
   },
 };
+export const ERROR_MESSAGE_CONFIG: Record<string, string> = {
+  config_error: "로그인 설정에 문제가 있습니다. 잠시 후 다시 시도해 주세요.",
+  oauth_signin_failed: "소셜 로그인에 실패했습니다. 다시 시도해 주세요.",
+  unknown_error: "알 수 없는 오류가 발생했습니다.",
+  access_denied: "로그인이 취소되었습니다. 다시 시도해 주세요.", // 사용자가 소셜 로그인에서 '취소' 버튼을 누른 경우
+  provider_not_enabled:
+    "현재 해당 소셜 로그인을 사용할 수 없습니다. 관리자에게 문의해 주세요.", // Supabase 대시보드에서 비활성화된 경우
+  email_conflict: "이미 동일한 이메일로 가입된 다른 계정이 존재합니다.",
+  callback_failed: "인증 응답을 처리하는 중 오류가 발생했습니다.", // 콜백 URL 처리 실패 시
+  session_expired: "로그인 세션이 만료되었습니다. 다시 시도해 주세요.",
+  rate_limit:
+    "너무 많은 로그인 시도가 감지되었습니다. 잠시 후 다시 시도해 주세요.",
+  invalid_grant: "인증 정보가 유효하지 않거나 만료되었습니다.",
+  pkce_failed:
+    "보안 연결 설정 중 오류가 발생했습니다. 브라우저의 '시크릿 모드'를 해제하거나 쿠키 허용 설정을 확인해 주세요.",
+  server_error: "소셜 서비스 서버에 일시적인 문제가 발생했습니다.",
+};
+
+export const QUERY_KEYS = {
+  USER: ["user"],
+  PROFILE: (userId?: string) => (userId ? ["profile", userId] : ["profile"]),
+} as const;
