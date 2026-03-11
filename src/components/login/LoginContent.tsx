@@ -14,7 +14,7 @@ export default function LoginContent() {
 
   return (
     <div className="flex flex-1 flex-col md:flex-row">
-      <div className="relative hidden flex-1 md:block md:w-1/2">
+      <div className="relative hidden md:block md:w-1/2">
         <Image
           src="/images/login-banner-image1.jpg"
           alt="Login page Image"
@@ -29,8 +29,8 @@ export default function LoginContent() {
             <Image
               src="/images/logo.svg"
               alt="갈래말래"
-              width={200}
-              height={60}
+              width={280}
+              height={80}
               className="h-20 w-auto md:h-24"
             />
           </Link>
