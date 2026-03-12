@@ -27,6 +27,19 @@ import {
 import MypageSelectedDateEventsCard from "@/components/mypage/MypageSelectedDateEventsCard";
 import { parseSafeDate } from "@/utils/date";
 
+function useIsDesktop() {
+  const [isDesktop, setIsDesktop] = React.useState(false);
+
+  React.useEffect(() => {
+    const checkSize = () => setIsDesktop(window.innerWidth >= 768);
+    checkSize();
+    window.addEventListener("resize", checkSize);
+    return () => window.removeEventListener("resize", checkSize);
+  }, []);
+
+  return isDesktop;
+}
+
 function Calendar({
   className,
   classNames,
@@ -36,6 +49,7 @@ function Calendar({
 }: React.ComponentProps<typeof DayPicker> & {
   buttonVariant?: React.ComponentProps<typeof Button>["variant"];
 }) {
+  const isDesktop = useIsDesktop();
   const [activePopoverDate, setActivePopoverDate] = React.useState<
     string | null
   >(null);
@@ -155,6 +169,7 @@ function Calendar({
         DayButton: (dayButtonProps) => (
           <CalendarDayButton
             {...dayButtonProps}
+            isDesktop={isDesktop}
             activePopoverDate={activePopoverDate}
             setActivePopoverDate={setActivePopoverDate}
           />
@@ -178,6 +193,7 @@ function Calendar({
 interface CalendarDayButtonProps extends React.ComponentProps<
   typeof DayButton
 > {
+  isDesktop: boolean;
   activePopoverDate: string | null;
   setActivePopoverDate: (date: string | null) => void;
 }
@@ -186,6 +202,7 @@ function CalendarDayButton({
   className,
   day,
   modifiers,
+  isDesktop,
   activePopoverDate,
   setActivePopoverDate,
   ...props
@@ -218,15 +235,22 @@ function CalendarDayButton({
     // 달력 날짜 선택 로직
     props.onClick?.(e);
 
-    // 행사가 있다면 부모에게 팝오버 열어달라고 요청
     if (dayEvents.length > 0) {
-      setActivePopoverDate(currentDayStr);
+      if (isPopoverOpen) {
+        setActivePopoverDate(null);
+      } else {
+        // 팝오버가 꺼져있었다면 선택한 날짜 열기
+        setActivePopoverDate(currentDayStr);
+      }
+    } else {
+      // 행사가 없는 날 클릭시 팝오버 닫기
+      setActivePopoverDate(null);
     }
   };
 
   return (
     <Popover
-      open={isPopoverOpen}
+      open={isDesktop && isPopoverOpen}
       onOpenChange={(open) => !open && setActivePopoverDate(null)}
     >
       <PopoverTrigger asChild disabled={dayEvents.length === 0}>
@@ -351,6 +375,7 @@ function CalendarDayButton({
             <MypageSelectedDateEventsCard
               selectedDate={parseSafeDate(activePopoverDate)}
               events={dayEvents}
+              displayMode="desktop"
             />
           </div>
         </PopoverContent>

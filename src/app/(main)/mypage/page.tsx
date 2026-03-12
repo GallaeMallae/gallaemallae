@@ -95,6 +95,7 @@ export default function Mypage() {
             <MypageSelectedDateEventsCard
               selectedDate={selectedDate}
               events={dailyEvents}
+              displayMode="mobile"
             />
           )}
         </div>

@@ -8,18 +8,23 @@ import { formatDate } from "@/utils/date";
 interface MypageDailyAgendaCardProps {
   selectedDate: Date | null;
   events: EventCardItem[];
+  displayMode?: "mobile" | "desktop" | "all";
 }
 
 export default function MypageSelectedDateEventsCard({
   events,
   selectedDate,
+  displayMode = "all",
 }: MypageDailyAgendaCardProps) {
-  console.log("포매팅 전 선택일", selectedDate);
+  const modeClasses = {
+    mobile: "md:hidden",
+    desktop: "hidden md:flex",
+    all: "",
+  };
+
   const formattedSelectedDate = formatDate(
     selectedDate?.toLocaleDateString("en-CA"),
   );
-  console.log("포매팅 후 선택일", formattedSelectedDate);
-  console.log("행사", events);
 
   const selectedDateEvents = events.map((event) => ({
     ...event,
@@ -27,7 +32,7 @@ export default function MypageSelectedDateEventsCard({
   }));
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className={cn("flex flex-col gap-4", modeClasses[displayMode])}>
       {selectedDateEvents.map((event, index) => {
         const dotColorClass = CATEGORY_STYLES[event.category]?.dot || "bg-etc";
 

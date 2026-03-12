@@ -33,20 +33,4 @@ export const MOCK_EVENTS: EventCardItem[] = [
     category: "기타",
     isLiked: false,
   },
-  {
-    title: "테스트용 축제",
-    location: "반포 한강공원",
-    startDate: "2026-03-08",
-    endDate: "2026-03-12",
-    category: "전시",
-    isLiked: false,
-  },
-  {
-    title: "테스트용 축제2",
-    location: "반포 한강공원",
-    startDate: "2026-03-12",
-    endDate: "2026-03-12",
-    category: "축제",
-    isLiked: false,
-  },
 ];
