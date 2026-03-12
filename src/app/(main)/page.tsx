@@ -24,13 +24,26 @@ export default function Home() {
   const { data: locationNameData } = useLocationNameData();
   const { data: weatherData } = useWeatherData();
   const { data: airPollutionData } = useAirPollutionData();
-  const { data: recommendTypeData } = useRecommendTypeData(
-    weatherData,
-    airPollutionData,
-  );
+  const { data: recommendTypeData, isLoading: isRecommendTypeLoading } =
+    useRecommendTypeData(weatherData, airPollutionData);
 
   const [selectedPeriodTab, setSelectedPeriodTab] =
     useState<PeriodFilter>("전체");
+
+  const isWeatherReady =
+    !!locationNameData && !!weatherData && !!airPollutionData;
+  const isWeatherLoading = !isWeatherReady;
+
+  const weather = isWeatherReady
+    ? mapWeatherCard(
+        locationNameData,
+        weatherData,
+        airPollutionData,
+        isDefaultLocation,
+      )
+    : null;
+
+  const recommendType = recommendTypeData?.recommendType ?? null;
 
   const handleMapClick = (mode: MapMode) => {
     router.push(`/map?mode=${mode}`);
@@ -40,24 +53,13 @@ export default function Home() {
     router.push(`/map?category=${categoryId}`);
   };
 
-  if (!weatherData || !locationNameData || !airPollutionData) {
-    return <div>날씨 정보 불러오는 중...</div>;
-  }
-
-  const weather = mapWeatherCard(
-    locationNameData,
-    weatherData,
-    airPollutionData,
-    isDefaultLocation,
-  );
-
-  const recommendType = recommendTypeData?.recommendType ?? "neutral";
-
   return (
     <div className="flex flex-col gap-8">
       <MainBanner
         weather={weather}
         recommendType={recommendType}
+        isWeatherCardLoading={isWeatherLoading}
+        isRecommendCardLoading={isRecommendTypeLoading}
         onMapAllClick={() => handleMapClick("all")}
         onMapNearClick={() => handleMapClick("near")}
       />
