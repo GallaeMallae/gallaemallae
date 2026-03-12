@@ -10,7 +10,7 @@ import { Tables } from "@/types/supabase";
 type Profile = Tables<"profiles">;
 
 export function useProfileData() {
-  const { data: user } = useUserData();
+  const { user } = useUserData();
   const supabase = createClient();
 
   const profileQuery = useQuery<Profile | null>({
