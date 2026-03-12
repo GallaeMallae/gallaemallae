@@ -1,11 +1,10 @@
 import { WEATHER_RECOMMEND_CARD_CONFIG } from "@/lib/constants";
-
-type RecommendType = "temp" | "dust" | "wind" | "wet";
+import { WeatherRecommendType } from "@/types/common";
 
 export default function EventRecommendWeather({
   type,
 }: {
-  type: RecommendType;
+  type: WeatherRecommendType;
 }) {
   const config = WEATHER_RECOMMEND_CARD_CONFIG[type];
   const Icon = config.icon;
