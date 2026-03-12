@@ -1,13 +1,17 @@
 import { Button } from "@/components/ui/button";
 import WeatherCard from "@/components/common/WeatherCard";
 import RecommendCard from "@/components/common/RecommendCard";
+import WeatherCardSkeleton from "@/components/common/skeleton/WeatherCardSkeleton";
+import RecommendCardSkeleton from "@/components/common/skeleton/RecommendCardSkeleton";
 import { Map, MapPin } from "lucide-react";
 import Image from "next/image";
 import { WeatherCardItem, RecommendType } from "@/types/common";
 
 interface MainBannerProps {
-  weather: WeatherCardItem;
-  recommendType: RecommendType;
+  weather: WeatherCardItem | null;
+  recommendType: RecommendType | null;
+  isWeatherCardLoading: boolean;
+  isRecommendCardLoading: boolean;
   onMapAllClick: () => void;
   onMapNearClick: () => void;
 }
@@ -15,6 +19,8 @@ interface MainBannerProps {
 export default function MainBanner({
   weather,
   recommendType,
+  isWeatherCardLoading,
+  isRecommendCardLoading,
   onMapAllClick,
   onMapNearClick,
 }: MainBannerProps) {
@@ -66,8 +72,16 @@ export default function MainBanner({
         </div>
 
         <div className="flex flex-col gap-4 md:w-90 md:gap-2">
-          <WeatherCard {...weather} />
-          <RecommendCard recommendType={recommendType} />
+          {isWeatherCardLoading || !weather ? (
+            <WeatherCardSkeleton />
+          ) : (
+            <WeatherCard {...weather} />
+          )}
+          {isRecommendCardLoading || !recommendType ? (
+            <RecommendCardSkeleton />
+          ) : (
+            <RecommendCard recommendType={recommendType} />
+          )}
         </div>
       </div>
     </section>
