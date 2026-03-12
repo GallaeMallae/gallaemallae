@@ -69,7 +69,6 @@ export interface WeatherRecommendCardConfigItem {
   icon: LucideIcon;
   color: string;
   title: string;
-  desc: string;
 }
 
 // ==============================
