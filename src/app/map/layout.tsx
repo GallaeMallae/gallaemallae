@@ -3,6 +3,11 @@ import Script from "next/script";
 
 export default function MapLayout({ children }: { children: React.ReactNode }) {
   const API_KEY = process.env.NEXT_PUBLIC_KAKAO_JS_KEY;
+
+  if (!API_KEY) {
+    throw new Error("NEXT_PUBLIC_KAKAO_JS_KEY is not defined");
+  }
+
   return (
     <div>
       <Header />
