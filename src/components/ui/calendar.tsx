@@ -12,7 +12,7 @@ import {
   DayPicker,
   useDayPicker,
   getDefaultClassNames,
-  type DayButton,
+  type DayButtonProps,
 } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
@@ -190,9 +190,7 @@ function Calendar({
   );
 }
 
-interface CalendarDayButtonProps extends React.ComponentProps<
-  typeof DayButton
-> {
+interface CalendarDayButtonProps extends DayButtonProps {
   isDesktop: boolean;
   activePopoverDate: Date | null;
   setActivePopoverDate: (date: Date | null) => void;
