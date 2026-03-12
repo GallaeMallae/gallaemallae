@@ -110,6 +110,35 @@ export const PERIOD_FILTER_TABS: PeriodFilter[] = [
   "월간",
 ];
 
+export const CALENDAR_CATEGORY_STYLES: Record<
+  string,
+  { dot: string; sub: string; text: string; border: string }
+> = {
+  축제: {
+    dot: "bg-festival",
+    sub: "bg-festival-sub",
+    text: "text-festival",
+    border: "border-festival",
+  },
+  공연: {
+    dot: "bg-performance",
+    sub: "bg-performance-sub",
+    text: "text-performance",
+    border: "border-performance",
+  },
+  전시: {
+    dot: "bg-exhibition",
+    sub: "bg-exhibition-sub",
+    text: "text-exhibition",
+    border: "border-exhibition",
+  },
+  기타: {
+    dot: "bg-etc",
+    sub: "bg-etc-sub",
+    text: "text-etc",
+    border: "border-etc",
+  },
+};
 export const ERROR_MESSAGE_CONFIG: Record<string, string> = {
   config_error: "로그인 설정에 문제가 있습니다. 잠시 후 다시 시도해 주세요.",
   oauth_signin_failed: "소셜 로그인에 실패했습니다. 다시 시도해 주세요.",

@@ -178,4 +178,7 @@
 
   --text-caption: 12px;
   --text-caption--line-height: 1.4;
+
+  /* shadcn calendar 컴포넌트 위해 중단점(Breakpoint) 추가 */
+  --breakpoint-xs: 480px;
 }
