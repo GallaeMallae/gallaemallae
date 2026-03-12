@@ -31,7 +31,7 @@ export default function MobileBottomNav() {
   const openAlert = useOpenAlertModal();
   const router = useRouter();
 
-  const { data: user, isLoading } = useUserData();
+  const { user, isLoading } = useUserData();
 
   const isActive = (menu: Menu) => {
     if (menu.href === "/") {
