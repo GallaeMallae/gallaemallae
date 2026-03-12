@@ -19,6 +19,7 @@ export default function MypageProfileCard() {
                 <Image
                   src={profile.avatar_url}
                   alt="프로필"
+                  sizes="(min-width: 768px) 56px, 64px"
                   fill
                   className="object-cover"
                 />
