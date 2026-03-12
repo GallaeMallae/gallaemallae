@@ -8,7 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 export function useUserData() {
   const supabase = createClient();
 
-  return useQuery<User | null>({
+  const userQuery = useQuery<User | null>({
     queryKey: QUERY_KEYS.USER,
     queryFn: async () => {
       const {
@@ -19,4 +19,10 @@ export function useUserData() {
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 30,
   });
+
+  return {
+    user: userQuery.data,
+    isLoading: userQuery.isLoading,
+    isError: userQuery.isError,
+  };
 }
