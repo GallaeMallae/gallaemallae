@@ -4,27 +4,10 @@ import MypageProfileDialog from "@/components/mypage/MypageProfileDialog";
 import { Card, CardContent } from "@/components/ui/card";
 import { User } from "lucide-react";
 import Image from "next/image";
-import { fetchProfile } from "@/lib/api/profile";
-import { QUERY_KEYS } from "@/lib/constants";
-import { createClient } from "@/utils/supabase/client";
-import { useQuery } from "@tanstack/react-query";
-import { User as SupabaseUser } from "@supabase/supabase-js";
+import { useProfileData } from "@/hooks/queries/useProfileData";
 
 export default function MypageProfileCard() {
-  const supabase = createClient();
-  const { data: user } = useQuery<SupabaseUser | null>({
-    queryKey: QUERY_KEYS.USER,
-    queryFn: async () => {
-      const { data } = await supabase.auth.getUser();
-      return data.user;
-    },
-    staleTime: Infinity,
-  });
-  const { data: profile } = useQuery({
-    queryKey: QUERY_KEYS.PROFILE(user?.id),
-    queryFn: () => fetchProfile(supabase, user!.id),
-    enabled: !!user?.id,
-  });
+  const { profile } = useProfileData();
 
   return (
     <Card className="flex h-full flex-col justify-between rounded-2xl">
@@ -49,7 +32,7 @@ export default function MypageProfileCard() {
               {profile?.nickname || "닉네임 정보 없음"}
             </div>
             <div className="text-muted-foreground text-caption w-full truncate text-center sm:text-left">
-              {profile?.email || user?.email || "이메일 정보 없음"}
+              {profile?.email || "이메일 정보 없음"}
             </div>
           </div>
         </div>
