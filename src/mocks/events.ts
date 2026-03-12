@@ -28,8 +28,8 @@ export const MOCK_EVENTS: EventCardItem[] = [
   {
     title: "푸드트럭 페스티벌",
     location: "반포 한강공원",
-    startDate: "2026-03-15",
-    endDate: "2026-03-17",
+    startDate: "2026-03-08",
+    endDate: "2026-03-12",
     category: "기타",
     isLiked: false,
   },

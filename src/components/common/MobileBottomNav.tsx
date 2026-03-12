@@ -29,10 +29,9 @@ export default function MobileBottomNav() {
   const searchParams = useSearchParams();
   const currentMapMode = searchParams.get("mode");
 
+  const { user, isLoading } = useUserData();
   const router = useRouter();
   const openAlert = useOpenAlertModal();
-
-  const { data: user, isLoading: isUserLoading } = useUserData();
 
   const isActive = (menu: Menu) => {
     if (menu.mode) {
@@ -59,7 +58,7 @@ export default function MobileBottomNav() {
     }
   };
 
-  if (isUserLoading) return null;
+  if (isLoading) return null;
 
   return (
     <nav
