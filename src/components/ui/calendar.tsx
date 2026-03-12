@@ -18,7 +18,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { MOCK_EVENTS } from "@/mocks/events";
-import { CATEGORY_STYLES } from "@/lib/constants";
+import { CALENDAR_CATEGORY_STYLES } from "@/lib/constants";
 import {
   Popover,
   PopoverContent,
@@ -303,7 +303,8 @@ function CalendarDayButton({
             <div className="hidden w-full flex-1 flex-col gap-1 md:flex">
               {visibleEvents.map((event, index) => {
                 const style =
-                  CATEGORY_STYLES[event.category] || CATEGORY_STYLES["기타"];
+                  CALENDAR_CATEGORY_STYLES[event.category] ||
+                  CALENDAR_CATEGORY_STYLES["기타"];
 
                 const isStart = isSameDay(day.date, parseISO(event.startDate));
                 const shouldShowTitle = isStart || isSunday;
@@ -334,8 +335,8 @@ function CalendarDayButton({
                 {(() => {
                   const firstEvent = dayEvents[0];
                   const style =
-                    CATEGORY_STYLES[firstEvent.category] ||
-                    CATEGORY_STYLES["기타"];
+                    CALENDAR_CATEGORY_STYLES[firstEvent.category] ||
+                    CALENDAR_CATEGORY_STYLES["기타"];
 
                   return (
                     <div

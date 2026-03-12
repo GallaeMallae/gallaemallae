@@ -3,9 +3,10 @@ import { EventCardItem } from "@/types/common";
 import { calculateDDay, formatDate } from "@/utils/date";
 
 // todo: selectedDate는 일정 추가 기능 넣을때 내려올 예정이므로 그때까진 startDate로 표시
+// todo: 지금 당장은 selectedDate는 달력에서 선택한 날짜임! 사용자가 일정 언제 갈지 선택한 날짜 아님!!
 interface MypageAgendaCardProps extends Omit<EventCardItem, "isLiked"> {
   onClick?: () => void;
-  // selectedDate?: Date;
+  selectedDate?: string;
 }
 
 export default function MypageAgendaCard({
@@ -13,18 +14,16 @@ export default function MypageAgendaCard({
   location,
   startDate,
   endDate,
-  // selectedDate,
+  selectedDate,
   category,
   onClick,
 }: MypageAgendaCardProps) {
-  // todo: 지금은 startDate로 보여주지만 나중에는 사용자가 지정한 날짜를 보여줘야함
+  // todo: 지금은 startDate로 보여주지만 기능 붙이면서부터는 사용자가 지정한 날짜를 보여줘야함
   const formatStartDate = formatDate(startDate);
-
+  const dDay = calculateDDay(startDate);
   // const dDay = selectedDate
   //   ? calculateDDay(selectedDate)
   //   : calculateDDay(startDate);
-
-  const dDay = calculateDDay(startDate);
 
   return (
     <div

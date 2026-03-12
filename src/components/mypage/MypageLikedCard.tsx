@@ -3,7 +3,7 @@ import { EventCardItem } from "@/types/common";
 import { calculateDDay, formatDateRange } from "@/utils/date";
 import { Calendar } from "lucide-react";
 
-interface MypageEventCardProps extends Omit<EventCardItem, "isLiked"> {
+interface MypageLikedCardProps extends Omit<EventCardItem, "isLiked"> {
   onClick?: () => void;
 }
 
@@ -14,7 +14,7 @@ export default function MypageLikedCard({
   endDate,
   category,
   onClick,
-}: MypageEventCardProps) {
+}: MypageLikedCardProps) {
   const dDay = calculateDDay(startDate);
 
   return (

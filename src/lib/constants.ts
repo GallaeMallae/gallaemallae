@@ -110,7 +110,7 @@ export const PERIOD_FILTER_TABS: PeriodFilter[] = [
   "월간",
 ];
 
-export const CATEGORY_STYLES: Record<
+export const CALENDAR_CATEGORY_STYLES: Record<
   string,
   { dot: string; sub: string; text: string; border: string }
 > = {
