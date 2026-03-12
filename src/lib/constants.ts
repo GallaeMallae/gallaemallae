@@ -24,7 +24,7 @@ import {
   WeatherCardConfigItem,
   PeriodFilter,
   WeatherRecommendType,
-  WeatherRecommendCardConfigITem,
+  WeatherRecommendCardConfigItem,
   IntroduceType,
   IntroduceCardConfigItem,
 } from "@/types/common";
@@ -127,32 +127,28 @@ export const PERIOD_FILTER_TABS: PeriodFilter[] = [
 
 export const WEATHER_RECOMMEND_CARD_CONFIG: Record<
   WeatherRecommendType,
-  WeatherRecommendCardConfigITem
+  WeatherRecommendCardConfigItem
 > = {
   temp: {
     icon: Sun,
     color: "text-amber-400",
     title: "날씨",
-    desc: "24도",
   },
 
   dust: {
     icon: CloudFog,
     color: "text-etc",
     title: "미세먼지",
-    desc: "보통 (53)",
   },
   wind: {
     icon: Wind,
     color: "text-teal-400",
     title: "풍속",
-    desc: "1m/s",
   },
   wet: {
     icon: Droplet,
     color: "text-sky-300",
     title: "습도",
-    desc: "37%",
   },
 };
 
