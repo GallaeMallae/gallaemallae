@@ -1,3 +1,5 @@
+"use client";
+
 import { useQuery } from "@tanstack/react-query";
 import { useLocationStore } from "@/stores/locationStore";
 import { fetchWeather } from "@/lib/api/weather";
