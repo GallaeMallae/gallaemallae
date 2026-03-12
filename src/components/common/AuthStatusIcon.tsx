@@ -50,42 +50,41 @@ export default function AuthStatusIcon() {
 
   if (user) {
     return (
-      <div className="bg-etc-sub relative flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-full border">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              type="button"
-              aria-label="사용자 메뉴 열기"
-              className="bg-etc-sub relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border"
-            >
-              {profile?.avatar_url ? (
-                <Image
-                  src={profile.avatar_url}
-                  alt="프로필"
-                  fill
-                  className="object-cover"
-                />
-              ) : (
-                <User strokeWidth={1.2} className="text-etc h-10 w-10" />
-              )}
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuGroup>
-              <DropdownMenuItem asChild>
-                <Link href="/mypage">
-                  <User />
-                  마이페이지
-                </Link>
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuItem variant="destructive" onSelect={handleLogout}>
-              <LogOutIcon />
-              로그아웃
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            type="button"
+            aria-label="사용자 메뉴 열기"
+            className="bg-etc-sub relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border"
+          >
+            {profile?.avatar_url ? (
+              <Image
+                src={profile.avatar_url}
+                alt="프로필"
+                sizes="40px"
+                fill
+                className="object-cover"
+              />
+            ) : (
+              <User strokeWidth={1.2} className="text-etc h-10 w-10" />
+            )}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuGroup>
+            <DropdownMenuItem asChild>
+              <Link href="/mypage">
+                <User />
+                마이페이지
+              </Link>
             </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+          </DropdownMenuGroup>
+          <DropdownMenuItem variant="destructive" onSelect={handleLogout}>
+            <LogOutIcon />
+            로그아웃
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     );
   }
 

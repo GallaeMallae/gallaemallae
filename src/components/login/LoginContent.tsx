@@ -18,6 +18,7 @@ export default function LoginContent() {
         <Image
           src="/images/login-banner-image1.jpg"
           alt="Login page Image"
+          sizes="50vw"
           fill
           className="object-cover"
           priority
