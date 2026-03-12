@@ -1,9 +1,8 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { INTRODUCE_CARD_CONFIG } from "@/lib/constants";
+import { IntroduceType } from "@/types/common";
 
-type RecommendType = "date" | "place" | "tel" | "homepage";
-
-export default function EventIntroduce({ type }: { type: RecommendType }) {
+export default function EventIntroduce({ type }: { type: IntroduceType }) {
   const config = INTRODUCE_CARD_CONFIG[type];
   const Icon = config.icon;
 
