@@ -8,30 +8,25 @@ import {
 } from "@/components/ui/carousel";
 import EventCard from "@/components/common/EventCard";
 import { LocateFixed } from "lucide-react";
-import { Map, MapMarker, Circle } from "react-kakao-maps-sdk";
+import { Map, MapMarker, Circle, useKakaoLoader } from "react-kakao-maps-sdk";
 import { useState, useEffect } from "react";
 import { MOCK_EVENTS } from "@/mocks/events";
+
+const markers = [
+  { id: 1, lat: 37.498, lng: 127.027 },
+  { id: 2, lat: 37.5, lng: 127.03 },
+  { id: 3, lat: 37.49, lng: 127.025 },
+  { id: 4, lat: 37.47, lng: 127.02 },
+];
 
 export default function Area({ radius }: { radius: number | null }) {
   const [position, setPosition] = useState<{ lat: number; lng: number } | null>(
     null,
   );
   const [locate, setLocate] = useState<kakao.maps.Map | null>(null);
-
-  const kakaoKey = process.env.NEXT_PUBLIC_KAKAO_JS_KEY;
-
-  useEffect(() => {
-    if (!kakaoKey) {
-      console.error("NEXT_PUBLIC_KAKAO_JS_KEY is not defined");
-    }
-  }, [kakaoKey]);
-
-  const markers = [
-    { id: 1, lat: 37.498, lng: 127.027 },
-    { id: 2, lat: 37.5, lng: 127.03 },
-    { id: 3, lat: 37.49, lng: 127.025 },
-    { id: 4, lat: 37.47, lng: 127.02 },
-  ];
+  const [loading, error] = useKakaoLoader({
+    appkey: process.env.NEXT_PUBLIC_KAKAO_JS_KEY!,
+  });
 
   const moveCurrentLocation = () => {
     if (!navigator.geolocation || !locate) return;
@@ -70,6 +65,13 @@ export default function Area({ radius }: { radius: number | null }) {
       },
     );
   }, []);
+
+  if (loading) {
+    return <div>지도를 불러오는 중</div>;
+  }
+  if (error) {
+    return <div>지도 로드 실패</div>;
+  }
 
   function getDistance(lat1: number, lng1: number, lat2: number, lng2: number) {
     const R = 6371e3;
