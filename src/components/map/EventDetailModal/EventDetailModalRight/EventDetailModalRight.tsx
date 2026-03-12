@@ -33,7 +33,7 @@ export default function EventDetailModalRight() {
         {config.information.map((info, index) => (
           <Card
             key={index}
-            className="bg-bg-slate-50/50 border border-slate-100 p-1"
+            className="border border-slate-100 bg-slate-50/50 p-1"
           >
             <CardContent className="text-etc text-caption flex items-center gap-2 p-2">
               <Check size={14} className="text-symbol-sky" />
