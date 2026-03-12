@@ -6,7 +6,7 @@ import { CATEGORY_STYLES } from "@/lib/constants";
 import { formatDate } from "@/utils/date";
 
 interface MypageDailyAgendaCardProps {
-  selectedDate: Date;
+  selectedDate: Date | null;
   events: EventCardItem[];
 }
 
@@ -14,9 +14,12 @@ export default function MypageSelectedDateEventsCard({
   events,
   selectedDate,
 }: MypageDailyAgendaCardProps) {
+  console.log("포매팅 전 선택일", selectedDate);
   const formattedSelectedDate = formatDate(
-    selectedDate.toLocaleDateString("en-CA"),
+    selectedDate?.toLocaleDateString("en-CA"),
   );
+  console.log("포매팅 후 선택일", formattedSelectedDate);
+  console.log("행사", events);
 
   const selectedDateEvents = events.map((event) => ({
     ...event,
@@ -24,7 +27,7 @@ export default function MypageSelectedDateEventsCard({
   }));
 
   return (
-    <div className="flex flex-col gap-4 md:hidden">
+    <div className="flex flex-col gap-4">
       {selectedDateEvents.map((event, index) => {
         const dotColorClass = CATEGORY_STYLES[event.category]?.dot || "bg-etc";
 
