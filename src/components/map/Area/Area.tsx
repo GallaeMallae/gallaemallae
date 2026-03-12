@@ -18,14 +18,29 @@ export default function Area({ radius }: { radius: number | null }) {
   );
   const [locate, setLocate] = useState<kakao.maps.Map | null>(null);
 
+  const kakaoKey = process.env.NEXT_PUBLIC_KAKAO_JS_KEY;
+
+  useEffect(() => {
+    if (!kakaoKey) {
+      console.error("NEXT_PUBLIC_KAKAO_JS_KEY is not defined");
+    }
+  }, [kakaoKey]);
+
   const markers = [
     { id: 1, lat: 37.498, lng: 127.027 },
     { id: 2, lat: 37.5, lng: 127.03 },
     { id: 3, lat: 37.49, lng: 127.025 },
     { id: 4, lat: 37.47, lng: 127.02 },
   ];
+
   const moveCurrentLocation = () => {
     if (!navigator.geolocation || !locate) return;
+
+    if (typeof window === "undefined" || !window.kakao?.maps) {
+      console.error("Kakao Maps SDK not loaded");
+      return;
+    }
+
     navigator.geolocation.getCurrentPosition((p) => {
       const newPosition = {
         lat: p.coords.latitude,
