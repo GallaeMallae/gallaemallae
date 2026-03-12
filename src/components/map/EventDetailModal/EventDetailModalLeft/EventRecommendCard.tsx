@@ -1,7 +1,6 @@
 import Image from "next/image";
 import { RECOMMEND_CARD_CONFIG } from "@/lib/constants";
-
-type RecommendType = "veryPositive" | "positive" | "neutral" | "negative";
+import { RecommendType } from "@/types/common";
 
 export default function EventRecommendCard({ type }: { type: RecommendType }) {
   const config = RECOMMEND_CARD_CONFIG[type];
