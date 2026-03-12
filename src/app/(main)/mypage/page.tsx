@@ -11,6 +11,7 @@ import { useState } from "react";
 import { MOCK_WEATHER } from "@/mocks/weathers";
 import { MOCK_EVENTS } from "@/mocks/events";
 import { parseSafeDate } from "@/utils/date";
+import { isWithinInterval, parseISO, startOfDay } from "date-fns";
 
 export default function Mypage() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
@@ -30,15 +31,15 @@ export default function Mypage() {
     }
   };
 
-  const selectedDateString = selectedDate
-    ? selectedDate.toLocaleDateString("en-CA")
-    : "";
-
   const dailyEvents = MOCK_EVENTS.filter((event) => {
-    return (
-      selectedDateString >= event.startDate &&
-      selectedDateString <= event.endDate
-    );
+    if (!selectedDate) return false;
+
+    const targetDate = startOfDay(selectedDate);
+    const startDate = parseISO(event.startDate);
+    const endDate = parseISO(event.endDate);
+
+    // 선택일이 행사 시작일과 종료일 사이에 있는지 확인
+    return isWithinInterval(targetDate, { start: startDate, end: endDate });
   });
 
   const weatherData = MOCK_WEATHER[1];

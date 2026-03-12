@@ -22,9 +22,7 @@ export default function MypageSelectedDateEventsCard({
     all: "",
   };
 
-  const formattedSelectedDate = formatDate(
-    selectedDate?.toLocaleDateString("en-CA"),
-  );
+  const formattedSelectedDate = formatDate(selectedDate);
 
   const selectedDateEvents = events.map((event) => ({
     ...event,

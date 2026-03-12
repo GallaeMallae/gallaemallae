@@ -25,7 +25,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import MypageSelectedDateEventsCard from "@/components/mypage/MypageSelectedDateEventsCard";
-import { parseSafeDate } from "@/utils/date";
+import { isSameDay, isWithinInterval, parseISO, startOfDay } from "date-fns";
 
 function useIsDesktop() {
   const [isDesktop, setIsDesktop] = React.useState(false);
@@ -50,9 +50,9 @@ function Calendar({
   buttonVariant?: React.ComponentProps<typeof Button>["variant"];
 }) {
   const isDesktop = useIsDesktop();
-  const [activePopoverDate, setActivePopoverDate] = React.useState<
-    string | null
-  >(null);
+  const [activePopoverDate, setActivePopoverDate] = React.useState<Date | null>(
+    null,
+  );
 
   const defaultClassNames = getDefaultClassNames();
 
@@ -194,8 +194,8 @@ interface CalendarDayButtonProps extends React.ComponentProps<
   typeof DayButton
 > {
   isDesktop: boolean;
-  activePopoverDate: string | null;
-  setActivePopoverDate: (date: string | null) => void;
+  activePopoverDate: Date | null;
+  setActivePopoverDate: (date: Date | null) => void;
 }
 
 function CalendarDayButton({
@@ -213,23 +213,21 @@ function CalendarDayButton({
     if (modifiers.focused) ref.current?.focus();
   }, [modifiers.focused]);
 
-  React.useEffect(() => {
-    console.log("실제 isOpen 상태:", activePopoverDate);
-  }, [activePopoverDate]);
-
-  // 날짜 비교를 위한 포맷팅 en-CA(YYYY-MM-DD)
-  const currentDayStr = day.date.toLocaleDateString("en-CA");
+  const targetDate = startOfDay(day.date);
   const isSunday = day.date.getDay() === 0;
 
-  const dayEvents = MOCK_EVENTS.filter(
-    (event) =>
-      currentDayStr >= event.startDate && currentDayStr <= event.endDate,
-  );
+  const dayEvents = MOCK_EVENTS.filter((event) => {
+    const startDate = parseISO(event.startDate);
+    const endDate = parseISO(event.endDate);
+    return isWithinInterval(targetDate, { start: startDate, end: endDate });
+  });
 
   const MAX_EVENTS = 2;
   const visibleEvents = dayEvents.slice(0, MAX_EVENTS);
 
-  const isPopoverOpen = activePopoverDate === currentDayStr;
+  const isPopoverOpen = activePopoverDate
+    ? isSameDay(day.date, activePopoverDate)
+    : false;
 
   const handleDayClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     // 달력 날짜 선택 로직
@@ -240,7 +238,7 @@ function CalendarDayButton({
         setActivePopoverDate(null);
       } else {
         // 팝오버가 꺼져있었다면 선택한 날짜 열기
-        setActivePopoverDate(currentDayStr);
+        setActivePopoverDate(day.date);
       }
     } else {
       // 행사가 없는 날 클릭시 팝오버 닫기
@@ -309,7 +307,7 @@ function CalendarDayButton({
                 const style =
                   CATEGORY_STYLES[event.category] || CATEGORY_STYLES["기타"];
 
-                const isStart = currentDayStr === event.startDate;
+                const isStart = isSameDay(day.date, parseISO(event.startDate));
                 const shouldShowTitle = isStart || isSunday;
 
                 return (
@@ -373,7 +371,7 @@ function CalendarDayButton({
           </div>
           <div className="flex flex-col overflow-y-auto p-6">
             <MypageSelectedDateEventsCard
-              selectedDate={parseSafeDate(activePopoverDate)}
+              selectedDate={activePopoverDate}
               events={dayEvents}
               displayMode="desktop"
             />
