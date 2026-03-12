@@ -1,6 +1,13 @@
 import { WEATHER_RECOMMEND_CARD_CONFIG } from "@/lib/constants";
 import { WeatherRecommendType } from "@/types/common";
 
+const MOCK_WEATHER: Record<WeatherRecommendType, string> = {
+  temp: "24도",
+  dust: "보통 (53)",
+  wind: "1m/s",
+  wet: "37%",
+};
+
 export default function EventWeatherInfoCard({
   type,
 }: {
@@ -19,7 +26,7 @@ export default function EventWeatherInfoCard({
       />
       <div>
         <p className="text-etc text-[9px] font-bold">{config.title}</p>
-        <p className="text-caption font-bold">{config.desc}</p>
+        <p className="text-caption font-bold">{MOCK_WEATHER[type]}</p>
       </div>
     </div>
   );
