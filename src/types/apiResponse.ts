@@ -1,3 +1,11 @@
+import { RecommendType } from "./common";
+
+// OpenAI API 갈래말래 추천 Res
+export interface FetchRecommendTypeResponse {
+  recommendType: RecommendType;
+  comment: string;
+}
+
 // OpenWeather Weather API Res
 export interface FetchWeatherResponse {
   weather: {
