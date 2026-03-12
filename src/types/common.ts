@@ -65,7 +65,7 @@ export type PeriodFilter = "전체" | "당일" | "주간" | "월간";
 
 export type WeatherRecommendType = "temp" | "dust" | "wind" | "wet";
 
-export interface WeatherRecommendCardConfigITem {
+export interface WeatherRecommendCardConfigItem {
   icon: LucideIcon;
   color: string;
   title: string;
