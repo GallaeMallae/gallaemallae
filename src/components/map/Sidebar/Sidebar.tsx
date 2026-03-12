@@ -5,25 +5,11 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SidebarSearch from "@/components/map/Sidebar/SidebarSearch";
 import SidebarPeriodFilterTabs from "@/components/map/Sidebar/SidebarPeriodFilterTabs";
 import SidebarDistance from "@/components/map/Sidebar/SidebarDistance";
-import {
-  LayoutGrid,
-  PartyPopper,
-  Ticket,
-  Landmark,
-  Ellipsis,
-  ListFilter,
-} from "lucide-react";
+import { ListFilter } from "lucide-react";
 import { useState } from "react";
+import { CATEGORY_MENU } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { PeriodFilter } from "@/types/common";
-
-const categories = [
-  { id: "all", label: "모든 행사", icon: LayoutGrid },
-  { id: "festival", label: "축제", icon: PartyPopper },
-  { id: "concert", label: "공연", icon: Ticket },
-  { id: "exhibition", label: "전시", icon: Landmark },
-  { id: "etc", label: "기타", icon: Ellipsis },
-];
 
 export default function Sidebar({
   radius,
@@ -54,13 +40,13 @@ export default function Sidebar({
           <p className="text-desc1 text-etc font-bold">카테고리</p>
           <Tabs value={active} orientation="vertical" onValueChange={setActive}>
             <TabsList className="flex w-full gap-2 bg-transparent p-0">
-              {categories.map((category) => {
-                const Icon = category.icon;
+              {CATEGORY_MENU.map((category) => {
+                const Icon = category.Icon;
 
                 return (
                   <TabsTrigger
-                    key={category.id}
-                    value={category.id}
+                    key={category.name}
+                    value={category.name}
                     className={cn(
                       "data-[state=active]:bg-symbol-sky-sub",
                       "data-[state=active]:text-symbol-sky",
@@ -69,7 +55,7 @@ export default function Sidebar({
                     )}
                   >
                     <Icon className="size-6" />
-                    <span className="text-desc1">{category.label}</span>
+                    <span className="text-desc1">{category.name}</span>
                   </TabsTrigger>
                 );
               })}
@@ -107,10 +93,10 @@ export default function Sidebar({
 
           <Tabs value={active} onValueChange={setActive}>
             <TabsList className="flex w-full rounded-xl bg-white shadow-sm">
-              {categories.map((category) => (
+              {CATEGORY_MENU.map((category) => (
                 <TabsTrigger
-                  key={category.id}
-                  value={category.id}
+                  key={category.name}
+                  value={category.name}
                   className={cn(
                     "text-caption flex-1 rounded-lg py-2 text-center transition-all",
                     "data-[state=active]:bg-symbol-sky data-[state=active]:text-white",
@@ -118,7 +104,7 @@ export default function Sidebar({
                     "data-[state=inactive]:hover:bg-muted",
                   )}
                 >
-                  {category.label}
+                  {category.name}
                 </TabsTrigger>
               ))}
             </TabsList>
