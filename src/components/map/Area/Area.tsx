@@ -56,12 +56,19 @@ export default function Area({ radius }: { radius: number | null }) {
   useEffect(() => {
     if (!navigator.geolocation) return;
 
-    navigator.geolocation.getCurrentPosition((pos) => {
-      setPosition({
-        lat: pos.coords.latitude,
-        lng: pos.coords.longitude,
-      });
-    });
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setPosition({
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+        });
+      },
+      // 현재 위치 받을 수 없으면 서울 시청으로 이동
+      (error) => {
+        console.warn("Geolocation error:", error.message);
+        setPosition({ lat: 37.566295, lng: 126.977945 });
+      },
+    );
   }, []);
 
   function getDistance(lat1: number, lng1: number, lat2: number, lng2: number) {
