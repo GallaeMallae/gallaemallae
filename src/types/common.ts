@@ -39,6 +39,16 @@ export interface EventCardItem {
   isLiked: boolean;
 }
 
+export interface TestEventCardItem {
+  id: string;
+  title: string;
+  location: string;
+  startDate: string;
+  endDate: string;
+  category: Category;
+  isLiked: boolean;
+}
+
 // ==============================
 // 날씨 카드 관련 타입
 // ==============================

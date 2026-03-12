@@ -160,4 +160,5 @@ export const ERROR_MESSAGE_CONFIG: Record<string, string> = {
 export const QUERY_KEYS = {
   USER: ["user"],
   PROFILE: (userId?: string) => (userId ? ["profile", userId] : ["profile"]),
+  EVENTS: ["events"],
 } as const;

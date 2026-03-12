@@ -14,6 +14,142 @@ export type Database = {
   }
   public: {
     Tables: {
+      event_likes: {
+        Row: {
+          created_at: string | null
+          festival_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          festival_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          festival_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "festival_likes_festival_id_fkey"
+            columns: ["festival_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      event_plans: {
+        Row: {
+          created_at: string | null
+          festival_id: string
+          id: string
+          updated_at: string | null
+          user_id: string
+          visit_date: string
+        }
+        Insert: {
+          created_at?: string | null
+          festival_id: string
+          id?: string
+          updated_at?: string | null
+          user_id: string
+          visit_date: string
+        }
+        Update: {
+          created_at?: string | null
+          festival_id?: string
+          id?: string
+          updated_at?: string | null
+          user_id?: string
+          visit_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "festival_plans_festival_id_fkey"
+            columns: ["festival_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          categories: string[]
+          created_at: string | null
+          data_reference_date: string | null
+          description: string | null
+          end_date: string | null
+          homepage_url: string | null
+          host: string | null
+          id: string
+          latitude: number | null
+          like_count: number | null
+          longitude: number | null
+          lot_address: string | null
+          name: string
+          organizer: string | null
+          phone: string | null
+          related_info: string | null
+          road_address: string | null
+          sponsor: string | null
+          start_date: string | null
+          updated_at: string | null
+          venue: string | null
+        }
+        Insert: {
+          categories?: string[]
+          created_at?: string | null
+          data_reference_date?: string | null
+          description?: string | null
+          end_date?: string | null
+          homepage_url?: string | null
+          host?: string | null
+          id?: string
+          latitude?: number | null
+          like_count?: number | null
+          longitude?: number | null
+          lot_address?: string | null
+          name: string
+          organizer?: string | null
+          phone?: string | null
+          related_info?: string | null
+          road_address?: string | null
+          sponsor?: string | null
+          start_date?: string | null
+          updated_at?: string | null
+          venue?: string | null
+        }
+        Update: {
+          categories?: string[]
+          created_at?: string | null
+          data_reference_date?: string | null
+          description?: string | null
+          end_date?: string | null
+          homepage_url?: string | null
+          host?: string | null
+          id?: string
+          latitude?: number | null
+          like_count?: number | null
+          longitude?: number | null
+          lot_address?: string | null
+          name?: string
+          organizer?: string | null
+          phone?: string | null
+          related_info?: string | null
+          road_address?: string | null
+          sponsor?: string | null
+          start_date?: string | null
+          updated_at?: string | null
+          venue?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -43,10 +179,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      increment_festival_view: {
+        Args: { festival_uuid: string }
+        Returns: undefined
+      }
     }
     Enums: {
-      [_ in never]: never
+      festival_category: "performance" | "festival" | "exhibition" | "other"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -173,6 +312,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      festival_category: ["performance", "festival", "exhibition", "other"],
+    },
   },
 } as const
