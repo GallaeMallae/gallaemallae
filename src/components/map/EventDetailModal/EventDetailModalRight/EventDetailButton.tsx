@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Heart } from "lucide-react";
+
 export default function EventDetailModalButton() {
   return (
     <div className="flex gap-4">
