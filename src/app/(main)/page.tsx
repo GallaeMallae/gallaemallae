@@ -6,18 +6,14 @@ import UpcomingEvents from "@/components/home/UpcomingEvents";
 import NearEvents from "@/components/home/NearEvents";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import {
-  MapMode,
-  CategoryId,
-  RecommendType,
-  PeriodFilter,
-} from "@/types/common";
 import { useLocationStore } from "@/stores/locationStore";
 import { useInitLocation } from "@/hooks/useInitLocation";
 import { useWeatherData } from "@/hooks/queries/useWeatherData";
 import { useLocationNameData } from "@/hooks/queries/useLocationNameData";
 import { useAirPollutionData } from "@/hooks/queries/useAirPollutionData";
+import { useRecommendTypeData } from "@/hooks/queries/useRecommendTypeData";
 import { mapWeatherCard } from "@/utils/mapper";
+import { MapMode, CategoryId, PeriodFilter } from "@/types/common";
 import { MOCK_EVENTS } from "@/mocks/events";
 
 export default function Home() {
@@ -28,11 +24,13 @@ export default function Home() {
   const { data: locationNameData } = useLocationNameData();
   const { data: weatherData } = useWeatherData();
   const { data: airPollutionData } = useAirPollutionData();
+  const { data: recommendTypeData } = useRecommendTypeData(
+    weatherData,
+    airPollutionData,
+  );
 
   const [selectedPeriodTab, setSelectedPeriodTab] =
     useState<PeriodFilter>("전체");
-
-  const recommendType: RecommendType = "positive";
 
   const handleMapClick = (mode: MapMode) => {
     router.push(`/map?mode=${mode}`);
@@ -52,6 +50,8 @@ export default function Home() {
     airPollutionData,
     isDefaultLocation,
   );
+
+  const recommendType = recommendTypeData?.recommendType ?? "neutral";
 
   return (
     <div className="flex flex-col gap-8">
