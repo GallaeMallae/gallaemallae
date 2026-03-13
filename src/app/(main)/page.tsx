@@ -4,7 +4,6 @@ import MainBanner from "@/components/home/MainBanner";
 import CategoryMenu from "@/components/home/CategoryMenu";
 import UpcomingEvents from "@/components/home/UpcomingEvents";
 import NearEvents from "@/components/home/NearEvents";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useLocationStore } from "@/stores/locationStore";
 import { useInitLocation } from "@/hooks/useInitLocation";
@@ -13,13 +12,12 @@ import { useLocationNameData } from "@/hooks/queries/useLocationNameData";
 import { useAirPollutionData } from "@/hooks/queries/useAirPollutionData";
 import { useRecommendTypeData } from "@/hooks/queries/useRecommendTypeData";
 import { mapWeatherCard } from "@/utils/mapper";
-import { MapMode, CategoryId, PeriodFilter } from "@/types/common";
+import { PeriodFilter } from "@/types/common";
 import { MOCK_EVENTS } from "@/mocks/events";
 
 export default function Home() {
   useInitLocation();
 
-  const router = useRouter();
   const { isDefaultLocation } = useLocationStore();
   const { data: locationNameData } = useLocationNameData();
   const { data: weatherData } = useWeatherData();
@@ -45,14 +43,6 @@ export default function Home() {
 
   const recommendType = recommendTypeData?.recommendType ?? null;
 
-  const handleMapClick = (mode: MapMode) => {
-    router.push(`/map?mode=${mode}`);
-  };
-
-  const handleCategoryClick = (categoryId: CategoryId) => {
-    router.push(`/map?category=${categoryId}`);
-  };
-
   return (
     <div className="flex flex-col gap-8">
       <MainBanner
@@ -60,10 +50,8 @@ export default function Home() {
         recommendType={recommendType}
         isWeatherCardLoading={isWeatherLoading}
         isRecommendCardLoading={isRecommendTypeLoading}
-        onMapAllClick={() => handleMapClick("all")}
-        onMapNearClick={() => handleMapClick("near")}
       />
-      <CategoryMenu onSelectCategory={handleCategoryClick} />
+      <CategoryMenu />
       <UpcomingEvents
         events={MOCK_EVENTS}
         period={selectedPeriodTab}

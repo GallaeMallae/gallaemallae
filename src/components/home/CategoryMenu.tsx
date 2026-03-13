@@ -1,12 +1,15 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { useRouter } from "next/navigation";
 import { CategoryId } from "@/types/common";
 import { CATEGORY_MENU } from "@/lib/constants";
 
-export default function CategoryMenu({
-  onSelectCategory,
-}: {
-  onSelectCategory: (categoryId: CategoryId) => void;
-}) {
+export default function CategoryMenu() {
+  const router = useRouter();
+
+  const handleCategoryClick = (categoryId: CategoryId) => {
+    router.push(`/map?category=${categoryId}`);
+  };
+
   return (
     <section>
       <h3 className="text-title2 mb-2 font-bold">카테고리 검색</h3>
@@ -19,7 +22,7 @@ export default function CategoryMenu({
             <Card
               key={`category-${id}`}
               className="cursor-pointer border-none bg-transparent py-0 shadow-none md:rounded-xl md:border md:bg-white md:py-6 md:shadow-sm"
-              onClick={() => onSelectCategory(id)}
+              onClick={() => handleCategoryClick(id)}
             >
               <CardContent className="flex flex-col items-center gap-2 p-0">
                 <div

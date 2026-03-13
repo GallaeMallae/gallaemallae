@@ -5,15 +5,14 @@ import WeatherCardSkeleton from "@/components/common/skeleton/WeatherCardSkeleto
 import RecommendCardSkeleton from "@/components/common/skeleton/RecommendCardSkeleton";
 import { Map, MapPin } from "lucide-react";
 import Image from "next/image";
-import { WeatherCardItem, RecommendType } from "@/types/common";
+import { useRouter } from "next/navigation";
+import { WeatherCardItem, RecommendType, MapMode } from "@/types/common";
 
 interface MainBannerProps {
   weather: WeatherCardItem | null;
   recommendType: RecommendType | null;
   isWeatherCardLoading: boolean;
   isRecommendCardLoading: boolean;
-  onMapAllClick: () => void;
-  onMapNearClick: () => void;
 }
 
 export default function MainBanner({
@@ -21,9 +20,13 @@ export default function MainBanner({
   recommendType,
   isWeatherCardLoading,
   isRecommendCardLoading,
-  onMapAllClick,
-  onMapNearClick,
 }: MainBannerProps) {
+  const router = useRouter();
+
+  const handleMapClick = (mode: MapMode) => {
+    router.push(`/map?mode=${mode}`);
+  };
+
   return (
     <section>
       <div className="flex flex-col gap-4 md:flex-row">
@@ -56,14 +59,17 @@ export default function MainBanner({
             </div>
 
             <div className="flex gap-4">
-              <Button className="rounded-xl" onClick={onMapAllClick}>
+              <Button
+                className="rounded-xl"
+                onClick={() => handleMapClick("all")}
+              >
                 <Map className="h-4 w-4" />
                 지도에서 행사 찾기
               </Button>
               <Button
                 className="rounded-xl"
                 variant="outline"
-                onClick={onMapNearClick}
+                onClick={() => handleMapClick("near")}
               >
                 <MapPin className="h-4 w-4" />내 주변 행사 찾기
               </Button>
