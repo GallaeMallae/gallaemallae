@@ -1,5 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { INTRODUCE_CARD_CONFIG } from "@/lib/constants";
+import { MOCK_INTRODUCE } from "@/mocks/events";
 import { IntroduceType } from "@/types/common";
 
 export default function EventIntroduce({ type }: { type: IntroduceType }) {
@@ -18,7 +19,7 @@ export default function EventIntroduce({ type }: { type: IntroduceType }) {
         <div>
           <p className="text-caption text-etc">{config.title}</p>
 
-          <p className="text-caption font-semibold">{config.desc}</p>
+          <p className="text-caption font-semibold">{MOCK_INTRODUCE[type]}</p>
         </div>
       </CardContent>
     </Card>
