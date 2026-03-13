@@ -44,7 +44,7 @@ export default function Mypage() {
   // 일정 목록 데이터 가공
   const formattedPlanedEvents = planedEvents.map((plan) => ({
     ...plan.event,
-    display_date: plan.visit_date,
+    display_date: plan.visit_date || plan.event.start_date,
     plan_id: plan.id,
   }));
 

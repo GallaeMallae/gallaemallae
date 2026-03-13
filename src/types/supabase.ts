@@ -50,7 +50,7 @@ export type Database = {
           id: string
           updated_at: string | null
           user_id: string
-          visit_date: string
+          visit_date: string | null
         }
         Insert: {
           created_at?: string | null
@@ -58,7 +58,7 @@ export type Database = {
           id?: string
           updated_at?: string | null
           user_id: string
-          visit_date: string
+          visit_date?: string | null
         }
         Update: {
           created_at?: string | null
@@ -66,7 +66,7 @@ export type Database = {
           id?: string
           updated_at?: string | null
           user_id?: string
-          visit_date?: string
+          visit_date?: string | null
         }
         Relationships: [
           {
