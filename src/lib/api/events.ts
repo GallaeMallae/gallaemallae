@@ -36,7 +36,7 @@ export async function fetchEventsByCategory(
   const { data, error } = await supabase
     .from("events")
     .select("*")
-    .contains("categories", [category]);
+    .contains("categories", category);
 
   if (error) throw new Error(error.message);
   return data;

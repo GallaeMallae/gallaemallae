@@ -182,7 +182,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      festival_category: "performance" | "festival" | "exhibition" | "other"
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never
@@ -309,8 +309,6 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {
-      festival_category: ["performance", "festival", "exhibition", "other"],
-    },
+    Enums: {},
   },
 } as const

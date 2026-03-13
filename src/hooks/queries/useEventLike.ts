@@ -29,7 +29,6 @@ export function useEventLike(eventId: string) {
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.EVENTS });
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.LIKED_EVENTS(user?.id),
       });
