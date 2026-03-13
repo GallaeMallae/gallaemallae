@@ -9,7 +9,10 @@ export async function POST(req: Request) {
   const { weather, temp, pm10, pm25 } = await req.json();
 
   if (!weather || temp == null || pm10 == null || pm25 == null) {
-    return NextResponse.json({ error: "Invalid Params" }, { status: 400 });
+    return NextResponse.json(
+      { error: "[OpenAI API] : 유효하지 않은 파라미터" },
+      { status: 400 },
+    );
   }
 
   const prompt = `
@@ -39,11 +42,23 @@ export async function POST(req: Request) {
     const content = completion.choices[0].message.content ?? "{}";
     const parsed = JSON.parse(content);
 
+    const validTypes = ["veryPositive", "positive", "neutral", "negative"];
+
+    if (!validTypes.includes(parsed.recommendType)) {
+      return NextResponse.json(
+        { error: "[OpenAI API] : 올바르지 않은 AI 응답 형식" },
+        { status: 500 },
+      );
+    }
+
     return NextResponse.json({
       recommendType: parsed.recommendType,
       comment: parsed.comment,
     });
   } catch (e) {
-    return NextResponse.json({ error: "OpenAI error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "[OpenAI API] : 요청 처리 중 오류 발생" },
+      { status: 500 },
+    );
   }
 }

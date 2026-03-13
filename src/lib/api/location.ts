@@ -16,11 +16,15 @@ export async function fetchLocationName(
   );
 
   if (!res.ok) {
-    throw new Error("[Kakao API] 지역명 조회 실패");
+    throw new Error("[Kakao API] : 지역명 조회 실패");
   }
 
   const data: FetchLocationNameResponse = await res.json();
   const address = data.documents?.[0]?.address;
+
+  if (!address) {
+    throw new Error("[Kakao API] : 유효하지 않은 주소 정보");
+  }
 
   return `${address.region_1depth_name} ${address.region_2depth_name}`;
 }
