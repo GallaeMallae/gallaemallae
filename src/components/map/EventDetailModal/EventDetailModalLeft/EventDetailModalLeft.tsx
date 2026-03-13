@@ -17,7 +17,7 @@ export default function EventDetailModalLeft() {
         </CardHeader>
         <CardContent className="grid grid-cols-2 gap-2 pt-0">
           <EventRecommendWeather type="temp" />
-          <EventRecommendWeather type="dust" />
+          <EventRecommendWeather type="fineDust" />
           <EventRecommendWeather type="wind" />
           <EventRecommendWeather type="wet" />
         </CardContent>

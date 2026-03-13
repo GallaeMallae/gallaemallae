@@ -23,7 +23,7 @@ import {
   WeatherType,
   WeatherCardConfigItem,
   PeriodFilter,
-  WeatherRecommendType,
+  WeatherInfoType,
   WeatherRecommendCardConfigItem,
   IntroduceType,
   IntroduceCardConfigItem,
@@ -126,7 +126,7 @@ export const PERIOD_FILTER_TABS: PeriodFilter[] = [
 ];
 
 export const WEATHER_RECOMMEND_CARD_CONFIG: Record<
-  WeatherRecommendType,
+  WeatherInfoType,
   WeatherRecommendCardConfigItem
 > = {
   temp: {
@@ -134,7 +134,7 @@ export const WEATHER_RECOMMEND_CARD_CONFIG: Record<
     color: "text-amber-400",
     title: "날씨",
   },
-  dust: {
+  fineDust: {
     icon: CloudFog,
     color: "text-etc",
     title: "미세먼지",
