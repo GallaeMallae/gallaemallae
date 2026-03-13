@@ -25,6 +25,7 @@ export interface RecommendCardConfigItem {
   textColor: string;
   emojiSrc: string;
   message: string;
+  status: string;
 }
 
 // ==============================
@@ -61,3 +62,34 @@ export interface WeatherCardItem {
 
 // 행사 기간 필터 탭
 export type PeriodFilter = "전체" | "당일" | "주간" | "월간";
+
+export type WeatherInfoType = "temp" | "fineDust" | "wind" | "wet";
+
+export interface WeatherRecommendCardConfigItem {
+  icon: LucideIcon;
+  color: string;
+  title: string;
+}
+
+// ==============================
+// 모달창 축제 정보 (기간, 장소, 전화, 홈페이지)
+// ==============================
+export type IntroduceType = "date" | "place" | "tel" | "homepage";
+
+export interface IntroduceCardConfigItem {
+  icon: LucideIcon;
+  color: string;
+  bg: string;
+  title: string;
+}
+
+export interface DetailCardItem {
+  description: string;
+  organization: {
+    host: string;
+    organizer: string;
+    sponsor: string;
+    provider: string;
+  };
+  information: string[];
+}

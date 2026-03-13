@@ -8,6 +8,13 @@ import {
   Cloudy,
   Umbrella,
   Snowflake,
+  CloudFog,
+  Wind,
+  Droplet,
+  Calendar,
+  MapPin,
+  Phone,
+  House,
 } from "lucide-react";
 import {
   CategoryMenuCardItem,
@@ -16,6 +23,10 @@ import {
   WeatherType,
   WeatherCardConfigItem,
   PeriodFilter,
+  WeatherInfoType,
+  WeatherRecommendCardConfigItem,
+  IntroduceType,
+  IntroduceCardConfigItem,
 } from "@/types/common";
 
 export const CATEGORY_MENU: CategoryMenuCardItem[] = [
@@ -55,24 +66,28 @@ export const RECOMMEND_CARD_CONFIG: Record<
     textColor: "text-green-500",
     emojiSrc: "/images/emoji-very-positive.png",
     message: "지금 당장 나가세요!",
+    status: "적극추천",
   },
   positive: {
     bgColor: "bg-lime-100",
     textColor: "text-lime-500",
     emojiSrc: "/images/emoji-positive.png",
     message: "오늘 외출하기 좋아요!",
+    status: "추천",
   },
   neutral: {
     bgColor: "bg-yellow-100",
     textColor: "text-yellow-500",
     emojiSrc: "/images/emoji-neutral.png",
     message: "나가도 괜찮아요",
+    status: "보통",
   },
   negative: {
     bgColor: "bg-red-100",
     textColor: "text-red-500",
     emojiSrc: "/images/emoji-negative.png",
     message: "외출은 고민해 보아요",
+    status: "비추천",
   },
 };
 
@@ -109,6 +124,62 @@ export const PERIOD_FILTER_TABS: PeriodFilter[] = [
   "주간",
   "월간",
 ];
+
+export const WEATHER_RECOMMEND_CARD_CONFIG: Record<
+  WeatherInfoType,
+  WeatherRecommendCardConfigItem
+> = {
+  temp: {
+    icon: Sun,
+    color: "text-amber-400",
+    title: "날씨",
+  },
+  fineDust: {
+    icon: CloudFog,
+    color: "text-etc",
+    title: "미세먼지",
+  },
+  wind: {
+    icon: Wind,
+    color: "text-teal-400",
+    title: "풍속",
+  },
+  wet: {
+    icon: Droplet,
+    color: "text-sky-300",
+    title: "습도",
+  },
+};
+
+export const INTRODUCE_CARD_CONFIG: Record<
+  IntroduceType,
+  IntroduceCardConfigItem
+> = {
+  date: {
+    icon: Calendar,
+    color: "text-blue-500",
+    bg: "bg-blue-50",
+    title: "축제기간",
+  },
+  place: {
+    icon: MapPin,
+    color: "text-green-500",
+    bg: "bg-green-50",
+    title: "개최장소",
+  },
+  tel: {
+    icon: Phone,
+    color: "text-yellow-600",
+    bg: "bg-yellow-50",
+    title: "문의처",
+  },
+  homepage: {
+    icon: House,
+    color: "text-orange-500",
+    bg: "bg-orange-100",
+    title: "홈페이지",
+  },
+};
 
 export const CALENDAR_CATEGORY_STYLES: Record<
   string,
