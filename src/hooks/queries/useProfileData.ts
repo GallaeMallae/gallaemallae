@@ -3,11 +3,9 @@
 import { useUserData } from "@/hooks/queries/useUserData";
 import { fetchProfile } from "@/lib/api/profile";
 import { QUERY_KEYS } from "@/lib/constants";
+import { Profile } from "@/types/common";
 import { createClient } from "@/utils/supabase/client";
 import { useQuery } from "@tanstack/react-query";
-import { Tables } from "@/types/supabase";
-
-type Profile = Tables<"profiles">;
 
 export function useProfileData() {
   const { user } = useUserData();

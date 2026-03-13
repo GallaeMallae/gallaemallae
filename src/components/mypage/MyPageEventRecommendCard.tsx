@@ -34,7 +34,6 @@ export default function MyPageEventRecommendCard({
 
         <div className="mb-2 flex items-center gap-2">
           <p className="text-symbol-sky text-desc1 font-semibold">
-            {/* todo: AI의 추천 멘트 한마디 넣기 */}
             이런 행사는 어때요?
           </p>
         </div>

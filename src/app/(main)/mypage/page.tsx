@@ -12,6 +12,8 @@ import { MOCK_WEATHER } from "@/mocks/weathers";
 import { MOCK_EVENTS } from "@/mocks/events";
 import { parseSafeDate } from "@/utils/date";
 import { isWithinInterval, parseISO, startOfDay } from "date-fns";
+import { useLikedEventsData } from "@/hooks/queries/useLikedEventsData";
+import { usePlanedEventsData } from "@/hooks/queries/usePlanedEventsData";
 
 export default function Mypage() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
@@ -31,12 +33,27 @@ export default function Mypage() {
     }
   };
 
-  const dailyEvents = MOCK_EVENTS.filter((event) => {
+  const { likedEvents } = useLikedEventsData();
+  const { planedEvents } = usePlanedEventsData();
+
+  // 관심 목록 데이터 가공
+  const formattedLikedEvents = likedEvents.map((event) => ({
+    ...event,
+    display_date: event.start_date,
+  }));
+  // 일정 목록 데이터 가공
+  const formattedPlanedEvents = planedEvents.map((plan) => ({
+    ...plan.event,
+    display_date: plan.visit_date || plan.event.start_date,
+    plan_id: plan.id,
+  }));
+
+  const dailyEvents = formattedPlanedEvents.filter((event) => {
     if (!selectedDate) return false;
 
     const targetDate = startOfDay(selectedDate);
-    const startDate = parseISO(event.startDate);
-    const endDate = parseISO(event.endDate);
+    const startDate = parseISO(event.start_date);
+    const endDate = parseISO(event.end_date);
 
     // 선택일이 행사 시작일과 종료일 사이에 있는지 확인
     return isWithinInterval(targetDate, { start: startDate, end: endDate });
@@ -67,7 +84,7 @@ export default function Mypage() {
               title="나의 일정 목록"
               iconName="bookmark"
               iconClassName="text-symbol-sky fill-symbol-sky"
-              events={MOCK_EVENTS}
+              events={formattedPlanedEvents}
               onEventClick={handleEventClick}
             />
           </div>
@@ -76,7 +93,7 @@ export default function Mypage() {
               title="나의 관심 목록"
               iconName="heart"
               iconClassName="text-red-500 fill-red-500"
-              events={MOCK_EVENTS}
+              events={formattedLikedEvents}
               onEventClick={handleEventClick}
             />
           </div>
@@ -85,6 +102,7 @@ export default function Mypage() {
         <div className="order-1 flex flex-col gap-6 md:order-2 md:col-span-3">
           <div className="flex-1 rounded-2xl border bg-white p-6 shadow-sm">
             <MypageCalendar
+              planedEvents={formattedPlanedEvents}
               selectedDate={selectedDate}
               onDateChange={setSelectedDate}
               month={month}
