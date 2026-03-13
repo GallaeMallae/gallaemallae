@@ -161,28 +161,24 @@ export const INTRODUCE_CARD_CONFIG: Record<
     color: "text-blue-500",
     bg: "bg-blue-50",
     title: "축제기간",
-    desc: "2024.10.05 - 2024.10.05",
   },
   place: {
     icon: MapPin,
     color: "text-green-500",
     bg: "bg-green-50",
     title: "개최장소",
-    desc: "여의도 한강공원 일대",
   },
   tel: {
     icon: Phone,
     color: "text-yellow-600",
     bg: "bg-yellow-50",
     title: "문의처",
-    desc: "02-1234-5678",
   },
   homepage: {
     icon: House,
     color: "text-orange-500",
     bg: "bg-orange-100",
     title: "홈페이지",
-    desc: "https://www.naver.com",
   },
 };
 
