@@ -60,11 +60,19 @@ export function mapWeatherCard(
   airPollutionData: FetchAirPollutionResponse,
   isDefaultLocation: boolean,
 ): WeatherCardItem {
+  const weather = weatherData.weather?.[0];
+  const airPollution = airPollutionData.list?.[0];
+  const temperature = weatherData.main?.temp;
+
+  if (!weather || !airPollution || temperature == null) {
+    throw new Error("[OpenWeather API] : 유효하지 않은 기상 데이터");
+  }
+
   return {
     location: isDefaultLocation ? "대한민국 서울" : locationName,
-    weatherType: mapWeatherType(weatherData.weather[0].main),
-    temperature: Math.round(weatherData.main.temp),
-    fineDust: mapPm10Level(airPollutionData.list[0].components.pm10),
-    ultrafineDust: mapPm25Level(airPollutionData.list[0].components.pm2_5),
+    weatherType: mapWeatherType(weather.main),
+    temperature: Math.round(temperature),
+    fineDust: mapPm10Level(airPollution.components.pm10),
+    ultrafineDust: mapPm25Level(airPollution.components.pm2_5),
   };
 }
