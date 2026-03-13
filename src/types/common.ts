@@ -81,7 +81,6 @@ export interface IntroduceCardConfigItem {
   color: string;
   bg: string;
   title: string;
-  desc: string;
 }
 
 export interface DetailCardItem {
