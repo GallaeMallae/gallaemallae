@@ -63,7 +63,7 @@ export interface WeatherCardItem {
 // 행사 기간 필터 탭
 export type PeriodFilter = "전체" | "당일" | "주간" | "월간";
 
-export type WeatherRecommendType = "temp" | "dust" | "wind" | "wet";
+export type WeatherInfoType = "temp" | "fineDust" | "wind" | "wet";
 
 export interface WeatherRecommendCardConfigItem {
   icon: LucideIcon;

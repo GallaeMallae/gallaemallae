@@ -1,9 +1,9 @@
 import { WEATHER_RECOMMEND_CARD_CONFIG } from "@/lib/constants";
-import { WeatherRecommendType } from "@/types/common";
+import { WeatherInfoType } from "@/types/common";
 
-const MOCK_WEATHER: Record<WeatherRecommendType, string> = {
+const MOCK_WEATHER: Record<WeatherInfoType, string> = {
   temp: "24도",
-  dust: "보통 (53)",
+  fineDust: "보통 (53)",
   wind: "1m/s",
   wet: "37%",
 };
@@ -11,7 +11,7 @@ const MOCK_WEATHER: Record<WeatherRecommendType, string> = {
 export default function EventWeatherInfoCard({
   type,
 }: {
-  type: WeatherRecommendType;
+  type: WeatherInfoType;
 }) {
   const config = WEATHER_RECOMMEND_CARD_CONFIG[type];
   const Icon = config.icon;

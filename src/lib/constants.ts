@@ -134,7 +134,6 @@ export const WEATHER_RECOMMEND_CARD_CONFIG: Record<
     color: "text-amber-400",
     title: "날씨",
   },
-
   dust: {
     icon: CloudFog,
     color: "text-etc",
