@@ -18,10 +18,10 @@ import { MOCK_EVENTS } from "@/mocks/events";
 export default function Home() {
   useInitLocation();
 
-  const { isDefaultLocation } = useLocationStore();
-  const { data: locationNameData } = useLocationNameData();
-  const { data: weatherData } = useWeatherData();
-  const { data: airPollutionData } = useAirPollutionData();
+  const { coords, isInitialized, isDefaultLocation } = useLocationStore();
+  const { data: locationNameData } = useLocationNameData(coords, isInitialized);
+  const { data: weatherData } = useWeatherData(coords, isInitialized);
+  const { data: airPollutionData } = useAirPollutionData(coords, isInitialized);
   const { data: recommendTypeData, isLoading: isRecommendTypeLoading } =
     useRecommendTypeData(weatherData, airPollutionData);
 

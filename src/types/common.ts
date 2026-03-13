@@ -1,5 +1,11 @@
 import { LucideIcon } from "lucide-react";
 
+// 사용자 위치 타입
+export interface Coordinates {
+  latitude: number;
+  longitude: number;
+}
+
 // ==============================
 // 카테고리 관련 타입
 // ==============================

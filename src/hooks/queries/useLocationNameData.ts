@@ -1,19 +1,16 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useLocationStore } from "@/stores/locationStore";
 import { fetchLocationName } from "@/lib/api/location";
+import { Coordinates } from "@/types/common";
 
-export function useLocationNameData() {
-  const { coords } = useLocationStore();
-
-  const latitude = coords?.latitude;
-  const longitude = coords?.longitude;
+export function useLocationNameData(coords: Coordinates, enabled: boolean) {
+  const { latitude, longitude } = coords;
 
   return useQuery({
     queryKey: ["locationName", latitude, longitude],
-    queryFn: () => fetchLocationName(latitude!, longitude!),
-    enabled: !!coords,
+    queryFn: () => fetchLocationName(latitude, longitude),
+    enabled,
     staleTime: Infinity,
   });
 }
