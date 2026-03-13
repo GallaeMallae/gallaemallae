@@ -1,18 +1,28 @@
 import { Button } from "@/components/ui/button";
 import WeatherCard from "@/components/common/WeatherCard";
 import RecommendCard from "@/components/common/RecommendCard";
+import WeatherCardSkeleton from "@/components/common/skeleton/WeatherCardSkeleton";
+import RecommendCardSkeleton from "@/components/common/skeleton/RecommendCardSkeleton";
 import { Map, MapPin } from "lucide-react";
 import Image from "next/image";
 import { WeatherCardItem, RecommendType } from "@/types/common";
 
 interface MainBannerProps {
-  weather: WeatherCardItem;
-  recommendType: RecommendType;
+  weather: WeatherCardItem | null;
+  recommendType: RecommendType | null;
+  isWeatherCardLoading: boolean;
+  isRecommendCardLoading: boolean;
+  onMapAllClick: () => void;
+  onMapNearClick: () => void;
 }
 
 export default function MainBanner({
   weather,
   recommendType,
+  isWeatherCardLoading,
+  isRecommendCardLoading,
+  onMapAllClick,
+  onMapNearClick,
 }: MainBannerProps) {
   return (
     <section>
@@ -46,11 +56,15 @@ export default function MainBanner({
             </div>
 
             <div className="flex gap-4">
-              <Button className="rounded-xl">
+              <Button className="rounded-xl" onClick={onMapAllClick}>
                 <Map className="h-4 w-4" />
                 지도에서 행사 찾기
               </Button>
-              <Button className="rounded-xl" variant="outline">
+              <Button
+                className="rounded-xl"
+                variant="outline"
+                onClick={onMapNearClick}
+              >
                 <MapPin className="h-4 w-4" />내 주변 행사 찾기
               </Button>
             </div>
@@ -58,8 +72,16 @@ export default function MainBanner({
         </div>
 
         <div className="flex flex-col gap-4 md:w-90 md:gap-2">
-          <WeatherCard {...weather} />
-          <RecommendCard recommendType={recommendType} />
+          {isWeatherCardLoading || !weather ? (
+            <WeatherCardSkeleton />
+          ) : (
+            <WeatherCard {...weather} />
+          )}
+          {isRecommendCardLoading || !recommendType ? (
+            <RecommendCardSkeleton />
+          ) : (
+            <RecommendCard recommendType={recommendType} />
+          )}
         </div>
       </div>
     </section>
