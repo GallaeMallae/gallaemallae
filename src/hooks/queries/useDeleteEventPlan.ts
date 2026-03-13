@@ -10,14 +10,21 @@ export function useDeleteEventPlan() {
   const queryClient = useQueryClient();
   const supabase = createClient();
 
-  return useMutation({
+  const mutation = useMutation({
     mutationFn: (planId: string) => deleteEventPlan(supabase, planId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.EVENT_PLANS() });
       toast.success("일정이 삭제되었습니다.");
     },
-    onError: (error) => {
+    onError: (error: Error) => {
       toast.error(`삭제 실패: ${error.message}`);
     },
   });
+
+  return {
+    deletePlan: mutation.mutate,
+    isPending: mutation.isPending,
+    isError: mutation.isError,
+    error: mutation.error,
+  };
 }

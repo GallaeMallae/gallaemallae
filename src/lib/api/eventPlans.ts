@@ -7,7 +7,7 @@ export interface AddEventPlanParams {
   visitDate: string; // "YYYY-MM-DD" 형태로 통일?
 }
 
-export async function fetchEventPlans(
+export async function fetchPlanedEvents(
   supabase: SupabaseClient<Database>,
   userId: string,
 ) {

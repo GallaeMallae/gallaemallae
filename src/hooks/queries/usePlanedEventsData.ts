@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { createClient } from "@/utils/supabase/client";
-import { fetchEventPlans } from "@/lib/api/eventPlans";
+import { fetchPlanedEvents } from "@/lib/api/eventPlans";
 import { QUERY_KEYS } from "@/lib/constants";
 import { useUserData } from "./useUserData";
 import { Tables } from "@/types/supabase";
@@ -18,7 +18,7 @@ export function usePlanedEventsData() {
 
   const eventPlansQuery = useQuery<EventPlanWithEvent[]>({
     queryKey: QUERY_KEYS.EVENT_PLANS(user?.id),
-    queryFn: () => fetchEventPlans(supabase, user!.id),
+    queryFn: () => fetchPlanedEvents(supabase, user!.id),
     enabled: !!user?.id,
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 30,

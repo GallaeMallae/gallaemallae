@@ -41,16 +41,6 @@ export interface EventCardItem {
   isLiked: boolean;
 }
 
-export interface TestEventCardItem {
-  id: string;
-  title: string;
-  location: string;
-  startDate: string;
-  endDate: string;
-  category: Category;
-  isLiked: boolean;
-}
-
 export type Event = Tables<"events">;
 export type MypageDisplayEvent = Event & {
   display_date: string; // 관심 목록이면 start_date, 일정이면 visit_date
@@ -84,6 +74,7 @@ export type PeriodFilter = "전체" | "당일" | "주간" | "월간";
 // 프로필 관련 타입
 // ==============================
 export type Profile = Tables<"profiles">;
+
 export type WeatherInfoType = "temp" | "fineDust" | "wind" | "wet";
 
 export interface WeatherRecommendCardConfigItem {
