@@ -1,4 +1,4 @@
-import { EventCardItem, DetailCardItem } from "@/types/common";
+import { EventCardItem, DetailCardItem, IntroduceType } from "@/types/common";
 
 export const MOCK_EVENTS: EventCardItem[] = [
   {
@@ -115,4 +115,11 @@ export const MOCK_DETAIL: DetailCardItem = {
     "행사장 주변 교통 통제가 있을 예정입니다.",
     "개인 돗자리 및 보온용 의류 지참을 추천드립니다.",
   ],
+};
+
+export const MOCK_INTRODUCE: Record<IntroduceType, string> = {
+  date: "2024.10.05 - 2024.10.05",
+  place: "여의도 한강공원 일대",
+  tel: "02-1234-5678",
+  homepage: "https://www.naver.com",
 };
