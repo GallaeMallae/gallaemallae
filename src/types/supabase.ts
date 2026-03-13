@@ -17,26 +17,26 @@ export type Database = {
       event_likes: {
         Row: {
           created_at: string | null
-          festival_id: string
+          event_id: string
           id: string
           user_id: string
         }
         Insert: {
           created_at?: string | null
-          festival_id: string
+          event_id: string
           id?: string
           user_id: string
         }
         Update: {
           created_at?: string | null
-          festival_id?: string
+          event_id?: string
           id?: string
           user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "festival_likes_festival_id_fkey"
-            columns: ["festival_id"]
+            foreignKeyName: "event_likes_event_id_fkey"
+            columns: ["event_id"]
             isOneToOne: false
             referencedRelation: "events"
             referencedColumns: ["id"]
@@ -46,7 +46,7 @@ export type Database = {
       event_plans: {
         Row: {
           created_at: string | null
-          festival_id: string
+          event_id: string
           id: string
           updated_at: string | null
           user_id: string
@@ -54,7 +54,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string | null
-          festival_id: string
+          event_id: string
           id?: string
           updated_at?: string | null
           user_id: string
@@ -62,7 +62,7 @@ export type Database = {
         }
         Update: {
           created_at?: string | null
-          festival_id?: string
+          event_id?: string
           id?: string
           updated_at?: string | null
           user_id?: string
@@ -70,8 +70,8 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "festival_plans_festival_id_fkey"
-            columns: ["festival_id"]
+            foreignKeyName: "event_plans_event_id_fkey"
+            columns: ["event_id"]
             isOneToOne: false
             referencedRelation: "events"
             referencedColumns: ["id"]
@@ -84,21 +84,21 @@ export type Database = {
           created_at: string | null
           data_reference_date: string | null
           description: string | null
-          end_date: string | null
+          end_date: string
           homepage_url: string | null
           host: string | null
           id: string
           latitude: number | null
-          like_count: number | null
           longitude: number | null
           lot_address: string | null
           name: string
           organizer: string | null
           phone: string | null
+          provider: string | null
           related_info: string | null
           road_address: string | null
           sponsor: string | null
-          start_date: string | null
+          start_date: string
           updated_at: string | null
           venue: string | null
         }
@@ -107,21 +107,21 @@ export type Database = {
           created_at?: string | null
           data_reference_date?: string | null
           description?: string | null
-          end_date?: string | null
+          end_date: string
           homepage_url?: string | null
           host?: string | null
           id?: string
           latitude?: number | null
-          like_count?: number | null
           longitude?: number | null
           lot_address?: string | null
           name: string
           organizer?: string | null
           phone?: string | null
+          provider?: string | null
           related_info?: string | null
           road_address?: string | null
           sponsor?: string | null
-          start_date?: string | null
+          start_date: string
           updated_at?: string | null
           venue?: string | null
         }
@@ -130,21 +130,21 @@ export type Database = {
           created_at?: string | null
           data_reference_date?: string | null
           description?: string | null
-          end_date?: string | null
+          end_date?: string
           homepage_url?: string | null
           host?: string | null
           id?: string
           latitude?: number | null
-          like_count?: number | null
           longitude?: number | null
           lot_address?: string | null
           name?: string
           organizer?: string | null
           phone?: string | null
+          provider?: string | null
           related_info?: string | null
           road_address?: string | null
           sponsor?: string | null
-          start_date?: string | null
+          start_date?: string
           updated_at?: string | null
           venue?: string | null
         }
@@ -179,10 +179,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      increment_festival_view: {
-        Args: { festival_uuid: string }
-        Returns: undefined
-      }
+      [_ in never]: never
     }
     Enums: {
       festival_category: "performance" | "festival" | "exhibition" | "other"

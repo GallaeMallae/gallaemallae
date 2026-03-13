@@ -1,3 +1,4 @@
+import { Tables } from "@/types/supabase";
 import { LucideIcon } from "lucide-react";
 
 // ==============================
@@ -49,6 +50,12 @@ export interface TestEventCardItem {
   isLiked: boolean;
 }
 
+export type Event = Tables<"events">;
+export type MypageDisplayEvent = Event & {
+  display_date: string; // 관심 목록이면 start_date, 일정이면 visit_date
+  plan_id?: string; // 일정 고유 ID
+};
+
 // ==============================
 // 날씨 카드 관련 타입
 // ==============================
@@ -71,3 +78,8 @@ export interface WeatherCardItem {
 
 // 행사 기간 필터 탭
 export type PeriodFilter = "전체" | "당일" | "주간" | "월간";
+
+// ==============================
+// 프로필 관련 타입
+// ==============================
+export type Profile = Tables<"profiles">;

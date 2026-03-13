@@ -161,4 +161,15 @@ export const QUERY_KEYS = {
   USER: ["user"],
   PROFILE: (userId?: string) => (userId ? ["profile", userId] : ["profile"]),
   EVENTS: ["events"],
+  LIKED_EVENTS: (userId?: string) =>
+    userId ? ["liked_events", userId] : ["liked_events"],
+  EVENT_PLANS: (userId?: string) =>
+    userId ? ["event_plans", userId] : ["event_plans"],
+} as const;
+
+export const CATEGORY_NAME_MAP = {
+  festival: "축제",
+  performance: "공연",
+  exhibition: "전시",
+  etc: "기타",
 } as const;
