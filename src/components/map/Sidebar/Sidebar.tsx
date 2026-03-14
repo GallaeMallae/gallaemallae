@@ -77,7 +77,7 @@ export default function Sidebar({
       </div>
 
       {/* ======= 모바일 ======= */}
-      <div className="flex w-full flex-col gap-4 p-6 md:hidden">
+      <div className="flex w-full flex-col gap-4 p-2 md:hidden">
         <SidebarSearch />
 
         <div className="flex flex-col gap-2">
