@@ -6,6 +6,7 @@ import {
   FetchWeatherResponse,
   FetchAirPollutionResponse,
 } from "@/types/apiResponse";
+import { QUERY_KEYS } from "@/lib/constants";
 
 export function useRecommendTypeData(
   weatherData?: FetchWeatherResponse,
@@ -16,8 +17,14 @@ export function useRecommendTypeData(
   const pm10 = airPollutionData?.list[0].components.pm10;
   const pm25 = airPollutionData?.list[0].components.pm2_5;
 
+  const enabled =
+    weatherType !== undefined &&
+    temp !== undefined &&
+    pm10 !== undefined &&
+    pm25 !== undefined;
+
   return useQuery({
-    queryKey: ["recommendType", weatherType, temp, pm10, pm25],
+    queryKey: QUERY_KEYS.RECOMMEND_TYPE(weatherType, temp, pm10, pm25),
     queryFn: () => {
       if (!weatherType || temp == null || pm10 == null || pm25 == null) {
         throw new Error("[OpenAI API] : 유효하지 않은 파라미터");
@@ -25,7 +32,7 @@ export function useRecommendTypeData(
 
       return fetchRecommendType(weatherType, temp, pm10, pm25);
     },
-    enabled: !!weatherData && !!airPollutionData,
+    enabled,
     staleTime: 1000 * 60 * 30,
     retry: false,
   });

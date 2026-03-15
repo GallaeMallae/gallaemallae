@@ -74,19 +74,19 @@ export interface WeatherCardItem {
   ultrafineDust: string;
 }
 
+export type WeatherInfoType = "temp" | "fineDust" | "wind" | "wet";
+
+export interface WeatherInfoCardConfigItem {
+  icon: LucideIcon;
+  color: string;
+  title: string;
+}
+
 // 지도에서 행사 찾기 / 내 주변 행사 찾기
 export type MapMode = "all" | "near";
 
 // 행사 기간 필터 탭
 export type PeriodFilter = "전체" | "당일" | "주간" | "월간";
-
-export type WeatherInfoType = "temp" | "fineDust" | "wind" | "wet";
-
-export interface WeatherRecommendCardConfigItem {
-  icon: LucideIcon;
-  color: string;
-  title: string;
-}
 
 // ==============================
 // 모달창 축제 정보 (기간, 장소, 전화, 홈페이지)
