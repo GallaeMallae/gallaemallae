@@ -63,7 +63,7 @@ export default function MypageProfileEditForm({
 
   const validateEmail = (email: string) => {
     if (!email.trim()) return "이메일을 입력해 주세요.";
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // [문자]@[문자].[문자] 형태 정규식
     if (!emailRegex.test(email)) return "올바른 이메일 형식이 아닙니다.";
     return "";
   };
@@ -237,7 +237,7 @@ export default function MypageProfileEditForm({
                 "rounded-2xl outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
                 "focus-visible:border-symbol-sky border focus-visible:border-2",
                 errors.email &&
-                  "border-destructive focus-visible:border-destructive",
+                  "border-destructive focus-visible:border-destructive border-2",
               )}
             />
             {errors.email && (
