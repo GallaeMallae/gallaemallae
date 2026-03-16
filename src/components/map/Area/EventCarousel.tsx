@@ -4,9 +4,12 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import EventCard from "@/components/common/EventCard";
-import { MOCK_EVENTS } from "@/mocks/events";
+import { Tables } from "@/types/supabase";
+import { Category } from "@/types/common";
 
-export default function EventCarousel() {
+type Event = Tables<"events">;
+
+export default function EventCarousel({ events }: { events: Event[] }) {
   return (
     <div className="absolute right-0 bottom-6 left-0 z-5 px-4">
       <Carousel
@@ -15,9 +18,19 @@ export default function EventCarousel() {
         }}
       >
         <CarouselContent className="-ml-4">
-          {MOCK_EVENTS.map((event, index) => (
-            <CarouselItem key={index} className="basis-[80%] pl-4 md:basis-86">
-              <EventCard {...event} />
+          {events.map((event) => (
+            <CarouselItem
+              key={event.id}
+              className="basis-[80%] pl-4 md:basis-86"
+            >
+              <EventCard
+                title={event.name ?? ""}
+                location={event.venue ?? ""}
+                startDate={event.start_date ?? ""}
+                endDate={event.end_date ?? ""}
+                category={(event.categories as Category) ?? "other"}
+                isLiked={false}
+              />
             </CarouselItem>
           ))}
         </CarouselContent>
