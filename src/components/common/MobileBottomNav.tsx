@@ -29,7 +29,7 @@ export default function MobileBottomNav() {
   const searchParams = useSearchParams();
   const currentMapMode = searchParams.get("mode");
 
-  const { user, isLoading } = useUserData();
+  const { data: user, isLoading } = useUserData();
   const router = useRouter();
   const openAlert = useOpenAlertModal();
 

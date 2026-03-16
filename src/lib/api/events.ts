@@ -57,7 +57,6 @@ export async function fetchLikedEvents(
 
   if (error) throw new Error(error.message);
 
-  console.log("가공전", data);
   // Supabase 조인 결과는 [{ events: {...} }, { events: {...} }] 형태
   // 사용하기 편하게 [ {...}, {...} ] 형태로 가공하여 반환
   return data
