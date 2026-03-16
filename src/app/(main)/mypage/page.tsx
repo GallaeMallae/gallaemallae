@@ -1,6 +1,5 @@
 "use client";
 
-import { MypageCalendar } from "@/components/mypage/MypageCalendar";
 import WeatherCard from "@/components/common/WeatherCard";
 import MyPageEventRecommendCard from "@/components/mypage/MyPageEventRecommendCard";
 import MypageProfileCard from "@/components/mypage/MypageProfileCard";
