@@ -1,4 +1,4 @@
-import { WEATHER_RECOMMEND_CARD_CONFIG } from "@/lib/constants";
+import { WEATHER_INFO_CARD_CONFIG } from "@/lib/constants";
 import { WeatherInfoType } from "@/types/common";
 
 const MOCK_WEATHER: Record<WeatherInfoType, string> = {
@@ -13,7 +13,7 @@ export default function EventWeatherInfoCard({
 }: {
   type: WeatherInfoType;
 }) {
-  const config = WEATHER_RECOMMEND_CARD_CONFIG[type];
+  const config = WEATHER_INFO_CARD_CONFIG[type];
   const Icon = config.icon;
 
   return (

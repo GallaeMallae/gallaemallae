@@ -1,3 +1,4 @@
+import LocationInitializer from "@/components/system/LocationInitializer";
 import Header from "@/components/common/Header";
 import Script from "next/script";
 
@@ -10,6 +11,7 @@ export default function MapLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <div>
+      <LocationInitializer />
       <Header />
       <main>
         <Script
