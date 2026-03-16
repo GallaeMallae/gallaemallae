@@ -1,12 +1,26 @@
 import { Tables } from "@/types/supabase";
 import { LucideIcon } from "lucide-react";
 
+// 사용자 위치 타입
+export interface Coordinates {
+  latitude: number;
+  longitude: number;
+}
+
 // ==============================
 // 카테고리 관련 타입
 // ==============================
 export type Category = "전체" | "축제" | "공연" | "전시" | "기타";
 
+export type CategoryId =
+  | "all"
+  | "festival"
+  | "performance"
+  | "exhibition"
+  | "etc";
+
 export type CategoryMenuCardItem = {
+  id: CategoryId;
   name: Category;
   iconBgColor: string;
   Icon: LucideIcon;
@@ -54,23 +68,26 @@ export interface WeatherCardConfigItem {
 }
 
 export interface WeatherCardItem {
-  weatherType: WeatherType;
   location: string;
+  weatherType: WeatherType;
   temperature: number;
   fineDust: string;
   ultrafineDust: string;
 }
 
-// 행사 기간 필터 탭
-export type PeriodFilter = "전체" | "당일" | "주간" | "월간";
-
 export type WeatherInfoType = "temp" | "fineDust" | "wind" | "wet";
 
-export interface WeatherRecommendCardConfigItem {
+export interface WeatherInfoCardConfigItem {
   icon: LucideIcon;
   color: string;
   title: string;
 }
+
+// 지도에서 행사 찾기 / 내 주변 행사 찾기
+export type MapMode = "all" | "near";
+
+// 행사 기간 필터 탭
+export type PeriodFilter = "전체" | "당일" | "주간" | "월간";
 
 // ==============================
 // 모달창 축제 정보 (기간, 장소, 전화, 홈페이지)

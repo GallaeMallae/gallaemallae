@@ -1,3 +1,4 @@
+import LocationInitializer from "@/components/system/LocationInitializer";
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
 import MobileBottomNav from "@/components/common/MobileBottomNav";
@@ -10,6 +11,7 @@ export default function MainLayout({
 }) {
   return (
     <div className="flex min-h-screen flex-col pb-16 md:pb-0">
+      <LocationInitializer />
       <Header />
       <main className="mx-auto w-full max-w-7xl flex-1 p-6">{children}</main>
       <Footer />

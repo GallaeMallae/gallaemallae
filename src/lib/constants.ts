@@ -24,33 +24,38 @@ import {
   WeatherCardConfigItem,
   PeriodFilter,
   WeatherInfoType,
-  WeatherRecommendCardConfigItem,
+  WeatherInfoCardConfigItem,
   IntroduceType,
   IntroduceCardConfigItem,
 } from "@/types/common";
 
 export const CATEGORY_MENU: CategoryMenuCardItem[] = [
   {
+    id: "all",
     name: "전체",
     iconBgColor: "bg-symbol-sky",
     Icon: LayoutGrid,
   },
   {
+    id: "festival",
     name: "축제",
     iconBgColor: "bg-festival",
     Icon: PartyPopper,
   },
   {
+    id: "performance",
     name: "공연",
     iconBgColor: "bg-performance",
     Icon: Ticket,
   },
   {
+    id: "exhibition",
     name: "전시",
     iconBgColor: "bg-exhibition",
     Icon: Landmark,
   },
   {
+    id: "etc",
     name: "기타",
     iconBgColor: "bg-etc",
     Icon: MoreHorizontal,
@@ -118,16 +123,9 @@ export const WEATHER_CARD_CONFIG: Record<WeatherType, WeatherCardConfigItem> = {
   },
 };
 
-export const PERIOD_FILTER_TABS: PeriodFilter[] = [
-  "전체",
-  "당일",
-  "주간",
-  "월간",
-];
-
-export const WEATHER_RECOMMEND_CARD_CONFIG: Record<
+export const WEATHER_INFO_CARD_CONFIG: Record<
   WeatherInfoType,
-  WeatherRecommendCardConfigItem
+  WeatherInfoCardConfigItem
 > = {
   temp: {
     icon: Sun,
@@ -150,6 +148,13 @@ export const WEATHER_RECOMMEND_CARD_CONFIG: Record<
     title: "습도",
   },
 };
+
+export const PERIOD_FILTER_TABS: PeriodFilter[] = [
+  "전체",
+  "당일",
+  "주간",
+  "월간",
+];
 
 export const INTRODUCE_CARD_CONFIG: Record<
   IntroduceType,
@@ -210,6 +215,7 @@ export const CALENDAR_CATEGORY_STYLES: Record<
     border: "border-etc",
   },
 };
+
 export const ERROR_MESSAGE_CONFIG: Record<string, string> = {
   config_error: "로그인 설정에 문제가 있습니다. 잠시 후 다시 시도해 주세요.",
   oauth_signin_failed: "소셜 로그인에 실패했습니다. 다시 시도해 주세요.",
@@ -231,4 +237,13 @@ export const ERROR_MESSAGE_CONFIG: Record<string, string> = {
 export const QUERY_KEYS = {
   USER: ["user"],
   PROFILE: (userId?: string) => (userId ? ["profile", userId] : ["profile"]),
+  LOCATION_NAME: (lat: number, lng: number) => ["locationName", lat, lng],
+  WEATHER: (lat: number, lng: number) => ["weather", lat, lng],
+  AIR_POLLUTION: (lat: number, lng: number) => ["airPollution", lat, lng],
+  RECOMMEND_TYPE: (
+    weatherType?: string,
+    temp?: number,
+    pm10?: number,
+    pm25?: number,
+  ) => ["recommendType", weatherType, temp, pm10, pm25],
 } as const;
