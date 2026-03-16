@@ -2,7 +2,7 @@
 
 import { Map, MapMarker, Circle } from "react-kakao-maps-sdk";
 import { MARKER_ICONS } from "@/lib/constants";
-import { getDistance } from "@/utils/getDistance";
+import { getDistance } from "@/utils/map/getDistance";
 import { Category } from "@/types/common";
 
 type Position = { lat: number; lng: number };
