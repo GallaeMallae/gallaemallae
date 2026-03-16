@@ -1,7 +1,9 @@
 "use client";
 
 import { Map, MapMarker, Circle } from "react-kakao-maps-sdk";
+import { MARKER_ICONS } from "@/lib/constants";
 import { getDistance } from "@/utils/getDistance";
+import { Category } from "@/types/common";
 
 type Position = { lat: number; lng: number };
 
@@ -9,6 +11,7 @@ type Marker = {
   id: number;
   lat: number;
   lng: number;
+  category: Category;
 };
 
 export default function MapView({
@@ -48,9 +51,20 @@ export default function MapView({
         />
       )}
 
-      {filteredMarkers.map((m) => (
-        <MapMarker key={m.id} position={{ lat: m.lat, lng: m.lng }} />
-      ))}
+      {filteredMarkers.map((m) => {
+        const markerCategory = m.category === "all" ? "other" : m.category;
+
+        return (
+          <MapMarker
+            key={m.id}
+            position={{ lat: m.lat, lng: m.lng }}
+            image={{
+              src: MARKER_ICONS[markerCategory],
+              size: { width: 40, height: 40 },
+            }}
+          />
+        );
+      })}
     </Map>
   );
 }
