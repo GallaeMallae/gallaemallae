@@ -10,15 +10,19 @@ import { useState } from "react";
 import { CATEGORY_MENU } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { PeriodFilter } from "@/types/common";
+import { Category } from "@/types/common";
 
 export default function Sidebar({
   radius,
   setRadius,
+  category,
+  setCategory,
 }: {
   radius: number | null;
   setRadius: (r: number | null) => void;
+  category: Category;
+  setCategory: (c: Category) => void;
 }) {
-  const [active, setActive] = useState("all");
   const [period, setPeriod] = useState<PeriodFilter>("전체");
 
   return (
@@ -38,15 +42,19 @@ export default function Sidebar({
 
         <div>
           <p className="text-desc1 text-etc font-bold">카테고리</p>
-          <Tabs value={active} orientation="vertical" onValueChange={setActive}>
+          <Tabs
+            value={category}
+            orientation="vertical"
+            onValueChange={(v) => setCategory(v as Category)}
+          >
             <TabsList className="flex w-full gap-2 bg-transparent p-0">
               {CATEGORY_MENU.map((category) => {
                 const Icon = category.Icon;
 
                 return (
                   <TabsTrigger
-                    key={category.name}
-                    value={category.name}
+                    key={category.value}
+                    value={category.value}
                     className={cn(
                       "data-[state=active]:bg-symbol-sky-sub",
                       "data-[state=active]:text-symbol-sky",
@@ -91,12 +99,15 @@ export default function Sidebar({
             </div>
           </div>
 
-          <Tabs value={active} onValueChange={setActive}>
+          <Tabs
+            value={category}
+            onValueChange={(v) => setCategory(v as Category)}
+          >
             <TabsList className="flex w-full rounded-xl bg-white shadow-sm">
               {CATEGORY_MENU.map((category) => (
                 <TabsTrigger
-                  key={category.name}
-                  value={category.name}
+                  key={category.value}
+                  value={category.value}
                   className={cn(
                     "text-caption flex-1 rounded-lg py-2 text-center transition-all",
                     "data-[state=active]:bg-symbol-sky data-[state=active]:text-white",
