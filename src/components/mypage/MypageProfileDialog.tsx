@@ -72,6 +72,25 @@ export default function MypageProfileDialog({
   const handleSave = () => {
     if (!profile?.id) return;
 
+    if (!nickname.trim()) {
+      toast.error("닉네임을 입력해 주세요.");
+      return;
+    }
+
+    const trimmedEmail = email.trim();
+    if (!trimmedEmail) {
+      toast.error("이메일을 입력해 주세요.");
+      return;
+    }
+
+    // 이메일 형식 체크 정규식
+    // [문자]@[문자].[문자] 구조 체크
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmedEmail)) {
+      toast.error("올바른 이메일 형식이 아닙니다.");
+      return;
+    }
+
     updateProfile(
       {
         userId: profile.id,
@@ -82,7 +101,7 @@ export default function MypageProfileDialog({
       },
       {
         onSuccess: () => {
-          toast("프로필 수정이 완료되었습니다.");
+          toast.success("프로필 수정이 완료되었습니다.");
           setOpen(false);
           setAvatarFile(null);
           setPreviewUrl(null);
@@ -104,7 +123,7 @@ export default function MypageProfileDialog({
             프로필 수정
           </DialogTitle>
           <DialogDescription>
-            수정하고자 하는 별명과 이메일을 입력하세요.
+            수정하고자 하는 닉네임과 이메일을 입력하세요.
           </DialogDescription>
         </DialogHeader>
 
@@ -127,6 +146,7 @@ export default function MypageProfileDialog({
               </div>
               {previewUrl && (
                 <button
+                  type="button"
                   onClick={handleRemovePreview}
                   className="transition-hover hover:bg-etc-sub absolute -top-1 -right-1 z-10 flex size-7 cursor-pointer items-center justify-center rounded-full border bg-white"
                 >
@@ -156,7 +176,7 @@ export default function MypageProfileDialog({
           <div className="space-y-4">
             <div className="grid gap-2">
               <Label htmlFor="name" className="text-desc2 font-medium">
-                별명
+                닉네임
               </Label>
               <Input
                 id="name"

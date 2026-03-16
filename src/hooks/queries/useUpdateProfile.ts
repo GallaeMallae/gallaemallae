@@ -43,7 +43,6 @@ export function useUpdateProfile() {
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.PROFILE(variables.userId),
       });
-      toast.success("프로필이 수정되었습니다.");
     },
     onError: (error: Error) => {
       toast.error(`프로필 수정 실패: ${error.message}`);
