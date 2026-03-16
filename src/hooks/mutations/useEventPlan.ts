@@ -9,14 +9,14 @@ import { QUERY_KEYS } from "@/lib/constants";
 export interface AddEventPlanParams {
   userId: string;
   eventId: string;
-  visitDate: string; // "YYYY-MM-DD" 형태로 통일?
+  visitDate: string;
 }
 
 export function useEventPlan() {
   const supabase = createClient();
   const queryClient = useQueryClient();
 
-  const mutation = useMutation({
+  return useMutation({
     mutationFn: (params: AddEventPlanParams) => addEventPlan(supabase, params),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
@@ -24,16 +24,9 @@ export function useEventPlan() {
       });
       toast.success("일정이 추가되었습니다.");
     },
-    onError: (error) => {
+    onError: (error: Error) => {
       console.error("일정 추가 에러:", error);
-      toast.error("일정 추가에 실패했습니다.");
+      toast.error(`일정 추가 실패: ${error.message}`);
     },
   });
-
-  return {
-    addPlan: mutation.mutate,
-    isPending: mutation.isPending,
-    isError: mutation.isError,
-    error: mutation.error,
-  };
 }

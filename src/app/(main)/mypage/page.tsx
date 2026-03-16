@@ -33,8 +33,8 @@ export default function Mypage() {
     }
   };
 
-  const { likedEvents } = useLikedEventsData();
-  const { planedEvents } = usePlanedEventsData();
+  const { data: likedEvents = [] } = useLikedEventsData();
+  const { data: planedEvents = [] } = usePlanedEventsData();
 
   // 관심 목록 데이터 가공
   const formattedLikedEvents = likedEvents.map((event) => ({

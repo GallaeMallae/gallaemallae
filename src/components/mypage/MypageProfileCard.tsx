@@ -7,7 +7,7 @@ import Image from "next/image";
 import { useProfileData } from "@/hooks/queries/useProfileData";
 
 export default function MypageProfileCard() {
-  const { profile } = useProfileData();
+  const { data: profile } = useProfileData();
 
   return (
     <Card className="flex h-full flex-col justify-between rounded-2xl">

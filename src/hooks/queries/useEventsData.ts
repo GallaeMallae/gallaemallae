@@ -9,16 +9,10 @@ import { Event } from "@/types/common";
 export function useEventsData() {
   const supabase = createClient();
 
-  const eventsQuery = useQuery<Event[]>({
+  return useQuery<Event[]>({
     queryKey: QUERY_KEYS.EVENTS,
     queryFn: () => fetchEvents(supabase),
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 30,
   });
-
-  return {
-    events: eventsQuery.data ?? [],
-    isLoading: eventsQuery.isLoading,
-    isError: eventsQuery.isError,
-  };
 }

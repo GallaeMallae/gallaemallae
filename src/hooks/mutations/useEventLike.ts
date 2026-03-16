@@ -2,15 +2,15 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createClient } from "@/utils/supabase/client";
-import { useUserData } from "./useUserData";
+import { useUserData } from "../queries/useUserData";
 import { QUERY_KEYS } from "@/lib/constants";
 
 export function useEventLike(eventId: string) {
+  const { data: user } = useUserData();
   const supabase = createClient();
-  const { user } = useUserData();
   const queryClient = useQueryClient();
 
-  const mutation = useMutation({
+  return useMutation({
     mutationFn: async (isLiked: boolean) => {
       if (!user) throw new Error("로그인이 필요합니다.");
 
@@ -34,11 +34,4 @@ export function useEventLike(eventId: string) {
       });
     },
   });
-
-  return {
-    toggleLike: mutation.mutate,
-    isPending: mutation.isPending,
-    isError: mutation.isError,
-    error: mutation.error,
-  };
 }
