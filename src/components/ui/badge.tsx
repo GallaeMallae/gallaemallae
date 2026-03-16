@@ -20,11 +20,11 @@ const badgeVariants = cva(
         link: "text-primary underline-offset-4 [a&]:hover:underline",
 
         // Category
-        전체: "bg-symbol-sky-sub text-symbol-sky",
-        축제: "bg-festival-sub text-festival",
-        공연: "bg-performance-sub text-performance",
-        전시: "bg-exhibition-sub text-exhibition",
-        기타: "bg-etc-sub text-etc",
+        all: "bg-symbol-sky-sub text-symbol-sky",
+        festival: "bg-festival-sub text-festival",
+        performance: "bg-performance-sub text-performance",
+        exhibition: "bg-exhibition-sub text-exhibition",
+        other: "bg-etc-sub text-etc",
       },
     },
     defaultVariants: {
