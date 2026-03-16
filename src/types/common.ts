@@ -1,3 +1,4 @@
+import { Tables } from "@/types/supabase";
 import { LucideIcon } from "lucide-react";
 
 // ==============================
@@ -93,3 +94,8 @@ export interface DetailCardItem {
   };
   information: string[];
 }
+
+// ==============================
+// 사용자 프로필 타입
+// ==============================
+export type Profile = Tables<"profiles">;
