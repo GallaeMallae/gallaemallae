@@ -13,6 +13,7 @@ import { MOCK_EVENTS } from "@/mocks/events";
 import { parseSafeDate } from "@/utils/date";
 import { isWithinInterval, parseISO, startOfDay } from "date-fns";
 import { useProfileData } from "@/hooks/queries/useProfileData";
+import { Calendar } from "@/components/ui/calendar";
 
 export default function Mypage() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
@@ -87,12 +88,14 @@ export default function Mypage() {
 
         <div className="order-1 flex flex-col gap-6 md:order-2 md:col-span-3">
           <div className="xs:p-6 flex-1 rounded-2xl border bg-white p-4 shadow-sm">
-            <MypageCalendar
-              selectedDate={selectedDate}
+            <Calendar
+              mode="single"
+              selected={selectedDate}
               month={month}
-              onDateChange={setSelectedDate}
+              onSelect={setSelectedDate}
               onMonthChange={setMonth}
               nickname={profile?.nickname ?? undefined}
+              captionLayout="dropdown"
             />
           </div>
 
