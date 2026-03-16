@@ -12,8 +12,8 @@ export default function NearEvents({ events }: { events: EventCardItem[] }) {
   const { coords } = useLocationStore();
 
   const center = {
-    lat: coords.latitude,
-    lng: coords.longitude,
+    lat: coords.lat,
+    lng: coords.lng,
   };
 
   return (

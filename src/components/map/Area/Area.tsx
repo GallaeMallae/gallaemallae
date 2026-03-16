@@ -12,6 +12,7 @@ import { LocateFixed } from "lucide-react";
 import { MapMarker, Circle } from "react-kakao-maps-sdk";
 import { useState } from "react";
 import { useLocationStore } from "@/stores/locationStore";
+import { getDistance } from "@/utils/geo";
 import { MOCK_EVENTS } from "@/mocks/events";
 
 const markers = [
@@ -26,8 +27,8 @@ export default function Area({ radius }: { radius: number | null }) {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
 
   const center = {
-    lat: coords.latitude,
-    lng: coords.longitude,
+    lat: coords.lat,
+    lng: coords.lng,
   };
 
   const moveCurrentLocation = () => {
@@ -36,27 +37,11 @@ export default function Area({ radius }: { radius: number | null }) {
     map.setCenter(new window.kakao.maps.LatLng(center.lat, center.lng));
   };
 
-  function getDistance(lat1: number, lng1: number, lat2: number, lng2: number) {
-    const R = 6371e3;
-    const φ1 = (lat1 * Math.PI) / 180;
-    const φ2 = (lat2 * Math.PI) / 180;
-    const Δφ = ((lat2 - lat1) * Math.PI) / 180;
-    const Δλ = ((lng2 - lng1) * Math.PI) / 180;
-
-    const a =
-      Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-      Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
-
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-    return R * c;
-  }
-
   const filteredMarkers = center
     ? markers.filter(
         (m) =>
           radius === null ||
-          getDistance(center.lat, center.lng, m.lat, m.lng) <= radius,
+          getDistance(center, { lat: m.lat, lng: m.lng }) <= radius,
       )
     : [];
 
