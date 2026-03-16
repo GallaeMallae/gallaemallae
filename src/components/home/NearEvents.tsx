@@ -23,11 +23,9 @@ export default function NearEvents({ events }: { events: EventCardItem[] }) {
       <div className="flex flex-col gap-4 md:h-110 md:flex-row">
         <div className="bg-etc-sub h-56 w-full overflow-hidden rounded-xl md:h-full md:flex-[0.4]">
           {/* Kakao Map */}
-          <div className="text-etc flex h-full w-full items-center justify-center">
-            <KakaoMap center={center} level={7}>
-              <MapMarker position={center} />
-            </KakaoMap>
-          </div>
+          <KakaoMap center={center} level={7}>
+            <MapMarker position={center} />
+          </KakaoMap>
         </div>
 
         <div className="md:flex-[0.6]">
