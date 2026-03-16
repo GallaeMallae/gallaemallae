@@ -16,10 +16,14 @@ export default function Area({
   radius,
   category,
   period,
+  liked,
+  setLiked,
 }: {
   radius: number | null;
   category: Category;
   period: PeriodFilter;
+  liked: number[];
+  setLiked: React.Dispatch<React.SetStateAction<number[]>>;
 }) {
   const { position, moveCurrentLocation } = useCurrentLocation();
   const [locate, setLocate] = useState<kakao.maps.Map | null>(null);
@@ -70,7 +74,11 @@ export default function Area({
       >
         <LocateFixed className="size-5 text-black md:size-6" />
       </Button>
-      <EventCarousel events={filteredEvents} />
+      <EventCarousel
+        events={filteredEvents}
+        liked={liked}
+        setLiked={setLiked}
+      />
     </div>
   );
 }
