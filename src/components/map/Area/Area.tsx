@@ -8,7 +8,7 @@ import { useState } from "react";
 import { useKakaoLoader } from "react-kakao-maps-sdk";
 import { useCurrentLocation } from "@/hooks/useCurrentLocation";
 import { useEvents } from "@/hooks/queries/useEvents";
-import { filterEventsByCategory } from "@/app/map/filter/category";
+import { filterEventsByCategory } from "@/lib/api/category";
 import { Category } from "@/types/common";
 
 export default function Area({
@@ -29,11 +29,20 @@ export default function Area({
 
   const markers = events
     .filter((event) => event.latitude !== null && event.longitude !== null)
-    .map((event) => ({
-      id: event.id,
-      lat: event.latitude!,
-      lng: event.longitude!,
-    }));
+    .map((event) => {
+      const category = event.categories?.[0] ?? "other";
+
+      return {
+        id: event.id,
+        lat: event.latitude!,
+        lng: event.longitude!,
+        category: ["festival", "performance", "exhibition", "other"].includes(
+          category,
+        )
+          ? (category as Category)
+          : "other",
+      };
+    });
 
   if (loading || isLoading) {
     return <div>지도를 불러오는 중</div>;
