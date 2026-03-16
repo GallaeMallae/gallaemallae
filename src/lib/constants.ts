@@ -237,3 +237,11 @@ export const QUERY_KEYS = {
   USER: ["user"],
   PROFILE: (userId?: string) => (userId ? ["profile", userId] : ["profile"]),
 } as const;
+
+export const MARKER_ICONS = {
+  festival: "/public/images/MapMarker/MapMarker-festival.png",
+  performance: "/public/images/MapMarker/MapMarker-performance.png",
+  exhibition: "/public/images/MapMarker/MapMarker-exhibition.png",
+  other: "/public/images/MapMarker/MapMarker-other.png",
+  myLocation: "/public/images/MapMarker/MapMarker-myLocation.png",
+};
