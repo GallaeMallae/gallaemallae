@@ -1,5 +1,11 @@
 import type { NextConfig } from "next";
 
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+
+if (!supabaseUrl) {
+  throw new Error("환경 변수 NEXT_PUBLIC_SUPABASE_URL이 설정되지 않았습니다.");
+}
+
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
@@ -19,6 +25,13 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "*.kakaocdn.net",
         pathname: "/**",
+      },
+      // Supabase 이미지 Storage 주소 허용
+      {
+        protocol: "https",
+        hostname: supabaseUrl.replace("https://", ""),
+        port: "",
+        pathname: "/storage/v1/object/public/**", // storage 이미지 경로 허용
       },
     ],
   },
