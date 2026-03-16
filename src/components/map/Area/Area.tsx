@@ -8,15 +8,18 @@ import { useState } from "react";
 import { useKakaoLoader } from "react-kakao-maps-sdk";
 import { useCurrentLocation } from "@/hooks/useCurrentLocation";
 import { useEvents } from "@/hooks/queries/useEvents";
-import { filterEventsByCategory } from "@/lib/api/category";
-import { Category } from "@/types/common";
+import { filterEventsByCategory } from "@/utils/map/category";
+import { filterEventByPeriod } from "@/utils/map/period";
+import { Category, PeriodFilter } from "@/types/common";
 
 export default function Area({
   radius,
   category,
+  period,
 }: {
   radius: number | null;
   category: Category;
+  period: PeriodFilter;
 }) {
   const { position, moveCurrentLocation } = useCurrentLocation();
   const [locate, setLocate] = useState<kakao.maps.Map | null>(null);
@@ -25,9 +28,10 @@ export default function Area({
   });
   const { data: events = [], isLoading, error: queryError } = useEvents();
 
-  const filteredEvents = filterEventsByCategory(events, category);
+  const filteredByCategory = filterEventsByCategory(events, category);
+  const filteredEvents = filterEventByPeriod(filteredByCategory, period);
 
-  const markers = events
+  const markers = filteredEvents
     .filter((event) => event.latitude !== null && event.longitude !== null)
     .map((event) => {
       const category = event.categories?.[0] ?? "other";
