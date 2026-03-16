@@ -239,9 +239,9 @@ export const QUERY_KEYS = {
 } as const;
 
 export const MARKER_ICONS = {
-  festival: "/public/images/MapMarker/MapMarker-festival.png",
-  performance: "/public/images/MapMarker/MapMarker-performance.png",
-  exhibition: "/public/images/MapMarker/MapMarker-exhibition.png",
-  other: "/public/images/MapMarker/MapMarker-other.png",
-  myLocation: "/public/images/MapMarker/MapMarker-myLocation.png",
-};
+  festival: "/images/MapMarker/MapMarker-festival.png",
+  performance: "/images/MapMarker/MapMarker-performance.png",
+  exhibition: "/images/MapMarker/MapMarker-exhibition.png",
+  other: "/images/MapMarker/MapMarker-other.png",
+  myLocation: "images/MapMarker/MapMarker-myLocation.png",
+} as const;
