@@ -6,25 +6,26 @@ import SidebarSearch from "@/components/map/Sidebar/SidebarSearch";
 import SidebarPeriodFilterTabs from "@/components/map/Sidebar/SidebarPeriodFilterTabs";
 import SidebarDistance from "@/components/map/Sidebar/SidebarDistance";
 import { ListFilter } from "lucide-react";
-import { useState } from "react";
 import { CATEGORY_MENU } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-import { PeriodFilter } from "@/types/common";
-import { Category } from "@/types/common";
+
+import { Category, PeriodFilter } from "@/types/common";
 
 export default function Sidebar({
   radius,
   setRadius,
   category,
   setCategory,
+  period,
+  setPeriod,
 }: {
   radius: number | null;
   setRadius: (r: number | null) => void;
   category: Category;
   setCategory: (c: Category) => void;
+  period: PeriodFilter;
+  setPeriod: (p: PeriodFilter) => void;
 }) {
-  const [period, setPeriod] = useState<PeriodFilter>("전체");
-
   return (
     <>
       {/* ======= 데스크탑 ======= */}
