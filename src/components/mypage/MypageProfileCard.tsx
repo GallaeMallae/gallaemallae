@@ -17,6 +17,7 @@ export default function MypageProfileCard() {
             <div className="bg-etc-sub relative flex size-16 items-center justify-center overflow-hidden rounded-full border md:size-14">
               {profile?.avatar_url ? (
                 <Image
+                  unoptimized
                   src={profile.avatar_url}
                   alt="프로필"
                   sizes="(min-width: 768px) 56px, 64px"

@@ -16,6 +16,7 @@ import { User, X } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import imageCompression from "browser-image-compression";
 
 interface MypageProfileEditFormProps {
   profile: Profile;
@@ -79,23 +80,44 @@ export default function MypageProfileEditForm({
     setErrors((prev) => ({ ...prev, email: validateEmail(email) }));
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+    if (!file) return;
 
-    if (file && !allowedTypes.includes(file.type)) {
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+    if (!allowedTypes.includes(file.type)) {
       toast.error("지원하지 않는 파일 형식입니다. (JPG, PNG, WebP만 가능)");
       return;
     }
 
-    if (file) {
+    const options = {
+      maxSizeMB: 2,
+      useWebWorker: true,
+    };
+    const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB 제한 설정 (1MB = 1024 * 1024 bytes)
+
+    try {
+      toast.loading("이미지 최적화 중...", { id: "compressing" });
+
+      const compressedFile = await imageCompression(file, options);
+
+      toast.dismiss("compressing");
+
+      if (compressedFile.size > MAX_FILE_SIZE) {
+        toast.error("최적화 후에도 파일이 너무 큽니다.");
+        return;
+      }
+
       if (previewUrl) URL.revokeObjectURL(previewUrl);
-
-      setAvatarFile(file);
-      setPreviewUrl(URL.createObjectURL(file));
+      setAvatarFile(compressedFile);
+      setPreviewUrl(URL.createObjectURL(compressedFile));
+    } catch (error) {
+      toast.dismiss("compressing");
+      toast.error("이미지 최적화 중 오류가 발생했습니다.");
+      console.error(error);
+    } finally {
+      e.target.value = "";
     }
-
-    e.target.value = "";
   };
 
   const handleRemovePreview = () => {
