@@ -7,6 +7,7 @@ interface MypageCalendarProps {
   month: Date;
   onDateChange: (date: Date | undefined) => void;
   onMonthChange: (date: Date) => void;
+  nickname?: string;
 }
 
 export function MypageCalendar({
@@ -14,14 +15,16 @@ export function MypageCalendar({
   month,
   onDateChange,
   onMonthChange,
+  nickname,
 }: MypageCalendarProps) {
   return (
     <Calendar
       mode="single"
       selected={selectedDate}
-      onSelect={onDateChange}
       month={month}
+      onSelect={onDateChange}
       onMonthChange={onMonthChange}
+      nickname={nickname}
       captionLayout="dropdown"
     />
   );

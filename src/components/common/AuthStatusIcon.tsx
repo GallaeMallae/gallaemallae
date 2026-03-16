@@ -25,8 +25,8 @@ export default function AuthStatusIcon() {
   const queryClient = useQueryClient();
   const supabase = createClient();
 
-  const { profile, isLoading: isProfileLoading } = useProfileData();
-  const { user, isLoading: isUserLoading } = useUserData();
+  const { data: profile, isLoading: isProfileLoading } = useProfileData();
+  const { data: user, isLoading: isUserLoading } = useUserData();
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();

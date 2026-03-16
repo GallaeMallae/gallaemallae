@@ -12,12 +12,15 @@ import { MOCK_WEATHER } from "@/mocks/weathers";
 import { MOCK_EVENTS } from "@/mocks/events";
 import { parseSafeDate } from "@/utils/date";
 import { isWithinInterval, parseISO, startOfDay } from "date-fns";
+import { useProfileData } from "@/hooks/queries/useProfileData";
 
 export default function Mypage() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
     new Date(),
   );
   const [month, setMonth] = useState<Date>(new Date());
+
+  const { data: profile } = useProfileData();
 
   const handleEventClick = (dateString: string) => {
     const newDate = parseSafeDate(dateString);
@@ -83,12 +86,13 @@ export default function Mypage() {
         </div>
 
         <div className="order-1 flex flex-col gap-6 md:order-2 md:col-span-3">
-          <div className="flex-1 rounded-2xl border bg-white p-6 shadow-sm">
+          <div className="xs:p-6 flex-1 rounded-2xl border bg-white p-4 shadow-sm">
             <MypageCalendar
               selectedDate={selectedDate}
-              onDateChange={setSelectedDate}
               month={month}
+              onDateChange={setSelectedDate}
               onMonthChange={setMonth}
+              nickname={profile?.nickname ?? undefined}
             />
           </div>
 
