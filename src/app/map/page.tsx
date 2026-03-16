@@ -3,11 +3,12 @@
 import Sidebar from "@/components/map/Sidebar/Sidebar";
 import Area from "@/components/map/Area/Area";
 import { useState } from "react";
-import { Category } from "@/types/common";
+import { Category, PeriodFilter } from "@/types/common";
 
 export default function MapPage() {
   const [radius, setRadius] = useState<number | null>(null);
   const [category, setCategory] = useState<Category>("all");
+  const [period, setPeriod] = useState<PeriodFilter>("전체");
 
   return (
     <div className="relative w-full overflow-hidden md:flex">
@@ -17,11 +18,13 @@ export default function MapPage() {
           setRadius={setRadius}
           category={category}
           setCategory={setCategory}
+          period={period}
+          setPeriod={setPeriod}
         />
       </div>
 
       <div className="flex-1">
-        <Area radius={radius} category={category} />
+        <Area radius={radius} category={category} period={period} />
       </div>
     </div>
   );
