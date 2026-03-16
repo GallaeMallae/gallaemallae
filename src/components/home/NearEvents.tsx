@@ -3,7 +3,8 @@
 import { Card, CardContent } from "@/components/ui/card";
 import EventCard from "@/components/common/EventCard";
 import MoreCard from "@/components/common/MoreCard";
-import { Map, MapMarker } from "react-kakao-maps-sdk";
+import KakaoMap from "@/components/common/KakaoMap";
+import { MapMarker } from "react-kakao-maps-sdk";
 import { useLocationStore } from "@/stores/locationStore";
 import { EventCardItem } from "@/types/common";
 
@@ -23,16 +24,9 @@ export default function NearEvents({ events }: { events: EventCardItem[] }) {
         <div className="bg-etc-sub h-56 w-full overflow-hidden rounded-xl md:h-full md:flex-[0.4]">
           {/* Kakao Map */}
           <div className="text-etc flex h-full w-full items-center justify-center">
-            <Map
-              center={center}
-              style={{
-                width: "100%",
-                height: "100%",
-              }}
-              level={7}
-            >
+            <KakaoMap center={center} level={7}>
               <MapMarker position={center} />
-            </Map>
+            </KakaoMap>
           </div>
         </div>
 
