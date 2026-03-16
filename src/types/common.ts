@@ -52,6 +52,7 @@ export interface EventCardItem {
   endDate: string;
   category: Category;
   isLiked: boolean;
+  onToggleLike: () => void;
 }
 
 // ==============================
