@@ -14,9 +14,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useUpdateProfile } from "@/hooks/queries/useUpdateProfile";
 import { Profile } from "@/types/common";
-import { User } from "lucide-react";
+import { User, X } from "lucide-react";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 interface MypageProfileDialogProps {
@@ -35,7 +35,14 @@ export default function MypageProfileDialog({
   const displayImageUrl = previewUrl || profile?.avatar_url;
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { updateProfile, isPending } = useUpdateProfile();
+  const { mutate: updateProfile, isPending } = useUpdateProfile();
+
+  // 이미지 여러 번 업로드 시 메모리 누수 방지를 위한 cleanup
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    };
+  }, [previewUrl]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -47,9 +54,19 @@ export default function MypageProfileDialog({
     }
 
     if (file) {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+
       setAvatarFile(file);
       setPreviewUrl(URL.createObjectURL(file));
     }
+
+    e.target.value = "";
+  };
+
+  const handleRemovePreview = () => {
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    setAvatarFile(null);
+    setPreviewUrl(null);
   };
 
   const handleSave = () => {
@@ -93,16 +110,28 @@ export default function MypageProfileDialog({
 
         <div className="grid gap-6 py-4">
           <div className="flex flex-col items-center gap-3">
-            <div className="bg-etc-sub relative flex size-30 items-center justify-center overflow-hidden rounded-full border md:size-20">
-              {displayImageUrl ? (
-                <Image
-                  src={displayImageUrl}
-                  alt="프로필"
-                  fill
-                  className="object-cover"
-                />
-              ) : (
-                <User strokeWidth={1.2} className="text-etc h-10 w-10" />
+            <div className="relative size-30 md:size-20">
+              <div className="bg-etc-sub relative h-full w-full overflow-hidden rounded-full border">
+                {displayImageUrl ? (
+                  <Image
+                    src={displayImageUrl}
+                    alt="프로필"
+                    fill
+                    className="object-cover"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center">
+                    <User strokeWidth={1.2} className="text-etc h-10 w-10" />
+                  </div>
+                )}
+              </div>
+              {previewUrl && (
+                <button
+                  onClick={handleRemovePreview}
+                  className="transition-hover hover:bg-etc-sub absolute -top-1 -right-1 z-10 flex size-7 cursor-pointer items-center justify-center rounded-full border bg-white"
+                >
+                  <X size={16} />
+                </button>
               )}
             </div>
 

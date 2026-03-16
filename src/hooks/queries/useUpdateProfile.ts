@@ -3,7 +3,7 @@
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createClient } from "@/utils/supabase/client";
-import { uploadAvatar, updateProfile } from "@/lib/api/profile"; // API 파일명에 맞게 수정
+import { uploadAvatar, updateProfile } from "@/lib/api/profile";
 import { QUERY_KEYS } from "@/lib/constants";
 
 interface UpdateProfileParams {
@@ -18,7 +18,7 @@ export function useUpdateProfile() {
   const queryClient = useQueryClient();
   const supabase = createClient();
 
-  const mutation = useMutation({
+  return useMutation({
     mutationFn: async ({
       userId,
       nickname,
@@ -49,11 +49,4 @@ export function useUpdateProfile() {
       toast.error(`프로필 수정 실패: ${error.message}`);
     },
   });
-
-  return {
-    updateProfile: mutation.mutate,
-    isPending: mutation.isPending,
-    isError: mutation.isError,
-    error: mutation.error,
-  };
 }

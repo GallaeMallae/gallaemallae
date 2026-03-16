@@ -27,17 +27,29 @@ export async function uploadAvatar(
   userId: string,
   file: File,
 ) {
+  const { data: oldFiles } = await supabase.storage.from("avatars").list("", {
+    search: userId,
+  });
   const fileExt = file.name.split(".").pop();
-  const fileName = `${userId}-${Math.random()}.${fileExt}`;
-  const filePath = `${fileName}`;
+  const fileName = `${userId}-${Date.now()}.${fileExt}`;
 
   const { error } = await supabase.storage
     .from("avatars")
-    .upload(filePath, file);
+    .upload(fileName, file);
 
   if (error) throw error;
 
-  const { data } = supabase.storage.from("avatars").getPublicUrl(filePath);
+  if (oldFiles && oldFiles.length > 0) {
+    const filesToDelete = oldFiles
+      .map((file) => file.name)
+      .filter((name) => name !== fileName);
+
+    if (filesToDelete.length > 0) {
+      await supabase.storage.from("avatars").remove(filesToDelete);
+    }
+  }
+
+  const { data } = supabase.storage.from("avatars").getPublicUrl(fileName);
   return data.publicUrl;
 }
 
