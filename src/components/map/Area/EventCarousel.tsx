@@ -9,7 +9,20 @@ import { Category } from "@/types/common";
 
 type Event = Tables<"events">;
 
-export default function EventCarousel({ events }: { events: Event[] }) {
+export default function EventCarousel({
+  events,
+  liked,
+  setLiked,
+}: {
+  events: Event[];
+  liked: number[];
+  setLiked: React.Dispatch<React.SetStateAction<number[]>>;
+}) {
+  const toggleLike = (id: number) => {
+    setLiked((prev) =>
+      prev.includes(id) ? prev.filter((v) => v !== id) : [...prev, id],
+    );
+  };
   return (
     <div className="absolute right-0 bottom-6 left-0 z-5 px-4">
       <Carousel
@@ -29,7 +42,8 @@ export default function EventCarousel({ events }: { events: Event[] }) {
                 startDate={event.start_date ?? ""}
                 endDate={event.end_date ?? ""}
                 category={(event.categories as Category) ?? "other"}
-                isLiked={false}
+                isLiked={liked.includes(event.id)}
+                onToggleLike={() => toggleLike(event.id)}
               />
             </CarouselItem>
           ))}
