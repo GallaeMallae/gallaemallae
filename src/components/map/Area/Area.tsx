@@ -7,25 +7,39 @@ import { LocateFixed } from "lucide-react";
 import { useState } from "react";
 import { useKakaoLoader } from "react-kakao-maps-sdk";
 import { useCurrentLocation } from "@/hooks/useCurrentLocation";
+import { useEvents } from "@/hooks/queries/useEvents";
+import { filterEventsByCategory } from "@/app/map/filter/category";
+import { Category } from "@/types/common";
 
-const markers = [
-  { id: 1, lat: 37.498, lng: 127.027 },
-  { id: 2, lat: 37.5, lng: 127.03 },
-  { id: 3, lat: 37.49, lng: 127.025 },
-  { id: 4, lat: 37.47, lng: 127.02 },
-];
-
-export default function Area({ radius }: { radius: number | null }) {
+export default function Area({
+  radius,
+  category,
+}: {
+  radius: number | null;
+  category: Category;
+}) {
   const { position, moveCurrentLocation } = useCurrentLocation();
   const [locate, setLocate] = useState<kakao.maps.Map | null>(null);
-  const [loading, error] = useKakaoLoader({
+  const [loading, kakaoError] = useKakaoLoader({
     appkey: process.env.NEXT_PUBLIC_KAKAO_JS_KEY!,
   });
+  const { data: events = [], isLoading, error: queryError } = useEvents();
 
-  if (loading) {
+  const filteredEvents = filterEventsByCategory(events, category);
+
+  const markers = events
+    .filter((event) => event.latitude !== null && event.longitude !== null)
+    .map((event) => ({
+      id: event.id,
+      lat: event.latitude!,
+      lng: event.longitude!,
+    }));
+
+  if (loading || isLoading) {
     return <div>지도를 불러오는 중</div>;
   }
-  if (error) {
+
+  if (queryError || kakaoError) {
     return <div>지도 로드 실패</div>;
   }
 
@@ -43,7 +57,7 @@ export default function Area({ radius }: { radius: number | null }) {
       >
         <LocateFixed className="size-5 text-black md:size-6" />
       </Button>
-      <EventCarousel />
+      <EventCarousel events={filteredEvents} />
     </div>
   );
 }
