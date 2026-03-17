@@ -1,9 +1,11 @@
 import {
   Carousel,
+  CarouselApi,
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
 import EventCard from "@/components/common/EventCard";
+import { useState, useEffect } from "react";
 import { Tables } from "@/types/supabase";
 import { Category } from "@/types/common";
 
@@ -20,9 +22,34 @@ export default function EventCarousel({
   onCarouselClick,
   onSelectCarousel,
 }: EventCarouselProps) {
+  const [api, setApi] = useState<CarouselApi>();
+
+  useEffect(() => {
+    if (!api) return;
+
+    const handleSelect = () => {
+      const index = api.selectedScrollSnap();
+      const selected = events[index];
+
+      if (selected) {
+        onSelectCarousel(selected.id);
+      }
+    };
+
+    api.on("select", handleSelect);
+
+    // 첫 렌더 시에도 실행
+    handleSelect();
+
+    return () => {
+      api.off("select", handleSelect);
+    };
+  }, [api, events, onSelectCarousel]);
+
   return (
     <div className="absolute right-0 bottom-6 left-0 z-5 px-4">
       <Carousel
+        setApi={setApi}
         opts={{
           align: "center",
         }}
