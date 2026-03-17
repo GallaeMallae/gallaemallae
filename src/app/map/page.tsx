@@ -7,9 +7,8 @@ import { Category, PeriodFilter } from "@/types/common";
 
 export default function MapPage() {
   const [radius, setRadius] = useState<number | null>(null);
-  const [category, setCategory] = useState<Category>("all");
+  const [category, setCategory] = useState<Category[]>(["all"]);
   const [period, setPeriod] = useState<PeriodFilter>("전체");
-  const [liked, setLiked] = useState<number[]>([]);
 
   return (
     <div className="relative w-full overflow-hidden md:flex">
@@ -25,13 +24,7 @@ export default function MapPage() {
       </div>
 
       <div className="flex-1">
-        <Area
-          radius={radius}
-          category={category}
-          period={period}
-          liked={liked}
-          setLiked={setLiked}
-        />
+        <Area radius={radius} category={category} period={period} />
       </div>
     </div>
   );
