@@ -26,8 +26,8 @@ export default function MypageProfileDialog({
       <DialogContent className="rounded-2xl sm:max-w-100">
         {profile && (
           <MypageProfileEditForm
-            key={`${profile.id}-${open}`}
             profile={profile}
+            open={open}
             onSuccess={() => setOpen(false)}
           />
         )}

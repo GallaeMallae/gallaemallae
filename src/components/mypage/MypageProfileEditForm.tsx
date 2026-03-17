@@ -17,23 +17,39 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import imageCompression from "browser-image-compression";
+import { validateEmail, validateNickname } from "@/utils/validation";
 
 interface MypageProfileEditFormProps {
   profile: Profile;
+  open: boolean;
   onSuccess: () => void;
 }
 
 export default function MypageProfileEditForm({
   profile,
+  open,
   onSuccess,
 }: MypageProfileEditFormProps) {
-  const [nickname, setNickname] = useState(profile.nickname || "");
-  const [email, setEmail] = useState(profile.email || "");
+  const [nickname, setNickname] = useState("");
+  const [email, setEmail] = useState("");
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [errors, setErrors] = useState({ nickname: "", email: "" });
 
   const { mutate: updateProfile, isPending } = useUpdateProfile();
+
+  useEffect(() => {
+    if (open) {
+      setNickname(profile.nickname || "");
+      setEmail(profile.email || "");
+      setAvatarFile(null);
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+        setPreviewUrl(null);
+      }
+      setErrors({ nickname: "", email: "" });
+    }
+  }, [profile, open]);
 
   // 이미지 여러 번 업로드 시 메모리 누수 방지를 위한 cleanup
   useEffect(() => {
@@ -47,26 +63,12 @@ export default function MypageProfileEditForm({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const isChanged =
-    nickname !== (profile?.nickname || "") ||
-    email !== (profile?.email || "") ||
+    nickname !== (profile.nickname || "") ||
+    email !== (profile.email || "") ||
     avatarFile !== null;
 
   const isFormInvalid =
     !!errors.nickname || !!errors.email || !nickname.trim() || !email.trim();
-
-  const validateNickname = (nickname: string) => {
-    if (!nickname.trim()) return "닉네임을 입력해 주세요.";
-    if (nickname.length < 2) return "닉네임은 최소 2글자 이상이어야 합니다.";
-    if (nickname.length > 8) return "닉네임은 최대 8글자 이하여야 합니다.";
-    return "";
-  };
-
-  const validateEmail = (email: string) => {
-    if (!email.trim()) return "이메일을 입력해 주세요.";
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // [문자]@[문자].[문자] 형태 정규식
-    if (!emailRegex.test(email)) return "올바른 이메일 형식이 아닙니다.";
-    return "";
-  };
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const nickname = e.target.value;
@@ -128,10 +130,6 @@ export default function MypageProfileEditForm({
 
   const handleSave = () => {
     if (!profile?.id) return;
-    if (errors.nickname || errors.email) {
-      toast.error("양식이 잘못되었습니다.");
-      return;
-    }
 
     updateProfile(
       {
