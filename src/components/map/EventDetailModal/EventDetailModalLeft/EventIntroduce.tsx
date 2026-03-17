@@ -23,7 +23,7 @@ export default function EventIntroduce({ type, value }: Props) {
         <div>
           <p className="text-caption text-etc">{config.title}</p>
 
-          <p className="text-caption font-semibold">{config.title}</p>
+          <p className="text-caption font-semibold">{value}</p>
         </div>
       </CardContent>
     </Card>
