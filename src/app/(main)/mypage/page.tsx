@@ -1,6 +1,5 @@
 "use client";
 
-import { MypageCalendar } from "@/components/mypage/MypageCalendar";
 import WeatherCard from "@/components/common/WeatherCard";
 import MyPageEventRecommendCard from "@/components/mypage/MyPageEventRecommendCard";
 import MypageProfileCard from "@/components/mypage/MypageProfileCard";
@@ -17,6 +16,8 @@ import { useWeatherData } from "@/hooks/queries/useWeatherData";
 import { useAirPollutionData } from "@/hooks/queries/useAirPollutionData";
 import WeatherCardSkeleton from "@/components/common/skeleton/WeatherCardSkeleton";
 import { mapWeatherCard } from "@/utils/mapper";
+import { useProfileData } from "@/hooks/queries/useProfileData";
+import { Calendar } from "@/components/ui/calendar";
 
 export default function Mypage() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
@@ -41,6 +42,8 @@ export default function Mypage() {
         isDefaultLocation,
       )
     : null;
+
+  const { data: profile } = useProfileData();
 
   const handleEventClick = (dateString: string) => {
     const newDate = parseSafeDate(dateString);
@@ -109,12 +112,15 @@ export default function Mypage() {
         </div>
 
         <div className="order-1 flex flex-col gap-6 md:order-2 md:col-span-3">
-          <div className="flex-1 rounded-2xl border bg-white p-6 shadow-sm">
-            <MypageCalendar
-              selectedDate={selectedDate}
-              onDateChange={setSelectedDate}
+          <div className="xs:p-6 flex-1 rounded-2xl border bg-white p-4 shadow-sm">
+            <Calendar
+              mode="single"
+              selected={selectedDate}
               month={month}
+              onSelect={setSelectedDate}
               onMonthChange={setMonth}
+              nickname={profile?.nickname ?? undefined}
+              captionLayout="dropdown"
             />
           </div>
 

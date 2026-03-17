@@ -33,7 +33,7 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: supabaseHostname,
         port: "",
-        pathname: "/storage/v1/object/public/**", // storage 이미지 경로 허용
+        pathname: "/storage/v1/object/public/**",
       },
     ],
   },
