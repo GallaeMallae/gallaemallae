@@ -9,20 +9,17 @@ import { Category } from "@/types/common";
 
 type Event = Tables<"events">;
 
+interface EventCarouselProps {
+  events: Event[];
+  onCarouselClick: (id: string) => void;
+  onSelectCarousel: (id: string) => void;
+}
+
 export default function EventCarousel({
   events,
-  liked,
-  setLiked,
-}: {
-  events: Event[];
-  liked: number[];
-  setLiked: React.Dispatch<React.SetStateAction<number[]>>;
-}) {
-  const toggleLike = (id: number) => {
-    setLiked((prev) =>
-      prev.includes(id) ? prev.filter((v) => v !== id) : [...prev, id],
-    );
-  };
+  onCarouselClick,
+  onSelectCarousel,
+}: EventCarouselProps) {
   return (
     <div className="absolute right-0 bottom-6 left-0 z-5 px-4">
       <Carousel
@@ -35,16 +32,17 @@ export default function EventCarousel({
             <CarouselItem
               key={event.id}
               className="basis-[80%] pl-4 md:basis-86"
+              onClick={() => onSelectCarousel(event.id)}
             >
-              <EventCard
-                title={event.name ?? ""}
-                location={event.venue ?? ""}
-                startDate={event.start_date ?? ""}
-                endDate={event.end_date ?? ""}
-                category={(event.categories as Category) ?? "other"}
-                isLiked={liked.includes(event.id)}
-                onToggleLike={() => toggleLike(event.id)}
-              />
+              <div onClick={() => onCarouselClick(String(event.id))}>
+                <EventCard
+                  title={event.name ?? ""}
+                  location={event.venue ?? ""}
+                  startDate={event.start_date ?? ""}
+                  endDate={event.end_date ?? ""}
+                  category={(event.categories?.[0] as Category) ?? "other"}
+                />
+              </div>
             </CarouselItem>
           ))}
         </CarouselContent>
