@@ -30,7 +30,7 @@ export default function Area({
   const [loading, kakaoError] = useKakaoLoader({
     appkey: process.env.NEXT_PUBLIC_KAKAO_JS_KEY!,
   });
-  const [selectedModal, setSelectedModal] = useState<number | null>(null);
+  const [selectedModal, setSelectedModal] = useState<string | null>(null);
 
   if (loading || isLoading) {
     return <div>지도를 불러오는 중</div>;
@@ -48,7 +48,7 @@ export default function Area({
       const category = event.categories?.[0] ?? "other";
 
       return {
-        id: Number(event.id),
+        id: event.id,
         lat: event.latitude!,
         lng: event.longitude!,
         category: ["festival", "performance", "exhibition", "other"].includes(
@@ -59,9 +59,7 @@ export default function Area({
       };
     });
 
-  const selectedModalData = events.find(
-    (event) => Number(event.id) === selectedModal,
-  );
+  const selectedModalData = events.find((event) => event.id === selectedModal);
 
   return (
     <div className="relative h-[calc(100vh-57px)] overflow-hidden">
