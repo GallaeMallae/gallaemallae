@@ -1,3 +1,7 @@
+"use client";
+
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+
 import EventDetailModalLeft from "@/components/map/EventDetailModal/EventDetailModalLeft/EventDetailModalLeft";
 import EventDetailModalRight from "@/components/map/EventDetailModal/EventDetailModalRight/EventDetailModalRight";
 import { Badge } from "@/components/ui/badge";
@@ -29,27 +33,42 @@ interface EventData {
 }
 
 type Props = {
-  event: EventData;
+  event: EventData | null;
+  open: boolean;
   onClose: () => void;
 };
 
-export default function EventDetailModal({ event, onClose }: Props) {
-  return (
-    <div className="flex flex-col gap-6 p-8">
-      <div className="flex items-start justify-between">
-        <div className="flex flex-col gap-2">
-          <Badge variant="festival">{event.categories}</Badge>
-          <p className="text-h2">{event.name}</p>
-        </div>
-        <Button onClick={onClose}>
-          <X />
-        </Button>
-      </div>
+export default function EventDetailModal({ event, open, onClose }: Props) {
+  if (!event) return null;
 
-      <div className="flex flex-col gap-6 md:flex-row">
-        <EventDetailModalLeft event={event} />
-        <EventDetailModalRight event={event} />
-      </div>
-    </div>
+  return (
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="w-[90vw] !max-w-6xl p-0">
+        <div className="flex flex-col gap-6 p-8">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex flex-col gap-2">
+              <Badge variant="festival">
+                {event.categories?.[0] ?? "기타"}
+              </Badge>
+              <p className="text-h2">{event.name}</p>
+            </div>
+
+            <Button variant="ghost" size="icon" onClick={onClose}>
+              <X />
+            </Button>
+          </div>
+
+          <div className="flex gap-8">
+            <div className="w-[320px] shrink-0">
+              <EventDetailModalLeft event={event} />
+            </div>
+
+            <div className="flex-1">
+              <EventDetailModalRight event={event} />
+            </div>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
