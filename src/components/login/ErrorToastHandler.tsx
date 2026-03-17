@@ -14,7 +14,9 @@ export default function ErrorToastHandler({ error }: ErrorToastHandlerProps) {
   const router = useRouter();
 
   useEffect(() => {
-    if (error) {
+    if (!error) return;
+
+    const timer = setTimeout(() => {
       toast.error(
         ERROR_MESSAGE_CONFIG[error] ?? "로그인 중 오류가 발생했습니다.",
       );
@@ -26,7 +28,9 @@ export default function ErrorToastHandler({ error }: ErrorToastHandlerProps) {
       router.replace(nextQuery ? `/login?${nextQuery}` : "/login", {
         scroll: false,
       });
-    }
+    }, 0);
+
+    return () => clearTimeout(timer);
   }, [error, searchParams, router]);
 
   return null;
