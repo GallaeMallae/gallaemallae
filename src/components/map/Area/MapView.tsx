@@ -1,6 +1,7 @@
 "use client";
 
 import { Map, MapMarker, Circle } from "react-kakao-maps-sdk";
+import { useEffect } from "react";
 import { MARKER_ICONS } from "@/lib/constants";
 import { getDistance } from "@/utils/map/getDistance";
 import { Category } from "@/types/common";
@@ -20,6 +21,15 @@ interface MapViewProps {
   markers: Marker[];
   setLocate: (map: kakao.maps.Map) => void;
   onMarkerClick: (id: string) => void;
+
+  locate: kakao.maps.Map | null;
+  onSelectCarousel:
+    | {
+        id: string;
+        latitude: number | null;
+        longitude: number | null;
+      }
+    | undefined;
 }
 
 export default function MapView({
@@ -28,6 +38,8 @@ export default function MapView({
   markers,
   setLocate,
   onMarkerClick,
+  locate,
+  onSelectCarousel,
 }: MapViewProps) {
   const filteredMarkers = position
     ? markers.filter(
@@ -36,6 +48,21 @@ export default function MapView({
           getDistance(position.lat, position.lng, m.lat, m.lng) <= radius,
       )
     : [];
+
+  useEffect(() => {
+    if (!locate) return;
+    if (!onSelectCarousel) return;
+
+    if (onSelectCarousel.latitude == null || onSelectCarousel.longitude == null)
+      return;
+
+    const moveLatLng = new kakao.maps.LatLng(
+      onSelectCarousel.latitude,
+      onSelectCarousel.longitude,
+    );
+
+    locate.panTo(moveLatLng);
+  }, [locate, onSelectCarousel]);
 
   return (
     <Map
