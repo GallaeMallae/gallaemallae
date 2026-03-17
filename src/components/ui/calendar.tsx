@@ -25,7 +25,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import MypageSelectedDateEventsCard from "@/components/mypage/MypageSelectedDateEventsCard";
-import { isSameDay, isWithinInterval, parseISO, startOfDay } from "date-fns";
+import {
+  format,
+  isSameDay,
+  isWithinInterval,
+  parseISO,
+  startOfDay,
+} from "date-fns";
 
 function useIsDesktop() {
   const [isDesktop, setIsDesktop] = React.useState(false);
@@ -256,7 +262,8 @@ function CalendarDayButton({
           variant="ghost"
           onClick={handleDayClick}
           // size="icon"
-          data-day={day.date.toLocaleDateString()}
+          // data-day={day.date.toLocaleDateString()}
+          data-day={format(day.date, "yyyy-MM-dd")}
           data-selected-single={
             modifiers.selected &&
             !modifiers.range_start &&

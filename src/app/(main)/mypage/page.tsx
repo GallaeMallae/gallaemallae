@@ -8,16 +8,39 @@ import MypageEventSectionCard from "@/components/mypage/MyPageEventSectionCard";
 import MypageSelectedDateEventsCard from "@/components/mypage/MypageSelectedDateEventsCard";
 import { toast } from "sonner";
 import { useState } from "react";
-import { MOCK_WEATHER } from "@/mocks/weathers";
 import { MOCK_EVENTS } from "@/mocks/events";
 import { parseSafeDate } from "@/utils/date";
 import { isWithinInterval, parseISO, startOfDay } from "date-fns";
+import { useLocationStore } from "@/stores/locationStore";
+import { useLocationNameData } from "@/hooks/queries/useLocationNameData";
+import { useWeatherData } from "@/hooks/queries/useWeatherData";
+import { useAirPollutionData } from "@/hooks/queries/useAirPollutionData";
+import WeatherCardSkeleton from "@/components/common/skeleton/WeatherCardSkeleton";
+import { mapWeatherCard } from "@/utils/mapper";
 
 export default function Mypage() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
     new Date(),
   );
   const [month, setMonth] = useState<Date>(new Date());
+
+  const { coords, isInitialized, isDefaultLocation } = useLocationStore();
+  const { data: locationNameData } = useLocationNameData(coords, isInitialized);
+  const { data: weatherData } = useWeatherData(coords, isInitialized);
+  const { data: airPollutionData } = useAirPollutionData(coords, isInitialized);
+
+  const isWeatherReady =
+    !!locationNameData && !!weatherData && !!airPollutionData;
+  const isWeatherLoading = !isWeatherReady;
+
+  const weather = isWeatherReady
+    ? mapWeatherCard(
+        locationNameData,
+        weatherData,
+        airPollutionData,
+        isDefaultLocation,
+      )
+    : null;
 
   const handleEventClick = (dateString: string) => {
     const newDate = parseSafeDate(dateString);
@@ -42,7 +65,6 @@ export default function Mypage() {
     return isWithinInterval(targetDate, { start: startDate, end: endDate });
   });
 
-  const weatherData = MOCK_WEATHER[1];
   const eventData = MOCK_EVENTS[1];
 
   return (
@@ -53,7 +75,11 @@ export default function Mypage() {
         </div>
 
         <div className="grid grid-cols-1 gap-6 md:col-span-3 md:grid-cols-2">
-          <WeatherCard {...weatherData} />
+          {isWeatherLoading || !weather ? (
+            <WeatherCardSkeleton />
+          ) : (
+            <WeatherCard {...weather} />
+          )}
           <div className="hidden md:block">
             <MyPageEventRecommendCard {...eventData} />
           </div>
