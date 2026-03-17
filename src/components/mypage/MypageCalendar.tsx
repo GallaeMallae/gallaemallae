@@ -4,7 +4,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { MypageDisplayEvent } from "@/types/common";
 
 interface MypageCalendarProps {
-  planedEvents: MypageDisplayEvent[];
+  plannedEvents: MypageDisplayEvent[];
   selectedDate: Date | undefined;
   month: Date;
   onDateChange: (date: Date | undefined) => void;
@@ -12,7 +12,7 @@ interface MypageCalendarProps {
 }
 
 export function MypageCalendar({
-  planedEvents,
+  plannedEvents,
   selectedDate,
   month,
   onDateChange,
@@ -21,7 +21,7 @@ export function MypageCalendar({
   return (
     <Calendar
       mode="single"
-      planedEvents={planedEvents}
+      plannedEvents={plannedEvents}
       selected={selectedDate}
       onSelect={onDateChange}
       month={month}

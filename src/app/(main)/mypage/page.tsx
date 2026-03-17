@@ -13,7 +13,7 @@ import { MOCK_EVENTS } from "@/mocks/events";
 import { parseSafeDate } from "@/utils/date";
 import { isWithinInterval, parseISO, startOfDay } from "date-fns";
 import { useLikedEventsData } from "@/hooks/queries/useLikedEventsData";
-import { usePlanedEventsData } from "@/hooks/queries/usePlanedEventsData";
+import { usePlannedEventsData } from "@/hooks/queries/usePlannedEventsData";
 
 export default function Mypage() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
@@ -34,7 +34,7 @@ export default function Mypage() {
   };
 
   const { data: likedEvents = [] } = useLikedEventsData();
-  const { data: planedEvents = [] } = usePlanedEventsData();
+  const { data: plannedEvents = [] } = usePlannedEventsData();
 
   // 관심 목록 데이터 가공
   const formattedLikedEvents = likedEvents.map((event) => ({
@@ -42,13 +42,13 @@ export default function Mypage() {
     display_date: event.start_date,
   }));
   // 일정 목록 데이터 가공
-  const formattedPlanedEvents = planedEvents.map((plan) => ({
+  const formattedplannedEvents = plannedEvents.map((plan) => ({
     ...plan.event,
     display_date: plan.visit_date || plan.event.start_date,
     plan_id: plan.id,
   }));
 
-  const dailyEvents = formattedPlanedEvents.filter((event) => {
+  const dailyEvents = formattedplannedEvents.filter((event) => {
     if (!selectedDate) return false;
 
     const targetDate = startOfDay(selectedDate);
@@ -84,7 +84,7 @@ export default function Mypage() {
               title="나의 일정 목록"
               iconName="bookmark"
               iconClassName="text-symbol-sky fill-symbol-sky"
-              events={formattedPlanedEvents}
+              events={formattedplannedEvents}
               onEventClick={handleEventClick}
             />
           </div>
@@ -102,7 +102,7 @@ export default function Mypage() {
         <div className="order-1 flex flex-col gap-6 md:order-2 md:col-span-3">
           <div className="flex-1 rounded-2xl border bg-white p-6 shadow-sm">
             <MypageCalendar
-              planedEvents={formattedPlanedEvents}
+              plannedEvents={formattedplannedEvents}
               selectedDate={selectedDate}
               onDateChange={setSelectedDate}
               month={month}

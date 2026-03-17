@@ -7,7 +7,7 @@ export interface AddEventPlanParams {
   // visitDate: string; 추후 날짜 선택 기능 추가될때 받기
 }
 
-export async function fetchPlanedEvents(
+export async function fetchPlannedEvents(
   supabase: SupabaseClient<Database>,
   userId: string,
 ) {

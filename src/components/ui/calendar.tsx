@@ -53,11 +53,11 @@ function Calendar({
   classNames,
   showOutsideDays = true,
   components,
-  planedEvents = [],
+  plannedEvents = [],
   ...props
 }: React.ComponentProps<typeof DayPicker> & {
   buttonVariant?: React.ComponentProps<typeof Button>["variant"];
-  planedEvents?: MypageDisplayEvent[];
+  plannedEvents?: MypageDisplayEvent[];
 }) {
   const isDesktop = useIsDesktop();
   const [activePopoverDate, setActivePopoverDate] = React.useState<Date | null>(
@@ -179,7 +179,7 @@ function Calendar({
         DayButton: (dayButtonProps) => (
           <CalendarDayButton
             {...dayButtonProps}
-            planedEvents={planedEvents}
+            plannedEvents={plannedEvents}
             isDesktop={isDesktop}
             activePopoverDate={activePopoverDate}
             setActivePopoverDate={setActivePopoverDate}
@@ -202,7 +202,7 @@ function Calendar({
 }
 
 interface CalendarDayButtonProps extends DayButtonProps {
-  planedEvents: MypageDisplayEvent[];
+  plannedEvents: MypageDisplayEvent[];
   isDesktop: boolean;
   activePopoverDate: Date | null;
   setActivePopoverDate: (date: Date | null) => void;
@@ -212,7 +212,7 @@ function CalendarDayButton({
   className,
   day,
   modifiers,
-  planedEvents,
+  plannedEvents,
   isDesktop,
   activePopoverDate,
   setActivePopoverDate,
@@ -227,7 +227,7 @@ function CalendarDayButton({
   const targetDate = startOfDay(day.date);
   const isSunday = day.date.getDay() === 0;
 
-  const dayEvents = planedEvents.filter((event) => {
+  const dayEvents = plannedEvents.filter((event) => {
     const startDate = parseISO(event.start_date);
     const endDate = parseISO(event.end_date);
     return isWithinInterval(targetDate, { start: startDate, end: endDate });
