@@ -3,8 +3,8 @@ import { LucideIcon } from "lucide-react";
 
 // 사용자 위치 타입
 export interface Coordinates {
-  latitude: number;
-  longitude: number;
+  lat: number;
+  lng: number;
 }
 
 // ==============================
@@ -123,3 +123,8 @@ export interface DetailCardItem {
   };
   information: string[];
 }
+
+// ==============================
+// 사용자 프로필 타입
+// ==============================
+export type Profile = Tables<"profiles">;

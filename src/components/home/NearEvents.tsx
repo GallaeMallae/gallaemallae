@@ -3,19 +3,29 @@
 import { Card, CardContent } from "@/components/ui/card";
 import EventCard from "@/components/common/EventCard";
 import MoreCard from "@/components/common/MoreCard";
+import KakaoMap from "@/components/common/KakaoMap";
+import { MapMarker } from "react-kakao-maps-sdk";
+import { useLocationStore } from "@/stores/locationStore";
 import { EventCardItem } from "@/types/common";
 
 export default function NearEvents({ events }: { events: EventCardItem[] }) {
+  const { coords } = useLocationStore();
+
+  const center = {
+    lat: coords.lat,
+    lng: coords.lng,
+  };
+
   return (
     <section>
       <h3 className="text-title2 mb-2 font-bold">내 근처 행사</h3>
 
       <div className="flex flex-col gap-4 md:h-110 md:flex-row">
         <div className="bg-etc-sub h-56 w-full overflow-hidden rounded-xl md:h-full md:flex-[0.4]">
-          {/* Todo: Kakao Map 연결 */}
-          <div className="text-etc flex h-full w-full items-center justify-center">
-            Map Area
-          </div>
+          {/* Kakao Map */}
+          <KakaoMap center={center} level={7}>
+            <MapMarker position={center} />
+          </KakaoMap>
         </div>
 
         <div className="md:flex-[0.6]">

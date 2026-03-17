@@ -59,6 +59,7 @@ export default function AuthStatusIcon() {
           >
             {profile?.avatar_url ? (
               <Image
+                unoptimized
                 src={profile.avatar_url}
                 alt="프로필"
                 sizes="40px"

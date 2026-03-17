@@ -7,9 +7,12 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import EventCard from "@/components/common/EventCard";
+import KakaoMap from "@/components/common/KakaoMap";
 import { LocateFixed } from "lucide-react";
-import { Map, MapMarker, Circle, useKakaoLoader } from "react-kakao-maps-sdk";
-import { useState, useEffect } from "react";
+import { MapMarker, Circle } from "react-kakao-maps-sdk";
+import { useState } from "react";
+import { useLocationStore } from "@/stores/locationStore";
+import { getDistance } from "@/utils/geo";
 import { MOCK_EVENTS } from "@/mocks/events";
 
 const markers = [
@@ -20,96 +23,36 @@ const markers = [
 ];
 
 export default function Area({ radius }: { radius: number | null }) {
-  const [position, setPosition] = useState<{ lat: number; lng: number } | null>(
-    null,
-  );
-  const [locate, setLocate] = useState<kakao.maps.Map | null>(null);
-  const [loading, error] = useKakaoLoader({
-    appkey: process.env.NEXT_PUBLIC_KAKAO_JS_KEY!,
-  });
+  const { coords } = useLocationStore();
+  const [map, setMap] = useState<kakao.maps.Map | null>(null);
 
-  const moveCurrentLocation = () => {
-    if (!navigator.geolocation || !locate) return;
-
-    if (typeof window === "undefined" || !window.kakao?.maps) {
-      console.error("Kakao Maps SDK not loaded");
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition((p) => {
-      const newPosition = {
-        lat: p.coords.latitude,
-        lng: p.coords.longitude,
-      };
-      setPosition(newPosition);
-      locate.setCenter(
-        new window.kakao.maps.LatLng(newPosition.lat, newPosition.lng),
-      );
-    });
+  const center = {
+    lat: coords.lat,
+    lng: coords.lng,
   };
 
-  useEffect(() => {
-    if (!navigator.geolocation) return;
+  const moveCurrentLocation = () => {
+    if (!map) return;
 
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        setPosition({
-          lat: pos.coords.latitude,
-          lng: pos.coords.longitude,
-        });
-      },
-      // 현재 위치 받을 수 없으면 서울 시청으로 이동
-      (error) => {
-        console.warn("Geolocation error:", error.message);
-        setPosition({ lat: 37.566295, lng: 126.977945 });
-      },
-    );
-  }, []);
+    map.setCenter(new window.kakao.maps.LatLng(center.lat, center.lng));
+  };
 
-  if (loading) {
-    return <div>지도를 불러오는 중</div>;
-  }
-  if (error) {
-    return <div>지도 로드 실패</div>;
-  }
-
-  function getDistance(lat1: number, lng1: number, lat2: number, lng2: number) {
-    const R = 6371e3;
-    const φ1 = (lat1 * Math.PI) / 180;
-    const φ2 = (lat2 * Math.PI) / 180;
-    const Δφ = ((lat2 - lat1) * Math.PI) / 180;
-    const Δλ = ((lng2 - lng1) * Math.PI) / 180;
-
-    const a =
-      Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-      Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
-
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-    return R * c;
-  }
-
-  const filteredMarkers = position
+  const filteredMarkers = center
     ? markers.filter(
         (m) =>
           radius === null ||
-          getDistance(position.lat, position.lng, m.lat, m.lng) <= radius,
+          getDistance(center, { lat: m.lat, lng: m.lng }) <= radius,
       )
     : [];
 
   return (
     <div className="relative h-[calc(100vh-57px)] overflow-hidden">
-      <Map
-        center={position ?? { lat: 37.49793, lng: 127.027596 }}
-        style={{ width: "100%", height: "100%" }}
-        level={3}
-        onCreate={setLocate}
-      >
-        {position && <MapMarker position={position} />}
+      <KakaoMap center={center} level={7} onCreate={setMap}>
+        <MapMarker position={center} />
 
-        {position && radius !== null && (
+        {radius !== null && (
           <Circle
-            center={position}
+            center={center}
             radius={radius}
             strokeWeight={8}
             strokeColor="#0da3e4"
@@ -119,7 +62,7 @@ export default function Area({ radius }: { radius: number | null }) {
         {filteredMarkers.map((m) => (
           <MapMarker key={m.id} position={{ lat: m.lat, lng: m.lng }} />
         ))}
-      </Map>
+      </KakaoMap>
 
       <Button
         className="hover:bg-muted absolute right-4 bottom-54 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white md:h-12 md:w-12"

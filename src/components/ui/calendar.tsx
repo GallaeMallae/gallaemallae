@@ -43,7 +43,7 @@ function useIsDesktop() {
 }
 
 const getCategoryStyle = (categories?: string[] | null) => {
-  const eng = (categories?.[0] || "etc") as keyof typeof CATEGORY_NAME_MAP;
+  const eng = (categories?.[0] || "etc") as CategoryKey;
   const kor = CATEGORY_NAME_MAP[eng] || "기타";
   return CALENDAR_CATEGORY_STYLES[kor] || CALENDAR_CATEGORY_STYLES["기타"];
 };
@@ -54,10 +54,12 @@ function Calendar({
   showOutsideDays = true,
   components,
   plannedEvents = [],
+  nickname,
   ...props
 }: React.ComponentProps<typeof DayPicker> & {
   buttonVariant?: React.ComponentProps<typeof Button>["variant"];
   plannedEvents?: MypageDisplayEvent[];
+  nickname?: string;
 }) {
   const isDesktop = useIsDesktop();
   const [activePopoverDate, setActivePopoverDate] = React.useState<Date | null>(
@@ -144,7 +146,9 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        MonthCaption: CustomMonthCaption,
+        MonthCaption: (captionProps) => (
+          <CustomMonthCaption {...captionProps} nickname={nickname} />
+        ),
         Root: ({ className, rootRef, ...props }) => {
           return (
             <div
@@ -392,8 +396,10 @@ function CalendarDayButton({
 
 function CustomMonthCaption({
   calendarMonth,
+  nickname,
 }: {
   calendarMonth: { date: Date };
+  nickname?: string;
 }) {
   const { goToMonth, nextMonth, previousMonth } = useDayPicker();
   const date = calendarMonth.date;
@@ -401,10 +407,12 @@ function CustomMonthCaption({
   const m = String(date.getMonth() + 1).padStart(2, "0");
 
   return (
-    <div className="mb-4 flex w-full items-center justify-between px-1">
+    <div className="xs:justify-between xs:items-center xs:flex-row mb-4 flex w-full flex-col items-center justify-center gap-2">
       <div className="flex items-center gap-2">
         <CalendarIcon className="text-symbol-sky size-4 md:size-6" />
-        <span className="md:text-title2 font-bold">나의 일정</span>
+        <span className="text-desc1 md:text-title2 font-bold">
+          {nickname ? `${nickname}님의 일정` : "나의 일정"}
+        </span>
       </div>
       <div className="flex items-center gap-0 md:gap-2">
         <button
@@ -415,7 +423,7 @@ function CustomMonthCaption({
         >
           <ChevronLeftIcon className="size-4" />
         </button>
-        <span className="min-w-20 text-center text-sm font-bold">
+        <span className="text-desc2 min-w-20 text-center leading-none font-bold">
           {y}. {m}.
         </span>
         <button
