@@ -6,11 +6,11 @@ import { Coordinates } from "@/types/common";
 import { QUERY_KEYS } from "@/lib/constants";
 
 export function useLocationNameData(coords: Coordinates, enabled: boolean) {
-  const { latitude, longitude } = coords;
+  const { lat, lng } = coords;
 
   return useQuery({
-    queryKey: QUERY_KEYS.LOCATION_NAME(latitude, longitude),
-    queryFn: () => fetchLocationName(latitude, longitude),
+    queryKey: QUERY_KEYS.LOCATION_NAME(lat, lng),
+    queryFn: () => fetchLocationName(lat, lng),
     enabled,
     staleTime: Infinity,
   });

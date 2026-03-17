@@ -5,6 +5,7 @@ import AlertModal from "@/components/modal/AlertModal";
 import type { Metadata } from "next";
 import ReactQueryProvider from "@/components/providers/ReactQueryProvider";
 import AuthProvider from "@/components/providers/AuthProvider";
+import KakaoMapProvider from "@/components/providers/KakaoMapProvider";
 import {
   dehydrate,
   HydrationBoundary,
@@ -46,9 +47,11 @@ export default async function RootLayout({
         <ReactQueryProvider>
           <HydrationBoundary state={dehydrate(queryClient)}>
             <AuthProvider initialUserId={user?.id}>
-              {children}
-              <AlertModal />
-              <Toaster />
+              <KakaoMapProvider>
+                {children}
+                <AlertModal />
+                <Toaster />
+              </KakaoMapProvider>
             </AuthProvider>
           </HydrationBoundary>
         </ReactQueryProvider>
