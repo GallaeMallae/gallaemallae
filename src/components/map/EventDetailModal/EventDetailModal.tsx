@@ -1,7 +1,6 @@
 "use client";
 
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-
 import EventDetailModalLeft from "@/components/map/EventDetailModal/EventDetailModalLeft/EventDetailModalLeft";
 import EventDetailModalRight from "@/components/map/EventDetailModal/EventDetailModalRight/EventDetailModalRight";
 import { Badge } from "@/components/ui/badge";
@@ -50,8 +49,8 @@ export default function EventDetailModal({ event, open, onClose }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="w-[90vw] !max-w-6xl p-0">
-        <div className="flex flex-col gap-6 p-8">
+      <DialogContent className="max-h-[90vh] w-[95vw] max-w-6xl! overflow-y-auto p-0">
+        <div className="flex flex-col gap-6 p-8 md:p-8">
           <div className="flex items-start justify-between gap-4">
             <div className="flex flex-col gap-2">
               <Badge variant={categoryKey}>{categoryLabel}</Badge>
@@ -63,8 +62,8 @@ export default function EventDetailModal({ event, open, onClose }: Props) {
             </Button>
           </div>
 
-          <div className="flex gap-8">
-            <div className="w-[320px] shrink-0">
+          <div className="flex flex-col gap-8 md:flex-row">
+            <div className="w-full shrink-0 md:w-[320px]">
               <EventDetailModalLeft event={event} />
             </div>
 
