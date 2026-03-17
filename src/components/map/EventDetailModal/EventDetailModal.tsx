@@ -1,6 +1,6 @@
 "use client";
 
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import EventDetailModalLeft from "@/components/map/EventDetailModal/EventDetailModalLeft/EventDetailModalLeft";
 import EventDetailModalRight from "@/components/map/EventDetailModal/EventDetailModalRight/EventDetailModalRight";
 import { Badge } from "@/components/ui/badge";
@@ -54,7 +54,9 @@ export default function EventDetailModal({ event, open, onClose }: Props) {
           <div className="flex items-start justify-between gap-4">
             <div className="flex flex-col gap-2">
               <Badge variant={categoryKey}>{categoryLabel}</Badge>
-              <p className="text-h2">{event.name}</p>
+              <DialogTitle>
+                <p className="text-h2"> {event.name}</p>
+              </DialogTitle>
             </div>
 
             <Button variant="ghost" size="icon" onClick={onClose}>
