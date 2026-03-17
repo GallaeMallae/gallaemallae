@@ -5,6 +5,8 @@ import MyPageEventRecommendCard from "@/components/mypage/MyPageEventRecommendCa
 import MypageProfileCard from "@/components/mypage/MypageProfileCard";
 import MypageEventSectionCard from "@/components/mypage/MyPageEventSectionCard";
 import MypageSelectedDateEventsCard from "@/components/mypage/MypageSelectedDateEventsCard";
+import WeatherCardSkeleton from "@/components/common/skeleton/WeatherCardSkeleton";
+import { Calendar } from "@/components/ui/calendar";
 import { toast } from "sonner";
 import { useState } from "react";
 import { MOCK_EVENTS } from "@/mocks/events";
@@ -14,10 +16,10 @@ import { useLocationStore } from "@/stores/locationStore";
 import { useLocationNameData } from "@/hooks/queries/useLocationNameData";
 import { useWeatherData } from "@/hooks/queries/useWeatherData";
 import { useAirPollutionData } from "@/hooks/queries/useAirPollutionData";
-import WeatherCardSkeleton from "@/components/common/skeleton/WeatherCardSkeleton";
 import { mapWeatherCard } from "@/utils/mapper";
+import { useLikedEventsData } from "@/hooks/queries/useLikedEventsData";
+import { usePlannedEventsData } from "@/hooks/queries/usePlannedEventsData";
 import { useProfileData } from "@/hooks/queries/useProfileData";
-import { Calendar } from "@/components/ui/calendar";
 
 export default function Mypage() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
@@ -57,12 +59,27 @@ export default function Mypage() {
     }
   };
 
-  const dailyEvents = MOCK_EVENTS.filter((event) => {
+  const { data: likedEvents = [] } = useLikedEventsData();
+  const { data: plannedEvents = [] } = usePlannedEventsData();
+
+  // 관심 목록 데이터 가공
+  const formattedLikedEvents = likedEvents.map((event) => ({
+    ...event,
+    display_date: event.start_date,
+  }));
+  // 일정 목록 데이터 가공
+  const formattedPlannedEvents = plannedEvents.map((plan) => ({
+    ...plan.event,
+    display_date: plan.visit_date || plan.event.start_date,
+    plan_id: plan.id,
+  }));
+
+  const dailyEvents = formattedPlannedEvents.filter((event) => {
     if (!selectedDate) return false;
 
     const targetDate = startOfDay(selectedDate);
-    const startDate = parseISO(event.startDate);
-    const endDate = parseISO(event.endDate);
+    const startDate = parseISO(event.start_date);
+    const endDate = parseISO(event.end_date);
 
     // 선택일이 행사 시작일과 종료일 사이에 있는지 확인
     return isWithinInterval(targetDate, { start: startDate, end: endDate });
@@ -96,7 +113,7 @@ export default function Mypage() {
               title="나의 일정 목록"
               iconName="bookmark"
               iconClassName="text-symbol-sky fill-symbol-sky"
-              events={MOCK_EVENTS}
+              events={formattedPlannedEvents}
               onEventClick={handleEventClick}
             />
           </div>
@@ -105,7 +122,7 @@ export default function Mypage() {
               title="나의 관심 목록"
               iconName="heart"
               iconClassName="text-red-500 fill-red-500"
-              events={MOCK_EVENTS}
+              events={formattedLikedEvents}
               onEventClick={handleEventClick}
             />
           </div>
