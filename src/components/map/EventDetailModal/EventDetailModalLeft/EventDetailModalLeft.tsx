@@ -39,11 +39,15 @@ export default function EventDetailModalLeft({ event }: Props) {
       <div className="flex flex-col gap-2">
         <EventIntroduce
           type="date"
-          value={`${event.start_date} ${event.end_date} `}
+          value={
+            event.end_date
+              ? `${event.start_date} ~ ${event.end_date}`
+              : event.start_date
+          }
         />
-        <EventIntroduce type="place" value={event?.venue} />
-        <EventIntroduce type="tel" value={event.phone} />
-        <EventIntroduce type="homepage" value={event.homepage_url} />
+        <EventIntroduce type="place" value={event.venue ?? "-"} />
+        <EventIntroduce type="tel" value={event.phone ?? "-"} />
+        <EventIntroduce type="homepage" value={event.homepage_url ?? "-"} />
       </div>
     </div>
   );
