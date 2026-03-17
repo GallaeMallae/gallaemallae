@@ -58,7 +58,7 @@ export default function MypageProfileEditForm({
     };
   }, [previewUrl]);
 
-  const displayImageUrl = previewUrl || profile?.avatar_url;
+  const displayImageUrl = previewUrl || profile.avatar_url;
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -129,8 +129,6 @@ export default function MypageProfileEditForm({
   };
 
   const handleSave = () => {
-    if (!profile?.id) return;
-
     updateProfile(
       {
         userId: profile.id,
