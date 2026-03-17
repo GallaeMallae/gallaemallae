@@ -8,23 +8,27 @@ import { Category } from "@/types/common";
 type Position = { lat: number; lng: number };
 
 type Marker = {
-  id: number;
+  id: number | string;
   lat: number;
   lng: number;
   category: Category;
 };
+
+interface MapViewProps {
+  position: Position | null;
+  radius: number | null;
+  markers: Marker[];
+  setLocate: (map: kakao.maps.Map) => void;
+  onMarkerClick: (id: string) => void;
+}
 
 export default function MapView({
   position,
   radius,
   markers,
   setLocate,
-}: {
-  position: Position | null;
-  radius: number | null;
-  markers: Marker[];
-  setLocate: (map: kakao.maps.Map) => void;
-}) {
+  onMarkerClick,
+}: MapViewProps) {
   const filteredMarkers = position
     ? markers.filter(
         (m) =>
@@ -56,11 +60,15 @@ export default function MapView({
 
         return (
           <MapMarker
-            key={m.id}
+            key={`marker-${m.id}`}
             position={{ lat: m.lat, lng: m.lng }}
             image={{
               src: MARKER_ICONS[markerCategory],
               size: { width: 40, height: 40 },
+            }}
+            onClick={() => {
+              console.log("Marker clicked:", m.id); // 로그 추가
+              onMarkerClick(String(m.id));
             }}
           />
         );
