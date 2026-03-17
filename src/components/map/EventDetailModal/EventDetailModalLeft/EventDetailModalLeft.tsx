@@ -3,7 +3,20 @@ import EventRecommendWeather from "@/components/map/EventDetailModal/EventDetail
 import EventIntroduce from "@/components/map/EventDetailModal/EventDetailModalLeft/EventIntroduce";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 
-export default function EventDetailModalLeft() {
+interface EventData {
+  id: string;
+  start_date: string;
+  end_date: string | null;
+  venue: string | null;
+  phone: string | null;
+  homepage_url: string | null;
+}
+
+type Props = {
+  event: EventData;
+};
+
+export default function EventDetailModalLeft({ event }: Props) {
   return (
     <div className="flex w-full flex-col gap-6 md:w-80 md:justify-between">
       <Card className="gap-2 rounded-2xl">
@@ -24,10 +37,13 @@ export default function EventDetailModalLeft() {
       </Card>
 
       <div className="flex flex-col gap-2">
-        <EventIntroduce type="date" />
-        <EventIntroduce type="place" />
-        <EventIntroduce type="tel" />
-        <EventIntroduce type="homepage" />
+        <EventIntroduce
+          type="date"
+          value={`${event.start_date} ${event.end_date} `}
+        />
+        <EventIntroduce type="place" value={event?.venue} />
+        <EventIntroduce type="tel" value={event.phone} />
+        <EventIntroduce type="homepage" value={event.homepage_url} />
       </div>
     </div>
   );
