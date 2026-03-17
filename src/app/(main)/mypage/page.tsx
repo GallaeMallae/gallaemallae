@@ -42,13 +42,13 @@ export default function Mypage() {
     display_date: event.start_date,
   }));
   // 일정 목록 데이터 가공
-  const formattedplannedEvents = plannedEvents.map((plan) => ({
+  const formattedPlannedEvents = plannedEvents.map((plan) => ({
     ...plan.event,
     display_date: plan.visit_date || plan.event.start_date,
     plan_id: plan.id,
   }));
 
-  const dailyEvents = formattedplannedEvents.filter((event) => {
+  const dailyEvents = formattedPlannedEvents.filter((event) => {
     if (!selectedDate) return false;
 
     const targetDate = startOfDay(selectedDate);
@@ -84,7 +84,7 @@ export default function Mypage() {
               title="나의 일정 목록"
               iconName="bookmark"
               iconClassName="text-symbol-sky fill-symbol-sky"
-              events={formattedplannedEvents}
+              events={formattedPlannedEvents}
               onEventClick={handleEventClick}
             />
           </div>
@@ -102,7 +102,7 @@ export default function Mypage() {
         <div className="order-1 flex flex-col gap-6 md:order-2 md:col-span-3">
           <div className="flex-1 rounded-2xl border bg-white p-6 shadow-sm">
             <MypageCalendar
-              plannedEvents={formattedplannedEvents}
+              plannedEvents={formattedPlannedEvents}
               selectedDate={selectedDate}
               onDateChange={setSelectedDate}
               month={month}
