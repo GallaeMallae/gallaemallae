@@ -82,11 +82,6 @@ export interface WeatherCardItem {
   ultrafineDust: string;
 }
 
-// ==============================
-// 프로필 관련 타입
-// ==============================
-export type Profile = Tables<"profiles">;
-
 export type WeatherInfoType = "temp" | "fineDust" | "wind" | "wet";
 
 export interface WeatherInfoCardConfigItem {
