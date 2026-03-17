@@ -55,6 +55,13 @@ export interface EventCardItem {
   isLiked: boolean;
 }
 
+export type Event = Tables<"events">;
+
+export type MypageDisplayEvent = Event & {
+  display_date: string; // 관심 목록이면 start_date, 일정이면 visit_date
+  plan_id?: string; // 일정 고유 ID
+};
+
 // ==============================
 // 날씨 카드 관련 타입
 // ==============================
