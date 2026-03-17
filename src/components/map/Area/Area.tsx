@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import MapView from "@/components/map/Area/MapView";
 import EventCarousel from "@/components/map/Area/EventCarousel";
+import EventDetailModal from "@/components/map/EventDetailModal/EventDetailModal";
 import { LocateFixed } from "lucide-react";
 import { useState } from "react";
 import { useKakaoLoader } from "react-kakao-maps-sdk";
@@ -11,8 +12,6 @@ import { useEvents } from "@/hooks/queries/useEvents";
 import { filterEventsByCategory } from "@/utils/map/category";
 import { filterEventByPeriod } from "@/utils/map/period";
 import { Category, PeriodFilter } from "@/types/common";
-
-import EventDetailModal from "@/components/map/EventDetailModal/EventDetailModal";
 
 export default function Area({
   radius,
@@ -30,6 +29,7 @@ export default function Area({
   const [loading, kakaoError] = useKakaoLoader({
     appkey: process.env.NEXT_PUBLIC_KAKAO_JS_KEY!,
   });
+  const [selectedCarousel, setSelectedCarousel] = useState<string | null>(null);
   const [selectedModal, setSelectedModal] = useState<string | null>(null);
 
   if (loading || isLoading) {
@@ -61,6 +61,10 @@ export default function Area({
 
   const selectedModalData = events.find((event) => event.id === selectedModal);
 
+  const selectedCarouselId = filteredEvents.find(
+    (event) => event.id === selectedCarousel,
+  );
+
   return (
     <div className="relative h-[calc(100vh-57px)] overflow-hidden">
       <MapView
@@ -69,6 +73,8 @@ export default function Area({
         markers={markers}
         setLocate={setLocate}
         onMarkerClick={(id) => setSelectedModal(id)}
+        locate={locate}
+        onSelectCarousel={selectedCarouselId}
       />
       {selectedModal && selectedModalData && (
         <EventDetailModal
@@ -86,6 +92,7 @@ export default function Area({
       <EventCarousel
         events={filteredEvents}
         onCarouselClick={(id) => setSelectedModal(id)}
+        onSelectCarousel={setSelectedCarousel}
       />
     </div>
   );
