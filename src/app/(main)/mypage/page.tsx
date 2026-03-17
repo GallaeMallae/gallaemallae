@@ -1,6 +1,5 @@
 "use client";
 
-import { MypageCalendar } from "@/components/mypage/MypageCalendar";
 import WeatherCard from "@/components/common/WeatherCard";
 import MyPageEventRecommendCard from "@/components/mypage/MyPageEventRecommendCard";
 import MypageProfileCard from "@/components/mypage/MypageProfileCard";
@@ -12,12 +11,16 @@ import { MOCK_WEATHER } from "@/mocks/weathers";
 import { MOCK_EVENTS } from "@/mocks/events";
 import { parseSafeDate } from "@/utils/date";
 import { isWithinInterval, parseISO, startOfDay } from "date-fns";
+import { useProfileData } from "@/hooks/queries/useProfileData";
+import { Calendar } from "@/components/ui/calendar";
 
 export default function Mypage() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
     new Date(),
   );
   const [month, setMonth] = useState<Date>(new Date());
+
+  const { data: profile } = useProfileData();
 
   const handleEventClick = (dateString: string) => {
     const newDate = parseSafeDate(dateString);
@@ -83,12 +86,15 @@ export default function Mypage() {
         </div>
 
         <div className="order-1 flex flex-col gap-6 md:order-2 md:col-span-3">
-          <div className="flex-1 rounded-2xl border bg-white p-6 shadow-sm">
-            <MypageCalendar
-              selectedDate={selectedDate}
-              onDateChange={setSelectedDate}
+          <div className="xs:p-6 flex-1 rounded-2xl border bg-white p-4 shadow-sm">
+            <Calendar
+              mode="single"
+              selected={selectedDate}
               month={month}
+              onSelect={setSelectedDate}
               onMonthChange={setMonth}
+              nickname={profile?.nickname ?? undefined}
+              captionLayout="dropdown"
             />
           </div>
 
