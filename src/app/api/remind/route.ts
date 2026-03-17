@@ -79,64 +79,71 @@ export async function GET(req: Request) {
           to: email,
           subject: `[D-7] ${nickname}님, '${e.name}'가 일주일 앞으로 다가왔습니다!`,
           html: `
-            <div style="max-width: 550px; margin: 0 auto; font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
-              <div style="background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%); padding: 40px 20px; text-align: center;">
-                <h1 style="color: white; margin: 15px 0 0 0; font-size: 28px; letter-spacing: -0.5px;">행사가 일주일 남았습니다!</h1>
+            <div style="max-width: 560px; margin: 0 auto; font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; background-color: #ffffff; border: 1px solid #ebebeb; border-radius: 20px; overflow: hidden;">
+              <div style="background-color: #0da3e4; padding: 40px 24px; text-align: center;">
+                <h1 style="color: #ffffff; margin: 0; font-size: 28px; line-height: 1.3; font-weight: 600;">행사 리마인드 알림</h1>
               </div>
               
-              <div style="padding: 40px 30px; color: #1f2937;">
-                <p style="font-size: 18px; margin-bottom: 20px;">안녕하세요, <b>${nickname}</b>님!</p>
-                <p style="line-height: 1.7; color: #4b5563;">설레는 마음으로 기다리시던 <b>${e.name}</b> 행사가 어느덧 일주일 뒤로 다가왔습니다. 잊지 않으시도록 정보를 정리해 드려요.</p>
+              <div style="padding: 40px 32px; color: #333333;">
+                <p style="font-size: 20px; font-weight: 600; margin-bottom: 24px;">안녕하세요, ${nickname}님!</p>
+                <p style="font-size: 16px; line-height: 1.6; color: #444444; margin-bottom: 32px;">
+                  설레는 마음으로 기다리시던 <b>${e.name}</b> 행사가 어느덧 일주일 뒤로 다가왔습니다. 잊지 않으시도록 정보를 정리해 드려요.
+                </p>
                 
-                <div style="background-color: #f0f9ff; border-left: 4px solid #0ea5e9; border-radius: 8px; padding: 25px; margin: 30px 0;">
-                  <h3 style="margin: 0 0 20px 0; color: #0369a1; font-size: 20px;">📍 행사 상세 정보</h3>
-                  <table style="width: 100%; border-collapse: collapse; font-size: 15px;">
+                <div style="background-color: #e7f6fc; border-left: 4px solid #0da3e4; border-radius: 8px; padding: 24px; margin-bottom: 32px;">
+                  <h3 style="margin: 0 0 16px 0; color: #0da3e4; font-size: 20px; font-weight: 600;">📍 행사 상세 정보</h3>
+                  <table style="width: 100%; border-collapse: collapse; font-size: 16px;">
                     <tr>
-                      <td style="padding: 8px 0; color: #6b7280; width: 70px; vertical-align: top;"><b>행사명</b></td>
-                      <td style="padding: 8px 0 8px 10px; color: #111827;">${e.name}</td>
+                      <td style="padding: 8px 0; color: #666666; width: 80px; vertical-align: top; font-size: 14px;"><b>행사명</b></td>
+                      <td style="padding: 8px 0 8px 16px; color: #111111; font-weight: 500;">${e.name}</td>
                     </tr>
                     <tr>
-                      <td style="padding: 8px 0; color: #6b7280; vertical-align: top;"><b>일시</b></td>
-                      <td style="padding: 8px 0 8px 10px; color: #111827;">${displayDate}</td>
+                      <td style="padding: 8px 0; color: #666666; vertical-align: top; font-size: 14px;"><b>일시</b></td>
+                      <td style="padding: 8px 0 8px 16px; color: #111111;">${displayDate}</td>
                     </tr>
                     <tr>
-                      <td style="padding: 8px 0; color: #6b7280; vertical-align: top;"><b>장소</b></td>
-                      <td style="padding: 8px 0 8px 10px; color: #111827;">${e.venue}</td>
+                      <td style="padding: 8px 0; color: #666666; vertical-align: top; font-size: 14px;"><b>장소</b></td>
+                      <td style="padding: 8px 0 8px 16px; color: #111111;">${e.venue}</td>
                     </tr>
                     <tr>
-                      <td style="padding: 8px 0; color: #6b7280; vertical-align: top;"><b>주소</b></td>
-                      <td style="padding: 8px 0 8px 10px; color: #111827; font-size: 14px;">${address}</td>
+                      <td style="padding: 8px 0; color: #666666; vertical-align: top; font-size: 14px;"><b>주소</b></td>
+                      <td style="padding: 8px 0 8px 16px; color: #111111;">${address}</td>
                     </tr>
                     ${
                       e.homepage_url
                         ? `
-                          <tr>
-                            <td style="padding: 8px 0; color: #6b7280; vertical-align: top;"><b>홈페이지</b></td>
-                            <td style="padding: 8px 0 8px 10px; color: #111827; font-size: 14px;">
-                              <a href="${e.homepage_url}" style="color: #0ea5e9; text-decoration: underline; font-size: 14px; opacity: 0.8;">
-                                행사 공식 홈페이지 가기
-                              </a>
-                            </td>
-                          </tr>
-                          `
+                    <tr>
+                      <td style="padding: 8px 0; color: #666666; vertical-align: top; font-size: 14px;"><b>링크</b></td>
+                      <td style="padding: 8px 0 8px 16px;">
+                        <a href="${e.homepage_url}" style="color: #0da3e4; text-decoration: underline;">공식 홈페이지</a>
+                      </td>
+                    </tr>`
                         : ""
                     }
-                    ${e.phone ? `<tr><td style="padding: 8px 0; color: #6b7280; vertical-align: top;"><b>문의</b></td><td style="padding: 8px 0 8px 10px; color: #111827;">${e.phone}</td></tr>` : ""}
+                    ${
+                      e.phone
+                        ? `
+                    <tr>
+                      <td style="padding: 8px 0; color: #666666; vertical-align: top; font-size: 14px;"><b>문의</b></td>
+                      <td style="padding: 8px 0 8px 16px; color: #111111;">${e.phone}</td>
+                    </tr>`
+                        : ""
+                    }
                   </table>
                 </div>
 
                 <div style="text-align: center; margin-top: 40px;">
                   <a href="${process.env.NEXT_PUBLIC_SITE_URL || "https://gallaemallae.vercel.app"}/mypage" 
-                    style="background-color: #0ea5e9; color: white; padding: 16px 40px; text-decoration: none; border-radius: 12px; font-weight: bold; font-size: 16px; display: inline-block; transition: all 0.2s;">
+                    style="background-color: #0da3e4; color: #ffffff; padding: 16px 40px; text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 16px; display: inline-block;">
                     내 일정 자세히 보기
                   </a>
                 </div>
               </div>
 
-              <div style="background-color: #f9fafb; padding: 30px; text-align: center; border-top: 1px solid #f3f4f6;">
-                <p style="margin: 0; font-size: 13px; color: #9ca3af;">본 메일은 시스템에 의해 자동 발송된 메시지입니다.</p>
-                <div style="margin-top: 15px;">
-                  <span style="font-weight: bold; color: #3b82f6;">갈래말래</span>
+              <div style="background-color: #f9fafb; padding: 32px; text-align: center; border-top: 1px solid #ebebeb;">
+                <p style="margin: 0; font-size: 12px; color: #666666; line-height: 1.4;">본 메일은 시스템에 의해 자동 발송된 메시지입니다.</p>
+                <div style="margin-top: 16px;">
+                  <span style="font-weight: 700; color: #0da3e4; font-size: 14px;">갈래말래 Gallaemallae</span>
                 </div>
               </div>
             </div>
