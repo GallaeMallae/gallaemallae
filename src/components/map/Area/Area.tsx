@@ -12,25 +12,32 @@ import { filterEventsByCategory } from "@/utils/map/category";
 import { filterEventByPeriod } from "@/utils/map/period";
 import { Category, PeriodFilter } from "@/types/common";
 
+import EventDetailModal from "@/components/map/EventDetailModal/EventDetailModal";
+
 export default function Area({
   radius,
   category,
   period,
-  liked,
-  setLiked,
 }: {
   radius: number | null;
   category: Category;
   period: PeriodFilter;
-  liked: number[];
-  setLiked: React.Dispatch<React.SetStateAction<number[]>>;
 }) {
   const { position, moveCurrentLocation } = useCurrentLocation();
+  const { data: events = [], isLoading, error: queryError } = useEvents();
+
   const [locate, setLocate] = useState<kakao.maps.Map | null>(null);
   const [loading, kakaoError] = useKakaoLoader({
     appkey: process.env.NEXT_PUBLIC_KAKAO_JS_KEY!,
   });
-  const { data: events = [], isLoading, error: queryError } = useEvents();
+  const [selectedModal, setSelectedModal] = useState<number | null>(null);
+
+  if (loading || isLoading) {
+    return <div>지도를 불러오는 중</div>;
+  }
+  if (queryError || kakaoError) {
+    return <div>지도 로드 실패</div>;
+  }
 
   const filteredByCategory = filterEventsByCategory(events, category);
   const filteredEvents = filterEventByPeriod(filteredByCategory, period);
@@ -41,7 +48,7 @@ export default function Area({
       const category = event.categories?.[0] ?? "other";
 
       return {
-        id: event.id,
+        id: Number(event.id),
         lat: event.latitude!,
         lng: event.longitude!,
         category: ["festival", "performance", "exhibition", "other"].includes(
@@ -52,13 +59,9 @@ export default function Area({
       };
     });
 
-  if (loading || isLoading) {
-    return <div>지도를 불러오는 중</div>;
-  }
-
-  if (queryError || kakaoError) {
-    return <div>지도 로드 실패</div>;
-  }
+  const selectedModalData = events.find(
+    (event) => Number(event.id) === selectedModal,
+  );
 
   return (
     <div className="relative h-[calc(100vh-57px)] overflow-hidden">
@@ -67,7 +70,14 @@ export default function Area({
         radius={radius}
         markers={markers}
         setLocate={setLocate}
+        onMarkerClick={(id) => setSelectedModal(id)}
       />
+      {selectedModal && selectedModalData && (
+        <EventDetailModal
+          event={selectedModalData}
+          onClose={() => setSelectedModal(null)}
+        />
+      )}
       <Button
         className="hover:bg-muted absolute right-4 bottom-54 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white md:h-12 md:w-12"
         onClick={() => moveCurrentLocation(locate)}
@@ -76,8 +86,7 @@ export default function Area({
       </Button>
       <EventCarousel
         events={filteredEvents}
-        liked={liked}
-        setLiked={setLiked}
+        onCarouselClick={(id) => setSelectedModal(id)}
       />
     </div>
   );
