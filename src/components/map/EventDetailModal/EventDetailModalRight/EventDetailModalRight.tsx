@@ -2,11 +2,20 @@ import { Card, CardContent } from "@/components/ui/card";
 import EventDetailOrganization from "@/components/map/EventDetailModal/EventDetailModalRight/EventDetailOrganization";
 import EventDetailModalButton from "@/components/map/EventDetailModal/EventDetailModalRight/EventDetailButton";
 import { Check, Tally1 } from "lucide-react";
-import { MOCK_DETAIL } from "@/mocks/events";
 
-export default function EventDetailModalRight() {
-  const config = MOCK_DETAIL;
+interface EventData {
+  description: string | null;
+  organizer: string | null;
+  host: string | null;
+  sponsor: string | null;
+  provider: string | null;
+}
 
+type Props = {
+  event: EventData;
+};
+
+export default function EventDetailModalRight({ event }: Props) {
   return (
     <div className="flex h-full flex-col gap-6 md:justify-between">
       <div className="flex flex-col gap-2">
@@ -14,23 +23,28 @@ export default function EventDetailModalRight() {
           <Tally1 className="text-symbol-sky" />
           축제 소개
         </p>
-        <p className="text-caption text-etc font-medium">
-          {config.description}
-        </p>
+        <p className="text-caption text-etc font-medium">{event.description}</p>
       </div>
       <div className="flex flex-col gap-2">
         <p className="text-desc1 flex font-medium">
           <Tally1 className="text-symbol-sky" />
           조직 및 운영
         </p>
-        <EventDetailOrganization organization={config.organization} />
+        <EventDetailOrganization
+          organization={{
+            host: event.host || "-",
+            organizer: event.organizer || "-",
+            sponsor: event.sponsor || "-",
+            provider: event.provider || "-", // 이 부분을 꼭 추가해줘!
+          }}
+        />
       </div>
       <div className="flex flex-col gap-2">
         <p className="text-desc1 flex flex-row font-medium">
           <Tally1 className="text-symbol-sky" />
           참고 사항
         </p>
-        {config.information.map((info, index) => (
+        {/* {config.information.map((info, index) => (
           <Card
             key={index}
             className="border border-slate-100 bg-slate-50/50 p-1"
@@ -40,7 +54,7 @@ export default function EventDetailModalRight() {
               {info}
             </CardContent>
           </Card>
-        ))}
+        ))} */}
       </div>
       <EventDetailModalButton />
     </div>
