@@ -20,7 +20,7 @@ export default function Area({
   period,
 }: {
   radius: number | null;
-  category: Category;
+  category: Category[];
   period: PeriodFilter;
 }) {
   const { position, moveCurrentLocation } = useCurrentLocation();
@@ -73,6 +73,7 @@ export default function Area({
       {selectedModal && selectedModalData && (
         <EventDetailModal
           event={selectedModalData}
+          open={!!selectedModal}
           onClose={() => setSelectedModal(null)}
         />
       )}
