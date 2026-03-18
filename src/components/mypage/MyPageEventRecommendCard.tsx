@@ -4,18 +4,46 @@ import { Button } from "@/components/ui/button";
 import { Heart, Calendar, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatDateRange } from "@/utils/date";
-import { EventCardItem } from "@/types/common";
+import { Event } from "@/types/common";
+import { CATEGORY_NAME_MAP } from "@/lib/constants";
+import { useEventLike } from "@/hooks/mutations/useEventLike";
+import { useEventPlan } from "@/hooks/mutations/useEventPlan";
+import { useProfileData } from "@/hooks/queries/useProfileData";
+import { toast } from "sonner";
+
+interface MyPageEventRecommendCardProps {
+  event: Event;
+  isLiked: boolean;
+  isPlanned: boolean;
+}
 
 export default function MyPageEventRecommendCard({
-  title,
-  location,
-  startDate,
-  endDate,
-  category,
+  event,
   isLiked,
-}: EventCardItem) {
+  isPlanned,
+}: MyPageEventRecommendCardProps) {
+  const { data: profile } = useProfileData();
+
+  const { mutate: toggleLike } = useEventLike(event.id);
+  const { mutate: addPlan, isPending: isPlanLoading } = useEventPlan();
+
+  const handleLikeClick = () => {
+    // 현재 좋아요 상태를 넘겨주면 훅 내부 로직에 따라 delete/insert 처리
+    toggleLike(isLiked);
+  };
+
+  const handlePlanClick = () => {
+    if (!profile?.id) return toast.error("로그인이 필요합니다.");
+
+    addPlan({
+      userId: profile.id,
+      eventId: event.id,
+      visitDate: event.start_date, // 현재 단계에서는 기본값으로 행사 시작일 설정
+    });
+  };
+
   return (
-    <Card className="relative rounded-2xl border">
+    <Card className="relative flex-1 rounded-2xl border">
       <CardContent>
         <Button
           className="absolute top-4 right-4 hover:bg-transparent"
@@ -23,6 +51,7 @@ export default function MyPageEventRecommendCard({
           size="icon"
           aria-label="좋아요"
           aria-pressed={isLiked}
+          onClick={() => handleLikeClick()}
         >
           <Heart
             className={cn(
@@ -32,35 +61,54 @@ export default function MyPageEventRecommendCard({
           />
         </Button>
 
-        <div className="mb-2 flex items-center gap-2">
+        <div className="mb-2 flex items-center">
           <p className="text-symbol-sky text-desc1 font-semibold">
             이런 행사는 어때요?
           </p>
         </div>
 
-        <div className="mb-4 flex items-center gap-2">
-          <h3 className="text-title2 font-bold">{title}</h3>
-          <Badge className="rounded-sm" variant={category}>
-            {category}
-          </Badge>
+        <div className="mb-2 flex items-center gap-2">
+          <h3 className="text-title2 font-bold">{event.name}</h3>
+          <div className="flex items-center gap-1">
+            {event.categories.map((category) => (
+              <Badge
+                key={category}
+                className="rounded-sm"
+                variant={
+                  CATEGORY_NAME_MAP[
+                    category as keyof typeof CATEGORY_NAME_MAP
+                  ] || category
+                }
+              >
+                {CATEGORY_NAME_MAP[
+                  category as keyof typeof CATEGORY_NAME_MAP
+                ] || category}
+              </Badge>
+            ))}
+          </div>
         </div>
 
-        <div className="text-desc2 text-etc mb-4 flex flex-col">
+        <div className="text-desc2 text-etc mb-2 flex flex-col">
           <div className="flex items-center gap-2">
             <Calendar className="h-4 w-4" />
             <span className="text-desc2 truncate whitespace-nowrap">
-              {formatDateRange(startDate, endDate)}
+              {formatDateRange(event.start_date, event.end_date)}
             </span>
           </div>
 
           <div className="flex items-center gap-2">
             <MapPin className="h-4 w-4" />
-            <span>{location}</span>
+            <span>{event.venue}</span>
           </div>
         </div>
 
         <div className="flex gap-2">
-          <Button size={"sm"} className="hover:bg-symbol-sky">
+          <Button
+            size={"sm"}
+            className="hover:bg-symbol-sky"
+            onClick={() => handlePlanClick()}
+            disabled={isPlanLoading || isPlanned}
+          >
             일정에 추가
           </Button>
           <Button size={"sm"} variant={"outline"}>

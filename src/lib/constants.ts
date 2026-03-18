@@ -252,6 +252,10 @@ export const QUERY_KEYS = {
     pm10?: number,
     pm25?: number,
   ) => ["recommendType", weatherType, temp, pm10, pm25],
+  MYPAGE_RECOMMENDATION: (userId?: string) =>
+    userId
+      ? ["mypage", "recommendation", userId]
+      : ["mypage", "recommendation"],
 } as const;
 
 export const CATEGORY_NAME_MAP = {

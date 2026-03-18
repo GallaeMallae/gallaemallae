@@ -9,7 +9,6 @@ import WeatherCardSkeleton from "@/components/common/skeleton/WeatherCardSkeleto
 import { Calendar } from "@/components/ui/calendar";
 import { toast } from "sonner";
 import { useState } from "react";
-import { MOCK_EVENTS } from "@/mocks/events";
 import { parseSafeDate } from "@/utils/date";
 import { isWithinInterval, parseISO, startOfDay } from "date-fns";
 import { useLocationStore } from "@/stores/locationStore";
@@ -20,6 +19,8 @@ import { mapWeatherCard } from "@/utils/mapper";
 import { useLikedEventsData } from "@/hooks/queries/useLikedEventsData";
 import { usePlannedEventsData } from "@/hooks/queries/usePlannedEventsData";
 import { useProfileData } from "@/hooks/queries/useProfileData";
+import { useMyPageRecommendEventData } from "@/hooks/queries/useMypageRecommendEventData";
+import RecommendEventCardSkeleton from "@/components/common/skeleton/RecommendEventCardSkeleton";
 
 export default function Mypage() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
@@ -27,10 +28,15 @@ export default function Mypage() {
   );
   const [month, setMonth] = useState<Date>(new Date());
 
+  const { data: profile } = useProfileData();
   const { coords, isInitialized, isDefaultLocation } = useLocationStore();
   const { data: locationNameData } = useLocationNameData(coords, isInitialized);
   const { data: weatherData } = useWeatherData(coords, isInitialized);
   const { data: airPollutionData } = useAirPollutionData(coords, isInitialized);
+  const { data: recommendEventData, isLoading: isRecommendEventCardLoading } =
+    useMyPageRecommendEventData(profile?.id);
+  const { data: likedEvents = [] } = useLikedEventsData();
+  const { data: plannedEvents = [] } = usePlannedEventsData();
 
   const isWeatherReady =
     !!locationNameData && !!weatherData && !!airPollutionData;
@@ -45,8 +51,6 @@ export default function Mypage() {
       )
     : null;
 
-  const { data: profile } = useProfileData();
-
   const handleEventClick = (dateString: string) => {
     const newDate = parseSafeDate(dateString);
 
@@ -58,9 +62,6 @@ export default function Mypage() {
       toast.error("유효하지 않은 날짜 형식입니다.");
     }
   };
-
-  const { data: likedEvents = [] } = useLikedEventsData();
-  const { data: plannedEvents = [] } = usePlannedEventsData();
 
   // 관심 목록 데이터 가공
   const formattedLikedEvents = likedEvents.map((event) => ({
@@ -85,7 +86,13 @@ export default function Mypage() {
     return isWithinInterval(targetDate, { start: startDate, end: endDate });
   });
 
-  const eventData = MOCK_EVENTS[1];
+  // 행사 추천 카드 관심/일정 체크용
+  const isLiked = likedEvents.some(
+    (event) => event.id === recommendEventData?.id,
+  );
+  const isPlanned = plannedEvents.some(
+    (plan) => plan.event.id === recommendEventData?.id,
+  );
 
   return (
     <div className="flex flex-col gap-6">
@@ -100,8 +107,16 @@ export default function Mypage() {
           ) : (
             <WeatherCard {...weather} />
           )}
-          <div className="hidden md:block">
-            <MyPageEventRecommendCard {...eventData} />
+          <div className="hidden h-full flex-col md:flex">
+            {isRecommendEventCardLoading || !recommendEventData ? (
+              <RecommendEventCardSkeleton />
+            ) : (
+              <MyPageEventRecommendCard
+                event={recommendEventData}
+                isLiked={isLiked}
+                isPlanned={isPlanned}
+              />
+            )}
           </div>
         </div>
       </div>
