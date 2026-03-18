@@ -15,6 +15,7 @@ export interface PublicEventResponse {
   longitude: string | number;
   insttNm?: string;
 }
+
 export interface BaseEvent extends Omit<
   Partial<PublicEventResponse>,
   "latitude" | "longitude" | "fstvlStartDate" | "fstvlEndDate"
@@ -39,6 +40,8 @@ export interface BaseEvent extends Omit<
   organizer?: string | null;
   sponsor?: string | null;
   provider?: string | null;
+  name?: string | null; // Property 'name' 에러 해결
+  endDate?: string | null; // Property 'endDate' 에러 해결
 }
 
 export type Event = BaseEvent;
