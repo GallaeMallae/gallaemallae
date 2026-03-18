@@ -1,4 +1,3 @@
-// src/lib/api/events.ts
 import { Event, PublicEventResponse } from "@/types/event";
 
 export const fetchEvents = async (): Promise<Event[]> => {
@@ -10,7 +9,6 @@ export const fetchEvents = async (): Promise<Event[]> => {
   return data.map((item, index) => {
     const title = item.fstvlNm;
 
-    // 카테고리 분류 로직
     let category: "festival" | "performance" | "exhibition" | "other" =
       "festival";
     if (title.includes("공연") || title.includes("연주"))
@@ -22,15 +20,13 @@ export const fetchEvents = async (): Promise<Event[]> => {
     else category = "other";
 
     return {
-      ...item, // ✅ 모든 원본 필드(rdnmadr, phoneNumber 등) 포함
+      ...item, //
       id: `${item.fstvlNm}-${index}`,
       title: title,
-      // 숫자로 변환하여 할당
       latitude: parseFloat(String(item.latitude)) || 0,
       longitude: parseFloat(String(item.longitude)) || 0,
       category: category,
       categories: [category],
-      // 필드 동기화
       start_date: item.fstvlStartDate || null,
       startDate: item.fstvlStartDate || "",
       endDate: item.fstvlEndDate || "",
