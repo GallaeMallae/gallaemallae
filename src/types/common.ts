@@ -51,8 +51,6 @@ export interface EventCardItem {
   startDate: string;
   endDate: string;
   category: Category;
-  isLiked: boolean;
-  onToggleLike: () => void;
 }
 
 // ==============================
@@ -107,4 +105,24 @@ export interface DetailCardItem {
     provider: string;
   };
   information: string[];
+}
+
+// ==============================
+// 공공 데이터 포탈
+// ==============================
+export interface FestivalApiItem {
+  fstvlNm: string;
+  opar: string;
+  fstvlStartDate: string;
+  fstvlEndDate: string;
+  fstvlCo: string;
+  mnnstNm: string;
+  auspcInsttNm: string;
+  suprtInsttNm: string;
+  phoneNumber: string;
+  homepageUrl: string;
+  latitude: string;
+  longitude: string;
+  rdnmadr: string;
+  instt_nm: string;
 }
