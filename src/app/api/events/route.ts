@@ -1,37 +1,16 @@
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  const serviceKey = process.env.PUBLIC_API_KEY;
+  const SERVICE_KEY = process.env.NEXT_API_KEY;
 
-  const baseUrl =
-    "https://api.data.go.kr/openapi/tn_pubr_public_cltur_fstvl_api";
-
-  const params = new URLSearchParams({
-    serviceKey: serviceKey || "",
-    type: "json",
-    pageNo: "1",
-    numOfRows: "20",
-  });
-
-  const url = `${baseUrl}?${params.toString()}`;
+  const url = `http://api.data.go.kr/openapi/tn_pubr_public_cltur_fstvl_api?serviceKey=${SERVICE_KEY}&pageNo=1&numOfRows=10&type=json`;
 
   try {
-    const res = await fetch(url, {
-      cache: "no-store",
-    });
-
-    if (!res.ok) {
-      throw new Error(`API ERROR: ${res.status}`);
-    }
-
+    const res = await fetch(url);
     const data = await res.json();
 
     return NextResponse.json(data);
   } catch (error) {
-    console.error(error);
-    return NextResponse.json(
-      { error: "데이터 가져오기 실패" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "API 호출 실패" }, { status: 500 });
   }
 }
