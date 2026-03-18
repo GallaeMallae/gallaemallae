@@ -1,15 +1,18 @@
-import { SupabaseClient } from "@supabase/supabase-js";
-import { Database, Tables } from "@/types/supabase";
+import { Event, PublicEventResponse } from "@/types/event";
 
-export type Event = Tables<"events">;
+export const fetchEvents = async (): Promise<Event[]> => {
+  const response = await fetch("/api/events");
+  if (!response.ok) throw new Error("네트워크 응답 에러");
 
-export async function fetchEvents(
-  supabase: SupabaseClient<Database>,
-): Promise<Event[]> {
-  const { data, error } = await supabase.from("events").select(`*`);
+  const data: PublicEventResponse[] = await response.json();
 
-  if (error) {
-    throw new Error(error.message);
-  }
-  return data ?? [];
-}
+  return data.map((item, index) => ({
+    id: `${item.fstvlNm}-${index}`, // 고유 ID가 없을 경우 조합
+    title: item.fstvlNm,
+    latitude: parseFloat(item.latitude),
+    longitude: parseFloat(item.longitude),
+    category: "festival", // 이 데이터셋은 모두 축제이므로 고정
+    startDate: item.fstvlStartDate,
+    endDate: item.fstvlEndDate,
+  }));
+};
