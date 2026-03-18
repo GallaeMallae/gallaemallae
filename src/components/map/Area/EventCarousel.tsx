@@ -55,17 +55,20 @@ export default function EventCarousel({
       >
         <CarouselContent className="-ml-4">
           {events.map((event) => {
-            /**
-             * 🔍 타입 세이프하게 데이터 추출하기
-             * 'title' 필드가 있다면 PublicEvent로 간주하고,
-             * 없다면 Tables<"events"> (DB) 타입으로 간주합니다.
-             */
             const isPublic = "title" in event;
 
-            const title = isPublic ? event.title : (event.name ?? "");
-            const location = isPublic ? "현지" : (event.venue ?? ""); // 공공데이터에 장소 필드가 없다면 적절한 기본값
+            const title =
+              (isPublic ? event.title || event.fstvlNm : event.name) || "";
+
+            const location =
+              (isPublic
+                ? event.rdnmadr || event.opar || event.lnmadr || event.venue
+                : event.venue) || "장소 정보 없음";
             const startDate = event.start_date ?? "";
-            const endDate = isPublic ? event.endDate : (event.end_date ?? "");
+            const endDate =
+              (isPublic
+                ? event.endDate || event.fstvlEndDate
+                : event.end_date) || "";
 
             return (
               <CarouselItem
