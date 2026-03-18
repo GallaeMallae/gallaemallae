@@ -1,3 +1,4 @@
+// src/lib/api/events.ts
 import { Event, PublicEventResponse } from "@/types/event";
 
 export const fetchEvents = async (): Promise<Event[]> => {
@@ -21,22 +22,16 @@ export const fetchEvents = async (): Promise<Event[]> => {
     else category = "other";
 
     return {
+      ...item, // ✅ 모든 원본 필드(rdnmadr, phoneNumber 등) 포함
       id: `${item.fstvlNm}-${index}`,
       title: title,
-      latitude: parseFloat(item.latitude) || 0,
-      longitude: parseFloat(item.longitude) || 0,
-
-      // 1. 기존 UI 및 마커용 필드
+      // 숫자로 변환하여 할당
+      latitude: parseFloat(String(item.latitude)) || 0,
+      longitude: parseFloat(String(item.longitude)) || 0,
       category: category,
-
-      // 2. filterEventsByCategory 함수용 필드 (배열)
       categories: [category],
-
-      // 3. filterEventByPeriod 함수용 필드 (snake_case)
-      // API 데이터(2024-05-01 등)를 그대로 넣어주면 돼
+      // 필드 동기화
       start_date: item.fstvlStartDate || null,
-
-      // 4. 기존 타입 호환용 필드
       startDate: item.fstvlStartDate || "",
       endDate: item.fstvlEndDate || "",
     };
