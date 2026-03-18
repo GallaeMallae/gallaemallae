@@ -11,11 +11,9 @@ type Props = {
 };
 
 export default function EventDetailModalLeft({ event }: Props) {
-  // 1. 날짜 추출 (API: fstvlStartDate -> DB: startDate 순)
   const start = event.fstvlStartDate || event.startDate || event.start_date;
   const end = event.fstvlEndDate || event.end_date;
 
-  // 2. 장소 추출 (API: rdnmadr(도로명) -> opar(개최장소) -> DB: road_address 순)
   const location =
     event.rdnmadr ||
     event.opar ||
@@ -23,10 +21,7 @@ export default function EventDetailModalLeft({ event }: Props) {
     event.road_address ||
     event.venue;
 
-  // 3. 연락처 추출 (API: phoneNumber -> DB: phone 순)
   const tel = event.phoneNumber || event.phone;
-
-  // 4. 홈페이지 추출 (API: homepageUrl -> DB: homepage_url 순)
   const homepage = event.homepageUrl || event.homepage_url;
 
   return (
@@ -49,18 +44,12 @@ export default function EventDetailModalLeft({ event }: Props) {
       </Card>
 
       <div className="flex flex-col gap-2">
-        {/* 📅 축제기간 */}
         <EventIntroduce
           type="date"
           value={start && end ? `${start} ~ ${end}` : start || "-"}
         />
-
         <EventIntroduce type="place" value={location || "-"} />
-
-        {/* 📞 문의처 */}
         <EventIntroduce type="tel" value={tel || "-"} />
-
-        {/* 🔗 홈페이지 */}
         <EventIntroduce type="homepage" value={homepage || "-"} />
       </div>
     </div>
