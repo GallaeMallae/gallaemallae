@@ -11,6 +11,25 @@ export default function EventIntroduce({ type, value }: Props) {
   const config = INTRODUCE_CARD_CONFIG[type];
   const Icon = config.icon;
 
+  const renderValue = () => {
+    if (!value) return "-";
+
+    if (type === "homepage") {
+      const url = value.startsWith("http") ? value : `https://${value}`;
+      return (
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="break-all text-blue-500 underline"
+        >
+          {value}
+        </a>
+      );
+    }
+    return value;
+  };
+
   return (
     <Card className="rounded-2xl border border-slate-200 bg-white">
       <CardContent className="flex h-2 items-center gap-4 px-4">
@@ -23,7 +42,7 @@ export default function EventIntroduce({ type, value }: Props) {
         <div>
           <p className="text-caption text-etc">{config.title}</p>
 
-          <p className="text-caption font-semibold">{value}</p>
+          <p className="text-caption font-semibold">{renderValue()}</p>
         </div>
       </CardContent>
     </Card>
