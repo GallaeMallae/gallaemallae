@@ -21,10 +21,13 @@ export interface BaseEvent extends Omit<
   id: string;
   categories: string[];
   category?: string;
-
   start_date: string | null;
   startDate?: string;
-  endDate?: string;
+  end_date?: string | null;
+  road_address?: string | null;
+  venue?: string | null;
+  phone?: string | null;
+  homepage_url?: string | null;
   title?: string;
   fstvlStartDate?: string | null;
   fstvlEndDate?: string | null;
