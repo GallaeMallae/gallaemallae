@@ -1,18 +1,16 @@
+"use client";
+
 import { Card, CardContent } from "@/components/ui/card";
 import EventDetailOrganization from "@/components/map/EventDetailModal/EventDetailModalRight/EventDetailOrganization";
 import EventDetailModalButton from "@/components/map/EventDetailModal/EventDetailModalRight/EventDetailButton";
 import { Check, Tally1 } from "lucide-react";
+import { BaseEvent } from "@/types/event";
 
-interface EventData {
-  description: string | null;
-  organizer: string | null;
-  host: string | null;
-  sponsor: string | null;
-  provider: string | null;
-}
+// 1. 모든 필드에 '?'를 붙여서 undefined를 허용하도록 수정
 
 type Props = {
-  event: EventData;
+  // 2. event가 아예 없을 상황까지 고려하거나, 부분적인 데이터만 와도 되도록 설정
+  event: BaseEvent;
 };
 
 export default function EventDetailModalRight({ event }: Props) {
@@ -23,8 +21,14 @@ export default function EventDetailModalRight({ event }: Props) {
           <Tally1 className="text-symbol-sky" />
           축제 소개
         </p>
-        <p className="text-caption text-etc font-medium">{event.description}</p>
+        {/* 3. 데이터가 없을 때를 대비해 기본 문구 출력 */}
+        <p className="text-caption text-etc font-medium">
+          {event.description ||
+            event.fstvlCo ||
+            "상세 정보가 등록되지 않았습니다."}
+        </p>
       </div>
+
       <div className="flex flex-col gap-2">
         <p className="text-desc1 flex font-medium">
           <Tally1 className="text-symbol-sky" />
@@ -32,30 +36,22 @@ export default function EventDetailModalRight({ event }: Props) {
         </p>
         <EventDetailOrganization
           organization={{
-            host: event.host || "-",
-            organizer: event.organizer || "-",
+            host: event.host || event.auspcInsttNm || "-", // 주최기관
+            organizer: event.organizer || event.mnnstNm || "-", // 주관기관
             sponsor: event.sponsor || "-",
-            provider: event.provider || "-", // 이 부분을 꼭 추가해줘!
+            provider: event.provider || event.insttNm || "-", // 제공기관
           }}
         />
       </div>
+
       <div className="flex flex-col gap-2">
         <p className="text-desc1 flex flex-row font-medium">
           <Tally1 className="text-symbol-sky" />
-          참고 사항
+          관련 정보
         </p>
-        {/* {config.information.map((info, index) => (
-          <Card
-            key={index}
-            className="border border-slate-100 bg-slate-50/50 p-1"
-          >
-            <CardContent className="text-etc text-caption flex items-center gap-2 p-2">
-              <Check size={14} className="text-symbol-sky" />
-              {info}
-            </CardContent>
-          </Card>
-        ))} */}
+        <p className="text-caption text-slate-400">준비 중입니다.</p>
       </div>
+
       <EventDetailModalButton />
     </div>
   );
