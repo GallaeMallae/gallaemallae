@@ -10,12 +10,15 @@ export interface PublicEventResponse {
 }
 
 // 우리 앱에서 사용할 깔끔한 타입
+// src/types/event.ts
 export interface Event {
   id: string;
   title: string;
   latitude: number;
   longitude: number;
-  category: "festival" | "performance" | "exhibition" | "other";
+  category: string;
+  categories: string[]; // 추가됨
   startDate: string;
+  start_date: string | null; // 추가됨 (필터 함수 전용)
   endDate: string;
 }
