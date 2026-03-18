@@ -8,19 +8,24 @@ export const fetchEvents = async (): Promise<Event[]> => {
 
   return data.map((item, index) => {
     const title = item.fstvlNm;
+    const content = item.fstvlCo || "";
+    const text = title + content;
 
-    let category: "festival" | "performance" | "exhibition" | "other" =
-      "festival";
-    if (title.includes("공연") || title.includes("연주"))
+    // ✅ 네가 정해준 딱 4가지 기준으로만 분류
+    let category: "festival" | "performance" | "exhibition" | "other" = "other";
+
+    if (text.includes("공연")) {
       category = "performance";
-    else if (title.includes("전시") || title.includes("박람회"))
+    } else if (text.includes("전시")) {
       category = "exhibition";
-    else if (title.includes("축제") || title.includes("페스티벌"))
+    } else if (text.includes("축제")) {
       category = "festival";
-    else category = "other";
+    } else {
+      category = "other";
+    }
 
     return {
-      ...item, //
+      ...item,
       id: `${item.fstvlNm}-${index}`,
       title: title,
       latitude: parseFloat(String(item.latitude)) || 0,
