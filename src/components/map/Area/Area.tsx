@@ -42,12 +42,30 @@ export default function Area({
   const markers = useMemo(() => {
     return filteredEvents
       .filter((event) => event.latitude && event.longitude)
-      .map((event) => ({
-        id: event.id,
-        lat: Number(event.latitude),
-        lng: Number(event.longitude),
-        category: (event.categories?.[0] || "festival") as Category,
-      }));
+      .map((event) => {
+        const text =
+          (event.title || event.fstvlNm || "") +
+          (event.description || event.fstvlCo || "");
+
+        let category: Category = "other";
+
+        if (text.includes("공연")) {
+          category = "performance";
+        } else if (text.includes("전시")) {
+          category = "exhibition";
+        } else if (text.includes("축제")) {
+          category = "festival";
+        } else {
+          category = "other";
+        }
+
+        return {
+          id: event.id,
+          lat: Number(event.latitude),
+          lng: Number(event.longitude),
+          category: category,
+        };
+      });
   }, [filteredEvents]);
 
   // 선택된 데이터 추출
