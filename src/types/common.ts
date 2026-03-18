@@ -116,13 +116,9 @@ export interface FestivalApiItem {
   fstvlStartDate: string;
   fstvlEndDate: string;
   fstvlCo: string;
-  mnnstNm: string;
-  auspcInsttNm: string;
-  suprtInsttNm: string;
   phoneNumber: string;
   homepageUrl: string;
   latitude: string;
   longitude: string;
   rdnmadr: string;
-  instt_nm: string;
 }
