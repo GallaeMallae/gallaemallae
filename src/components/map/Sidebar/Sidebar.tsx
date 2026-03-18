@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import SidebarSearch from "@/components/map/Sidebar/SidebarSearch";
 import SidebarPeriodFilterTabs from "@/components/map/Sidebar/SidebarPeriodFilterTabs";
 import SidebarDistance from "@/components/map/Sidebar/SidebarDistance";
-import { ListFilter } from "lucide-react";
 import { CATEGORY_MENU } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { Category, PeriodFilter } from "@/types/common";
@@ -93,13 +92,6 @@ export default function Sidebar({
           <SidebarPeriodFilterTabs value={period} onChange={setPeriod} />
           <SidebarDistance radius={radius} setRadius={setRadius} />
         </div>
-
-        <Button className="bg-symbol-sky h-13 w-full gap-4 rounded-xl hover:opacity-90">
-          <ListFilter className="size-6" />
-          <span className="text-title2 font-bold text-white">
-            필터 적용하기 {!category.includes("all") && `(${category.length})`}
-          </span>
-        </Button>
       </div>
 
       {/* ======= 모바일 ======= */}
