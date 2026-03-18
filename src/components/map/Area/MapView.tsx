@@ -94,7 +94,6 @@ export default function MapView({
               size: { width: 40, height: 40 },
             }}
             onClick={() => {
-              console.log("Marker clicked:", m.id); // 로그 추가
               onMarkerClick(String(m.id));
             }}
           />
