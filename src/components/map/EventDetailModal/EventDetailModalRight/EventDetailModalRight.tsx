@@ -1,15 +1,11 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
 import EventDetailOrganization from "@/components/map/EventDetailModal/EventDetailModalRight/EventDetailOrganization";
 import EventDetailModalButton from "@/components/map/EventDetailModal/EventDetailModalRight/EventDetailButton";
-import { Check, Tally1 } from "lucide-react";
+import { Tally1 } from "lucide-react";
 import { BaseEvent } from "@/types/event";
 
-// 1. 모든 필드에 '?'를 붙여서 undefined를 허용하도록 수정
-
 type Props = {
-  // 2. event가 아예 없을 상황까지 고려하거나, 부분적인 데이터만 와도 되도록 설정
   event: BaseEvent;
 };
 
@@ -21,7 +17,6 @@ export default function EventDetailModalRight({ event }: Props) {
           <Tally1 className="text-symbol-sky" />
           축제 소개
         </p>
-        {/* 3. 데이터가 없을 때를 대비해 기본 문구 출력 */}
         <p className="text-caption text-etc font-medium">
           {event.description ||
             event.fstvlCo ||
@@ -38,7 +33,7 @@ export default function EventDetailModalRight({ event }: Props) {
           organization={{
             host: event.host || event.auspcInsttNm || "-", // 주최기관
             organizer: event.organizer || event.mnnstNm || "-", // 주관기관
-            sponsor: event.sponsor || "-",
+            sponsor: event.sponsor || event.suprtInsttNm || "-",
             provider: event.provider || event.insttNm || "-", // 제공기관
           }}
         />
