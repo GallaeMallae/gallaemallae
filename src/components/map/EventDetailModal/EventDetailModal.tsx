@@ -8,33 +8,10 @@ import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Category } from "@/types/common";
 import { CATEGORY_LABELS } from "@/types/common";
-
-interface EventData {
-  categories: string[];
-  created_at: string | null;
-  data_reference_date: string | null;
-  description: string | null;
-  end_date: string;
-  homepage_url: string | null;
-  host: string | null;
-  id: string;
-  latitude: number | null;
-  longitude: number | null;
-  lot_address: string | null;
-  name: string;
-  organizer: string | null;
-  phone: string | null;
-  provider: string | null;
-  related_info: string | null;
-  road_address: string | null;
-  sponsor: string | null;
-  start_date: string;
-  updated_at: string | null;
-  venue: string | null;
-}
+import { BaseEvent } from "@/types/event";
 
 type Props = {
-  event: EventData | null;
+  event: BaseEvent | null;
   open: boolean;
   onClose: () => void;
 };
@@ -55,7 +32,7 @@ export default function EventDetailModal({ event, open, onClose }: Props) {
             <div className="flex flex-col gap-2">
               <Badge variant={categoryKey}>{categoryLabel}</Badge>
               <DialogTitle>
-                <p className="text-h2"> {event.name}</p>
+                <p className="text-h2"> {event.title}</p>
               </DialogTitle>
             </div>
 
