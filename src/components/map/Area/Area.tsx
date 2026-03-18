@@ -89,6 +89,11 @@ export default function Area({
       </div>
     );
 
+  const handleMoveToCurrentLocation = () => {
+    moveCurrentLocation(locate); // 지도를 내 위치로 이동시키는 기존 로직
+    setSelectedCarousel(null); // 🚨 캐러셀 선택을 해제해서 지도가 튕기는 걸 방지!
+  };
+
   return (
     <div className="relative h-[calc(100vh-57px)] overflow-hidden">
       <MapView
@@ -121,7 +126,7 @@ export default function Area({
       )}
       <Button
         className="hover:bg-muted absolute right-4 bottom-54 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-lg md:h-12 md:w-12"
-        onClick={() => moveCurrentLocation(locate)}
+        onClick={handleMoveToCurrentLocation}
       >
         <LocateFixed className="size-5 text-black md:size-6" />
       </Button>
