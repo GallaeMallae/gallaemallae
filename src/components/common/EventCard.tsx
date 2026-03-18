@@ -13,8 +13,6 @@ export default function EventCard({
   startDate,
   endDate,
   category,
-  isLiked,
-  onToggleLike,
 }: EventCardItem) {
   return (
     <Card className="relative cursor-pointer rounded-2xl">
@@ -24,15 +22,8 @@ export default function EventCard({
           variant="ghost"
           size="icon"
           aria-label="좋아요"
-          aria-pressed={isLiked}
-          onClick={onToggleLike}
         >
-          <Heart
-            className={cn(
-              "h-5 w-5",
-              isLiked ? "fill-red-500 text-red-500" : "text-etc",
-            )}
-          />
+          <Heart />
         </Button>
 
         <Badge className="mb-2 rounded-sm" variant={category}>
