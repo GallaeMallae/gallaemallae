@@ -6,6 +6,7 @@ export interface PublicEventResponse {
   fstvlCo?: string;
   mnnstNm?: string;
   auspcInsttNm?: string;
+  suprtInsttNm?: string | null;
   phoneNumber?: string;
   homepageUrl?: string;
   rdnmadr?: string;
