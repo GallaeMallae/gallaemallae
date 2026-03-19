@@ -3,6 +3,7 @@ import { updateSession } from "@/utils/supabase/middleware";
 import { createClient } from "@/utils/supabase/server";
 
 export async function proxy(request: NextRequest) {
+  // 쿠키 만료 방지 위해 세션 갱신, response 객체에 Set-Cookie 정보 포함
   const response = await updateSession(request);
 
   if (request.nextUrl.pathname.startsWith("/mypage")) {
@@ -16,7 +17,14 @@ export async function proxy(request: NextRequest) {
       loginUrl.searchParams.set("error", "unauthorized");
       loginUrl.searchParams.set("next", request.nextUrl.pathname);
 
-      return NextResponse.redirect(loginUrl);
+      const redirectResponse = NextResponse.redirect(loginUrl);
+
+      // 리다이렉트 객체에 updateSession으로 만들어진 헤더 정보 복사
+      response.headers.forEach((value, key) => {
+        redirectResponse.headers.set(key, value);
+      });
+
+      return redirectResponse;
     }
   }
 

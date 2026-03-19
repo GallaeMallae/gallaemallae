@@ -32,7 +32,6 @@ import {
   startOfDay,
 } from "date-fns";
 import { MypageDisplayEvent } from "@/types/common";
-import { useIsDesktop } from "@/hooks/useIsDesktop";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 type CategoryKey = keyof typeof CATEGORY_NAME_MAP;
@@ -52,6 +51,7 @@ function Calendar({
   nickname,
   activePopoverDate,
   onActivePopoverDate,
+  isDesktop,
   ...props
 }: React.ComponentProps<typeof DayPicker> & {
   buttonVariant?: React.ComponentProps<typeof Button>["variant"];
@@ -59,9 +59,8 @@ function Calendar({
   nickname?: string;
   activePopoverDate?: Date | null;
   onActivePopoverDate?: (date: Date | null) => void;
+  isDesktop: boolean;
 }) {
-  const isDesktop = useIsDesktop();
-
   const defaultClassNames = getDefaultClassNames();
 
   return (
@@ -380,11 +379,12 @@ function CalendarDayButton({
           {/* ScrollArea 내부 뷰포트에 높이 지정해야 스크롤바 작동함  */}
           <ScrollArea className="*:data-[slot=scroll-area-viewport]:max-h-96">
             <div className="p-6">
-              <MypageSelectedDateEventsCard
-                selectedDate={activePopoverDate ?? null}
-                events={dayEvents}
-                displayMode="desktop"
-              />
+              {isDesktop && (
+                <MypageSelectedDateEventsCard
+                  selectedDate={activePopoverDate ?? null}
+                  events={dayEvents}
+                />
+              )}
             </div>
           </ScrollArea>
         </PopoverContent>

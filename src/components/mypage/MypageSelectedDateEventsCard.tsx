@@ -8,24 +8,16 @@ import { formatDate } from "@/utils/date";
 interface MypageSelectedDateEventsCardProps {
   selectedDate: Date | null;
   events: MypageDisplayEvent[];
-  displayMode?: "mobile" | "desktop" | "all";
 }
 
 export default function MypageSelectedDateEventsCard({
   events,
   selectedDate,
-  displayMode = "all",
 }: MypageSelectedDateEventsCardProps) {
-  const modeClasses = {
-    mobile: "md:hidden",
-    desktop: "hidden md:flex",
-    all: "",
-  };
-
   const formattedSelectedDate = formatDate(selectedDate);
 
   return (
-    <div className={cn("flex flex-col gap-4", modeClasses[displayMode])}>
+    <div className="flex flex-col gap-4">
       {events.map((event, index) => {
         const categoryKey = event
           .categories[0] as keyof typeof CATEGORY_NAME_MAP;

@@ -8,7 +8,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { MypageDisplayEvent } from "@/types/common";
 import { cn } from "@/lib/utils";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useIsDesktop } from "@/hooks/useIsDesktop";
 
 const ICON_MAP: Record<string, LucideIcon> = {
   bookmark: Bookmark,
@@ -24,6 +23,7 @@ interface MypageEventSectionCardProps {
   title: string;
   iconName: "bookmark" | "heart";
   iconClassName?: string;
+  isDesktop: boolean;
   events: MypageDisplayEvent[];
   onEventClick: (date: string) => void;
 }
@@ -32,11 +32,11 @@ export default function MypageEventSectionCard({
   title,
   iconName,
   iconClassName,
+  isDesktop,
   events,
   onEventClick,
 }: MypageEventSectionCardProps) {
   const [visibleCount, setVisibleCount] = useState(3);
-  const isDesktop = useIsDesktop();
   const observerRef = useRef<HTMLDivElement>(null);
 
   const Icon = ICON_MAP[iconName];

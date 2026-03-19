@@ -1,28 +1,20 @@
-"use client";
+import { useSyncExternalStore } from "react";
 
-import { useState, useEffect } from "react";
-
-export function useMediaQuery(query: string): boolean {
-  const [matches, setMatches] = useState(() => {
-    if (typeof window !== "undefined") {
-      return window.matchMedia(query).matches;
-    }
-    return false;
-  });
-
-  useEffect(() => {
-    // matchMedia는 중단점 넘었을 때만 이벤트 발생시켜 가벼움
-    const media = window.matchMedia(query);
-
-    const listener = () => setMatches(media.matches);
-
-    media.addEventListener("change", listener);
-    return () => media.removeEventListener("change", listener);
-  }, [query]);
-
-  return matches;
+export function useIsDesktop(query = "(min-width: 768px)") {
+  return useSyncExternalStore(
+    (callback) => {
+      const media = window.matchMedia(query);
+      media.addEventListener("change", callback);
+      return () => media.removeEventListener("change", callback);
+    },
+    () => window.matchMedia(query).matches,
+    () => false,
+  );
 }
 
-export function useIsDesktop() {
-  return useMediaQuery("(min-width: 768px)");
-}
+// useSyncExternalStore 훅 사용법
+// return useSyncExternalStore(
+//   subscribe, // 구독 등록
+//   getSnapshot, // 클라이언트 현재 값(우리가 받는 최종 값)
+//   getServerSnapshot, // SSR용 기본값
+// );

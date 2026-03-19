@@ -21,6 +21,7 @@ import { usePlannedEventsData } from "@/hooks/queries/usePlannedEventsData";
 import { useProfileData } from "@/hooks/queries/useProfileData";
 import { useMypageRecommendEventData } from "@/hooks/queries/useMypageRecommendEventData";
 import RecommendEventCardSkeleton from "@/components/common/skeleton/RecommendEventCardSkeleton";
+import { useIsDesktop } from "@/hooks/useIsDesktop";
 
 export default function Mypage() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
@@ -38,6 +39,8 @@ export default function Mypage() {
     useMypageRecommendEventData();
   const { data: likedEvents = [] } = useLikedEventsData();
   const { data: plannedEvents = [] } = usePlannedEventsData();
+
+  const isDesktop = useIsDesktop();
 
   const isWeatherReady =
     !!locationNameData && !!weatherData && !!airPollutionData;
@@ -135,7 +138,7 @@ export default function Mypage() {
                 planId={matchedPlanId}
               />
             ) : (
-              /* 180일 내에 추천할 행사가 없는 경우 보여줄 Empty UI */
+              // 180일 내에 추천할 행사가 없는 경우 보여줄 Empty UI
               <div className="flex h-full flex-col items-center justify-center rounded-2xl border bg-white p-6 shadow-sm">
                 <p className="text-title1 text-etc font-bold">
                   새로운 추천 행사가 없습니다.
@@ -156,6 +159,7 @@ export default function Mypage() {
               title="나의 일정 목록"
               iconName="bookmark"
               iconClassName="text-symbol-sky fill-symbol-sky"
+              isDesktop={isDesktop}
               events={formattedPlannedEvents}
               onEventClick={handleEventClick}
             />
@@ -165,6 +169,7 @@ export default function Mypage() {
               title="나의 관심 목록"
               iconName="heart"
               iconClassName="text-red-500 fill-red-500"
+              isDesktop={isDesktop}
               events={formattedLikedEvents}
               onEventClick={handleEventClick}
             />
@@ -183,16 +188,15 @@ export default function Mypage() {
               nickname={profile?.nickname ?? undefined}
               activePopoverDate={activePopoverDate}
               onActivePopoverDate={handlePopoverChange}
+              isDesktop={isDesktop}
               captionLayout="dropdown"
             />
           </div>
 
-          {selectedDate && dailyEvents.length > 0 && (
+          {!isDesktop && selectedDate && dailyEvents.length > 0 && (
             <MypageSelectedDateEventsCard
               selectedDate={selectedDate}
               events={dailyEvents}
-              // 이거 displayMode 줄필요있나? isDesktop 쓰는법은?
-              displayMode="mobile"
             />
           )}
         </div>
