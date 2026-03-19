@@ -10,20 +10,7 @@ export interface Coordinates {
 // ==============================
 // 카테고리 관련 타입
 // ==============================
-export type Category =
-  | "all"
-  | "festival"
-  | "performance"
-  | "exhibition"
-  | "other";
-
-export const CATEGORY_LABELS: Record<Category, string> = {
-  all: "전체",
-  festival: "축제",
-  performance: "공연",
-  exhibition: "전시",
-  other: "기타",
-};
+export type Category = "전체" | "축제" | "공연" | "전시" | "기타";
 
 export type CategoryId =
   | "all"
@@ -33,8 +20,8 @@ export type CategoryId =
   | "etc";
 
 export type CategoryMenuCardItem = {
-  name: string;
-  value: Category;
+  id: CategoryId;
+  name: Category;
   iconBgColor: string;
   Icon: LucideIcon;
 };
@@ -65,6 +52,7 @@ export interface EventCardItem {
   startDate: string;
   endDate: string;
   category: Category;
+  isLiked: boolean;
 }
 
 export type Event = Tables<"events">;

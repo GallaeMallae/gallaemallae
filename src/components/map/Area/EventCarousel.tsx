@@ -7,8 +7,9 @@ import {
 import EventCard from "@/components/common/EventCard";
 import { useState, useEffect } from "react";
 import { Tables } from "@/types/supabase";
-import { Category } from "@/types/common";
+import { CategoryId } from "@/types/common";
 import { Event as PublicEvent } from "@/types/event";
+import { CATEGORY_NAME_MAP } from "@/lib/constants";
 
 type CombinedEvent = Tables<"events"> | PublicEvent;
 
@@ -27,19 +28,15 @@ export default function EventCarousel({
 
   useEffect(() => {
     if (!api) return;
-
     const handleSelect = () => {
       const index = api.selectedScrollSnap();
       const selected = events[index];
-
       if (selected) {
         onSelectCarousel(selected.id);
       }
     };
     api.on("select", handleSelect);
-
     handleSelect();
-
     return () => {
       api.off("select", handleSelect);
     };
@@ -70,6 +67,9 @@ export default function EventCarousel({
                 ? event.endDate || event.fstvlEndDate
                 : event.end_date) || "";
 
+            const categoryId = (event.categories?.[0] as CategoryId) ?? "etc";
+            const category = CATEGORY_NAME_MAP[categoryId] ?? "기타";
+
             return (
               <CarouselItem
                 key={event.id}
@@ -82,7 +82,8 @@ export default function EventCarousel({
                     location={location}
                     startDate={startDate}
                     endDate={endDate}
-                    category={(event.categories?.[0] as Category) ?? "other"}
+                    category={category}
+                    isLiked={false}
                   />
                 </div>
               </CarouselItem>

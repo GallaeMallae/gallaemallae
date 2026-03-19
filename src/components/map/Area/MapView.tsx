@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import KakaoMap from "@/components/common/KakaoMap";
 import { MARKER_ICONS } from "@/lib/constants";
 import { getDistance } from "@/utils/geo";
-import { Category } from "@/types/common";
+import { CategoryId } from "@/types/common";
 
 type Position = { lat: number; lng: number };
 
@@ -13,7 +13,7 @@ type Marker = {
   id: number | string;
   lat: number;
   lng: number;
-  category: Category;
+  category: CategoryId;
 };
 
 interface MapViewProps {
@@ -82,7 +82,7 @@ export default function MapView({
       )}
 
       {filteredMarkers.map((m) => {
-        const markerCategory = m.category === "all" ? "other" : m.category;
+        const markerCategory = m.category === "all" ? "etc" : m.category;
 
         return (
           <MapMarker

@@ -31,32 +31,32 @@ import {
 
 export const CATEGORY_MENU: CategoryMenuCardItem[] = [
   {
+    id: "all",
     name: "전체",
-    value: "all",
     iconBgColor: "bg-symbol-sky",
     Icon: LayoutGrid,
   },
   {
+    id: "festival",
     name: "축제",
-    value: "festival",
     iconBgColor: "bg-festival",
     Icon: PartyPopper,
   },
   {
+    id: "performance",
     name: "공연",
-    value: "performance",
     iconBgColor: "bg-performance",
     Icon: Ticket,
   },
   {
+    id: "exhibition",
     name: "전시",
-    value: "exhibition",
     iconBgColor: "bg-exhibition",
     Icon: Landmark,
   },
   {
+    id: "etc",
     name: "기타",
-    value: "other",
     iconBgColor: "bg-etc",
     Icon: MoreHorizontal,
   },
@@ -254,6 +254,7 @@ export const QUERY_KEYS = {
 } as const;
 
 export const CATEGORY_NAME_MAP = {
+  all: "전체",
   festival: "축제",
   performance: "공연",
   exhibition: "전시",
@@ -264,6 +265,5 @@ export const MARKER_ICONS = {
   festival: "/images/MapMarker/MapMarker-festival.png",
   performance: "/images/MapMarker/MapMarker-performance.png",
   exhibition: "/images/MapMarker/MapMarker-exhibition.png",
-  other: "/images/MapMarker/MapMarker-other.png",
-  myLocation: "/images/MapMarker/MapMarker-myLocation.png",
+  etc: "/images/MapMarker/MapMarker-etc.png",
 } as const;

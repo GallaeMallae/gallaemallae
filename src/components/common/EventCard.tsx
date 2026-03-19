@@ -5,7 +5,6 @@ import { Heart, Calendar, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatDateRange } from "@/utils/date";
 import { EventCardItem } from "@/types/common";
-import { CATEGORY_LABELS } from "@/types/common";
 
 export default function EventCard({
   title,
@@ -30,11 +29,10 @@ export default function EventCard({
               isLiked ? "fill-red-500 text-red-500" : "text-etc",
             )}
           />
-          <Heart />
         </Button>
 
         <Badge className="mb-2 rounded-sm" variant={category}>
-          {CATEGORY_LABELS[category] || "기타"}
+          {category}
         </Badge>
 
         <h3 className="text-title2 mb-4 line-clamp-1 font-bold">{title}</h3>

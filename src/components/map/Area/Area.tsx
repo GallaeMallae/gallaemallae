@@ -9,9 +9,9 @@ import { useState, useMemo } from "react";
 import { useKakaoLoader } from "react-kakao-maps-sdk";
 import { useEvents } from "@/hooks/queries/useEvents";
 import { useCurrentLocation } from "@/hooks/useCurrentLocation";
-import { filterEventsByCategory } from "@/utils/map/category";
-import { filterEventByPeriod } from "@/utils/map/period";
-import { Category, PeriodFilter } from "@/types/common";
+import { filterEventsByCategory } from "@/utils/filter";
+import { filterEventByPeriod } from "@/utils/filter";
+import { CategoryId, PeriodFilter } from "@/types/common";
 
 export default function Area({
   radius,
@@ -20,7 +20,7 @@ export default function Area({
   search,
 }: {
   radius: number | null;
-  category: Category[];
+  category: CategoryId[];
   period: PeriodFilter;
   search: string;
 }) {
@@ -46,7 +46,7 @@ export default function Area({
         return title.toLowerCase().includes(search.toLowerCase());
       });
     }
-
+    console.log("필터된 결과:", result);
     return result;
   }, [events, category, period, search]);
 
@@ -59,7 +59,7 @@ export default function Area({
           (event.title || event.fstvlNm || "") +
           (event.description || event.fstvlCo || "");
 
-        let category: Category = "other";
+        let category: CategoryId = "all";
 
         if (text.includes("공연")) {
           category = "performance";
@@ -68,7 +68,7 @@ export default function Area({
         } else if (text.includes("축제")) {
           category = "festival";
         } else {
-          category = "other";
+          category = "etc";
         }
 
         return {

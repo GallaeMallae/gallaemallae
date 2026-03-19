@@ -6,9 +6,9 @@ import EventDetailModalRight from "@/components/map/EventDetailModal/EventDetail
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Category } from "@/types/common";
-import { CATEGORY_LABELS } from "@/types/common";
+import { CategoryId } from "@/types/common";
 import { BaseEvent } from "@/types/event";
+import { CATEGORY_NAME_MAP } from "@/lib/constants";
 
 type Props = {
   event: BaseEvent | null;
@@ -19,10 +19,8 @@ type Props = {
 export default function EventDetailModal({ event, open, onClose }: Props) {
   if (!event) return null;
 
-  const categoryKey = (event.categories?.[0] as Category) || "other";
-
-  const categoryLabel =
-    CATEGORY_LABELS[categoryKey] || CATEGORY_LABELS["other"];
+  const categoryId = (event.categories?.[0] as CategoryId) || "etc";
+  const category = CATEGORY_NAME_MAP[categoryId] ?? "기타";
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -30,7 +28,7 @@ export default function EventDetailModal({ event, open, onClose }: Props) {
         <div className="flex flex-col gap-6 p-8 md:p-8">
           <div className="flex items-start justify-between gap-4">
             <div className="flex flex-col gap-2">
-              <Badge variant={categoryKey}>{categoryLabel}</Badge>
+              <Badge variant={category}>{category}</Badge>
               <DialogTitle>
                 <p className="text-h2"> {event.title}</p>
               </DialogTitle>

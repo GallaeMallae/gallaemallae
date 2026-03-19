@@ -6,7 +6,7 @@ import SidebarPeriodFilterTabs from "@/components/map/Sidebar/SidebarPeriodFilte
 import SidebarDistance from "@/components/map/Sidebar/SidebarDistance";
 import { CATEGORY_MENU } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-import { Category, PeriodFilter } from "@/types/common";
+import { CategoryId, PeriodFilter } from "@/types/common";
 
 export default function Sidebar({
   radius,
@@ -20,24 +20,24 @@ export default function Sidebar({
 }: {
   radius: number | null;
   setRadius: (r: number | null) => void;
-  category: Category[];
-  setCategory: (c: Category[]) => void;
+  category: CategoryId[];
+  setCategory: (c: CategoryId[]) => void;
   period: PeriodFilter;
   setPeriod: (p: PeriodFilter) => void;
   search: string;
   setSearch: (s: string) => void;
 }) {
-  const toggleCategory = (value: Category) => {
-    if (value === "all") {
+  const toggleCategory = (id: CategoryId) => {
+    if (id === "all") {
       setCategory(["all"]);
       return;
     }
 
-    if (category.includes(value)) {
-      const next = category.filter((c) => c !== value);
+    if (category.includes(id)) {
+      const next = category.filter((c) => c !== id);
       setCategory(next.length ? next : ["all"]);
     } else {
-      setCategory([...category.filter((c) => c !== "all"), value]);
+      setCategory([...category.filter((c) => c !== "all"), id]);
     }
   };
 
@@ -72,12 +72,12 @@ export default function Sidebar({
           <div className="flex w-full flex-col gap-2">
             {CATEGORY_MENU.map((item) => {
               const Icon = item.Icon;
-              const isActive = category.includes(item.value as Category);
+              const isActive = category.includes(item.id as CategoryId);
 
               return (
                 <button
-                  key={item.value}
-                  onClick={() => toggleCategory(item.value as Category)}
+                  key={item.id}
+                  onClick={() => toggleCategory(item.id as CategoryId)}
                   className={cn(
                     "flex items-center justify-start gap-4 rounded-lg px-4 py-4 transition-all",
                     isActive
@@ -117,12 +117,12 @@ export default function Sidebar({
           {/* ===== 모바일 Tabs 스타일 ===== */}
           <div className="flex w-full rounded-xl bg-white shadow-sm">
             {CATEGORY_MENU.map((item) => {
-              const isActive = category.includes(item.value as Category);
+              const isActive = category.includes(item.id as CategoryId);
 
               return (
                 <button
-                  key={item.value}
-                  onClick={() => toggleCategory(item.value as Category)}
+                  key={item.id}
+                  onClick={() => toggleCategory(item.id as CategoryId)}
                   className={cn(
                     "text-caption flex-1 rounded-lg py-2 text-center transition-all",
                     isActive
