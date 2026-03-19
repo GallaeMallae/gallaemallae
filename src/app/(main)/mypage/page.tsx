@@ -65,6 +65,15 @@ export default function Mypage() {
     }
   };
 
+  const handlePopoverChange = (date: Date | null) => {
+    setActivePopoverDate(date);
+
+    // 팝오버가 닫힐 때(date가 null일 때) 선택된 날짜도 초기화(undefined)
+    if (date === null) {
+      setSelectedDate(undefined);
+    }
+  };
+
   // 관심 목록 데이터 가공
   const formattedLikedEvents = likedEvents.map((event) => ({
     ...event,
@@ -163,7 +172,7 @@ export default function Mypage() {
               onMonthChange={setMonth}
               nickname={profile?.nickname ?? undefined}
               activePopoverDate={activePopoverDate}
-              setActivePopoverDate={setActivePopoverDate}
+              onActivePopoverDate={handlePopoverChange}
               captionLayout="dropdown"
             />
           </div>
