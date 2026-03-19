@@ -14,24 +14,25 @@ export async function GET() {
 
   try {
     const response = await fetch(url);
+    if (!response.ok) {
+      console.error(`API 응답 오류: ${response.status} ${response.statusText}`);
+      return NextResponse.json(
+        { error: "External API Error" },
+        { status: 502 },
+      );
+    }
     const data = await response.json();
 
-    // 1. 공공데이터 응답 구조가 정상인지 단계별로 확인
-    // 보통 response.body.items 구조인데, 데이터가 없으면 items가 ""(빈문자열)로 올 때가 있음
     const items = data.response?.body?.items;
 
     if (!items || !Array.isArray(items)) {
-      console.warn(
-        "⚠️ 경고: API 응답에 데이터 아이템이 없거나 배열이 아닙니다.",
-        data,
-      );
-      return NextResponse.json([]); // 빈 배열 반환해서 클라이언트 에러 방지
+      console.warn(data);
+      return NextResponse.json([]);
     }
 
     return NextResponse.json(items);
   } catch (error) {
-    // 2. 여기서 진짜 에러 원인을 터미널에 찍어줌
-    console.error("❌ 서버 라우트 내부 에러 발생:", error);
+    console.error("서버 라우트 내부 에러 발생:", error);
     return NextResponse.json(
       { error: "Internal Server Error", message: String(error) },
       { status: 500 },
