@@ -16,140 +16,140 @@ export type Database = {
     Tables: {
       event_likes: {
         Row: {
-          created_at: string | null
-          event_id: string
-          id: string
-          user_id: string
-        }
+          created_at: string | null;
+          event_id: string;
+          id: string;
+          user_id: string;
+        };
         Insert: {
-          created_at?: string | null
-          event_id: string
-          id?: string
-          user_id: string
-        }
+          created_at?: string | null;
+          event_id: string;
+          id?: string;
+          user_id: string;
+        };
         Update: {
-          created_at?: string | null
-          event_id?: string
-          id?: string
-          user_id?: string
-        }
+          created_at?: string | null;
+          event_id?: string;
+          id?: string;
+          user_id?: string;
+        };
         Relationships: [
           {
-            foreignKeyName: "event_likes_event_id_fkey"
-            columns: ["event_id"]
-            isOneToOne: false
-            referencedRelation: "events"
-            referencedColumns: ["id"]
+            foreignKeyName: "event_likes_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id"];
           },
-        ]
-      }
+        ];
+      };
       event_plans: {
         Row: {
-          created_at: string | null
-          event_id: string
-          id: string
-          updated_at: string | null
-          user_id: string
-          visit_date: string | null
-        }
+          created_at: string | null;
+          event_id: string;
+          id: string;
+          updated_at: string | null;
+          user_id: string;
+          visit_date: string | null;
+        };
         Insert: {
-          created_at?: string | null
-          event_id: string
-          id?: string
-          updated_at?: string | null
-          user_id: string
-          visit_date?: string | null
-        }
+          created_at?: string | null;
+          event_id: string;
+          id?: string;
+          updated_at?: string | null;
+          user_id: string;
+          visit_date?: string | null;
+        };
         Update: {
-          created_at?: string | null
-          event_id?: string
-          id?: string
-          updated_at?: string | null
-          user_id?: string
-          visit_date?: string | null
-        }
+          created_at?: string | null;
+          event_id?: string;
+          id?: string;
+          updated_at?: string | null;
+          user_id?: string;
+          visit_date?: string | null;
+        };
         Relationships: [
           {
-            foreignKeyName: "event_plans_event_id_fkey"
-            columns: ["event_id"]
-            isOneToOne: false
-            referencedRelation: "events"
-            referencedColumns: ["id"]
+            foreignKeyName: "event_plans_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id"];
           },
-        ]
-      }
+        ];
+      };
       events: {
         Row: {
-          categories: string[]
-          created_at: string | null
-          data_reference_date: string | null
-          description: string | null
-          end_date: string
-          homepage_url: string | null
-          host: string | null
-          id: string
-          latitude: number | null
-          longitude: number | null
-          lot_address: string | null
-          name: string
-          organizer: string | null
-          phone: string | null
-          provider: string | null
-          related_info: string | null
-          road_address: string | null
-          sponsor: string | null
-          start_date: string
-          updated_at: string | null
-          venue: string | null
-        }
+          categories: string[];
+          created_at: string | null;
+          data_reference_date: string | null;
+          description: string | null;
+          end_date: string;
+          homepage_url: string | null;
+          host: string | null;
+          id: string;
+          latitude: number | null;
+          longitude: number | null;
+          lot_address: string | null;
+          name: string;
+          organizer: string | null;
+          phone: string | null;
+          provider: string | null;
+          related_info: string | null;
+          road_address: string | null;
+          sponsor: string | null;
+          start_date: string;
+          updated_at: string | null;
+          venue: string | null;
+        };
         Insert: {
-          categories?: string[]
-          created_at?: string | null
-          data_reference_date?: string | null
-          description?: string | null
-          end_date: string
-          homepage_url?: string | null
-          host?: string | null
-          id?: string
-          latitude?: number | null
-          longitude?: number | null
-          lot_address?: string | null
-          name: string
-          organizer?: string | null
-          phone?: string | null
-          provider?: string | null
-          related_info?: string | null
-          road_address?: string | null
-          sponsor?: string | null
-          start_date: string
-          updated_at?: string | null
-          venue?: string | null
-        }
+          categories?: string[];
+          created_at?: string | null;
+          data_reference_date?: string | null;
+          description?: string | null;
+          end_date: string;
+          homepage_url?: string | null;
+          host?: string | null;
+          id?: string;
+          latitude?: number | null;
+          longitude?: number | null;
+          lot_address?: string | null;
+          name: string;
+          organizer?: string | null;
+          phone?: string | null;
+          provider?: string | null;
+          related_info?: string | null;
+          road_address?: string | null;
+          sponsor?: string | null;
+          start_date: string;
+          updated_at?: string | null;
+          venue?: string | null;
+        };
         Update: {
-          categories?: string[]
-          created_at?: string | null
-          data_reference_date?: string | null
-          description?: string | null
-          end_date?: string
-          homepage_url?: string | null
-          host?: string | null
-          id?: string
-          latitude?: number | null
-          longitude?: number | null
-          lot_address?: string | null
-          name?: string
-          organizer?: string | null
-          phone?: string | null
-          provider?: string | null
-          related_info?: string | null
-          road_address?: string | null
-          sponsor?: string | null
-          start_date?: string
-          updated_at?: string | null
-          venue?: string | null
-        }
-        Relationships: []
-      }
+          categories?: string[];
+          created_at?: string | null;
+          data_reference_date?: string | null;
+          description?: string | null;
+          end_date?: string;
+          homepage_url?: string | null;
+          host?: string | null;
+          id?: string;
+          latitude?: number | null;
+          longitude?: number | null;
+          lot_address?: string | null;
+          name?: string;
+          organizer?: string | null;
+          phone?: string | null;
+          provider?: string | null;
+          related_info?: string | null;
+          road_address?: string | null;
+          sponsor?: string | null;
+          start_date?: string;
+          updated_at?: string | null;
+          venue?: string | null;
+        };
+        Relationships: [];
+      };
       profiles: {
         Row: {
           avatar_url: string | null;
@@ -171,78 +171,6 @@ export type Database = {
           email?: string | null;
           id?: string;
           nickname?: string | null;
-        };
-        Relationships: [];
-      };
-      events: {
-        Row: {
-          id: number;
-          name: string | null;
-          venue: string | null;
-          start_date: string | null;
-          end_date: string | null;
-          description: string | null;
-          organizer: string | null;
-          host: string | null;
-          sponsor: string | null;
-          phone: string | null;
-          homepage_url: string | null;
-          related_info: string | null;
-          road_address: string | null;
-          lot_address: string | null;
-          latitude: number | null;
-          longitude: number | null;
-          date_reference_date: string | null;
-          categories: string | null;
-          created_at: string | null;
-          updated_at: string | null;
-          provider: string | null;
-        };
-        Insert: {
-          id?: number;
-          name?: string | null;
-          venue?: string | null;
-          start_date?: string | null;
-          end_date?: string | null;
-          description?: string | null;
-          organizer?: string | null;
-          host?: string | null;
-          sponsor?: string | null;
-          phone?: string | null;
-          homepage_url?: string | null;
-          related_info?: string | null;
-          road_address?: string | null;
-          lot_address?: string | null;
-          latitude?: number | null;
-          longitude?: number | null;
-          date_reference_date?: string | null;
-          categories?: string | null;
-          created_at?: string | null;
-          updated_at?: string | null;
-          provider?: string | null;
-        };
-        Update: {
-          id?: number;
-          name?: string | null;
-          venue?: string | null;
-          start_date?: string | null;
-          end_date?: string | null;
-          description?: string | null;
-          organizer?: string | null;
-          host?: string | null;
-          sponsor?: string | null;
-          phone?: string | null;
-          homepage_url?: string | null;
-          related_info?: string | null;
-          road_address?: string | null;
-          lot_address?: string | null;
-          latitude?: number | null;
-          longitude?: number | null;
-          date_reference_date?: string | null;
-          categories?: string | null;
-          created_at?: string | null;
-          updated_at?: string | null;
-          provider?: string | null;
         };
         Relationships: [];
       };
