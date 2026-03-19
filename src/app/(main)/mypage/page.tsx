@@ -125,15 +125,25 @@ export default function Mypage() {
             <WeatherCard {...weather} />
           )}
           <div className="flex h-full flex-col">
-            {isRecommendEventCardLoading || !recommendEventData ? (
+            {isRecommendEventCardLoading ? (
               <RecommendEventCardSkeleton />
-            ) : (
+            ) : recommendEventData ? (
               <MyPageEventRecommendCard
                 event={recommendEventData}
                 isLiked={isLiked}
                 isPlanned={isPlanned}
                 planId={matchedPlanId}
               />
+            ) : (
+              /* 180일 내에 추천할 행사가 없는 경우 보여줄 Empty UI */
+              <div className="flex h-full flex-col items-center justify-center rounded-2xl border bg-white p-6 shadow-sm">
+                <p className="text-title1 text-etc font-bold">
+                  새로운 추천 행사가 없습니다.
+                </p>
+                <p className="text-desc2 text-etc mt-1">
+                  모든 행사를 확인하셨거나 조건에 맞는 행사가 없어요.
+                </p>
+              </div>
             )}
           </div>
         </div>

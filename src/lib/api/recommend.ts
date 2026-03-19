@@ -27,7 +27,7 @@ export async function fetchRecommendType(
   return res.json();
 }
 
-export async function fetchMypageRecommendEvent(): Promise<FetchMypageRecommendEventResponse> {
+export async function fetchMypageRecommendEvent(): Promise<FetchMypageRecommendEventResponse | null> {
   const res = await fetch("/api/mypage/recommend", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -35,5 +35,7 @@ export async function fetchMypageRecommendEvent(): Promise<FetchMypageRecommendE
 
   if (!res.ok) throw new Error("[OpenAI API] : 행사 추천 실패");
 
-  return res.json();
+  const data = await res.json();
+
+  return data ?? null;
 }

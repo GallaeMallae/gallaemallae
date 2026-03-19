@@ -1,6 +1,8 @@
 import { CATEGORY_NAME_MAP } from "@/lib/constants";
+import { Event } from "@/types/common";
 import { getKstNow } from "@/utils/date";
 import { createClient } from "@/utils/supabase/server";
+import { PostgrestError } from "@supabase/supabase-js";
 import { addDays, format } from "date-fns";
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
@@ -96,32 +98,47 @@ export async function POST() {
       ...plannedEvents.map((event) => event.id),
     ];
 
-    // 30일 이내의 모든 행사 후보군 조회
-    // 배포 이후 Vercel에서 TZ: Asia/Seoul 설정만 해두면 new Date() 써도 문제없음
-    const kstNow = getKstNow();
-    const startDate = format(kstNow, "yyyy-MM-dd");
-    const endDate = format(addDays(kstNow, 30), "yyyy-MM-dd");
+    let daysOffset = 30;
+    let candidates: Event[] = [];
+    let queryError: PostgrestError | null = null;
 
-    let query = supabase
-      .from("events")
-      .select("*")
-      .gte("start_date", startDate)
-      .lte("start_date", endDate);
+    // 최대 90일까지, 결과가 나올 때까지 범위를 넓히며 시도 (최대 6번)
+    while (daysOffset <= 180) {
+      const kstNow = getKstNow();
+      const startDate = format(kstNow, "yyyy-MM-dd");
+      const endDate = format(addDays(kstNow, daysOffset), "yyyy-MM-dd");
 
-    // 이미 추가된 행사는 후보군에서 제외
-    if (excludedIds.length > 0) {
-      query = query.not("id", "in", `(${excludedIds.join(",")})`);
+      let query = supabase
+        .from("events")
+        .select("*")
+        .gte("start_date", startDate)
+        .lte("start_date", endDate);
+
+      if (excludedIds.length > 0) {
+        query = query.not("id", "in", `(${excludedIds.join(",")})`);
+      }
+
+      const { data, error } = await query;
+
+      if (error) {
+        queryError = error;
+        break;
+      }
+
+      // 데이터가 있으면 루프 탈출, 없으면 30일 더 늘려서 다시 시도
+      if (data && data.length > 0) {
+        candidates = data;
+        break;
+      }
+
+      daysOffset += 30; // 30 -> 60 -> 90 -> 120 -> 150 -> 180일 순으로 확장
     }
 
-    const { data: candidates, error: candidatesError } = await query;
+    if (queryError) throw queryError;
 
-    if (candidatesError) throw candidatesError;
-
-    // 후보군이 하나도 없을 경우 (모든 행사를 이미 추가했을 때)
-    if (!candidates || candidates.length === 0) {
-      return NextResponse.json({
-        message: "새로운 추천 행사가 없습니다.",
-      });
+    // 모든 확장을 시도했음에도 없을 경우에만 null 반환
+    if (candidates.length === 0) {
+      return NextResponse.json(null);
     }
 
     // 토큰 다이어트와 추천의 다양성을 위해 무작위 셔플 후 12개 선택
