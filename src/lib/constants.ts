@@ -254,8 +254,16 @@ export const QUERY_KEYS = {
 } as const;
 
 export const CATEGORY_NAME_MAP = {
+  all: "전체",
   festival: "축제",
   performance: "공연",
   exhibition: "전시",
   etc: "기타",
+} as const;
+
+export const MARKER_ICONS = {
+  festival: "/images/MapMarker/MapMarker-festival.png",
+  performance: "/images/MapMarker/MapMarker-performance.png",
+  exhibition: "/images/MapMarker/MapMarker-exhibition.png",
+  etc: "/images/MapMarker/MapMarker-etc.png",
 } as const;

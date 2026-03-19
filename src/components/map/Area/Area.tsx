@@ -1,94 +1,153 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel";
-import EventCard from "@/components/common/EventCard";
-import KakaoMap from "@/components/common/KakaoMap";
+import MapView from "@/components/map/Area/MapView";
+import EventCarousel from "@/components/map/Area/EventCarousel";
+import EventDetailModal from "@/components/map/EventDetailModal/EventDetailModal";
 import { LocateFixed } from "lucide-react";
-import { MapMarker, Circle } from "react-kakao-maps-sdk";
-import { useState } from "react";
-import { useLocationStore } from "@/stores/locationStore";
-import { getDistance } from "@/utils/geo";
-import { MOCK_EVENTS } from "@/mocks/events";
+import { useState, useMemo } from "react";
+import { useKakaoLoader } from "react-kakao-maps-sdk";
+import { useEvents } from "@/hooks/queries/useEvents";
+import { useCurrentLocation } from "@/hooks/useCurrentLocation";
+import { filterEventsByCategory } from "@/utils/filter";
+import { filterEventByPeriod } from "@/utils/filter";
+import { CategoryId, PeriodFilter } from "@/types/common";
 
-const markers = [
-  { id: 1, lat: 37.498, lng: 127.027 },
-  { id: 2, lat: 37.5, lng: 127.03 },
-  { id: 3, lat: 37.49, lng: 127.025 },
-  { id: 4, lat: 37.47, lng: 127.02 },
-];
+export default function Area({
+  radius,
+  category,
+  period,
+  search,
+}: {
+  radius: number | null;
+  category: CategoryId[];
+  period: PeriodFilter;
+  search: string;
+}) {
+  const { position, moveCurrentLocation } = useCurrentLocation();
+  const { data: events = [], isLoading, error: queryError } = useEvents();
 
-export default function Area({ radius }: { radius: number | null }) {
-  const { coords } = useLocationStore();
-  const [map, setMap] = useState<kakao.maps.Map | null>(null);
+  const [locate, setLocate] = useState<kakao.maps.Map | null>(null);
+  const [loading, kakaoError] = useKakaoLoader({
+    appkey: process.env.NEXT_PUBLIC_KAKAO_JS_KEY!,
+  });
 
-  const center = {
-    lat: coords.lat,
-    lng: coords.lng,
+  const [selectedCarousel, setSelectedCarousel] = useState<string | null>(null);
+  const [selectedModal, setSelectedModal] = useState<string | null>(null);
+
+  const filteredEvents = useMemo(() => {
+    let result = filterEventsByCategory(events, category);
+    result = filterEventByPeriod(result, period);
+
+    // 4. 검색어 필터링 추가
+    if (search.trim()) {
+      result = result.filter((event) => {
+        const title = event.title || event.fstvlNm || "";
+        return title.toLowerCase().includes(search.toLowerCase());
+      });
+    }
+    console.log("필터된 결과:", result);
+    return result;
+  }, [events, category, period, search]);
+
+  // 지도 마커 데이터 생성
+  const markers = useMemo(() => {
+    return filteredEvents
+      .filter((event) => event.latitude && event.longitude)
+      .map((event) => {
+        const text =
+          (event.title || event.fstvlNm || "") +
+          (event.description || event.fstvlCo || "");
+
+        let category: CategoryId = "all";
+
+        if (text.includes("공연")) {
+          category = "performance";
+        } else if (text.includes("전시")) {
+          category = "exhibition";
+        } else if (text.includes("축제")) {
+          category = "festival";
+        } else {
+          category = "etc";
+        }
+
+        return {
+          id: event.id,
+          lat: Number(event.latitude),
+          lng: Number(event.longitude),
+          category: category,
+        };
+      });
+  }, [filteredEvents]);
+
+  // 선택된 데이터 추출
+  const selectedModalData = useMemo(() => {
+    return events.find((event) => event.id === selectedModal) || null;
+  }, [events, selectedModal]);
+  const selectedCarouselData = filteredEvents.find(
+    (event) => event.id === selectedCarousel,
+  );
+
+  if (loading || isLoading)
+    return (
+      <div className="flex h-screen items-center justify-center">
+        지도를 불러오는 중...
+      </div>
+    );
+  if (queryError || kakaoError)
+    return (
+      <div className="flex h-screen items-center justify-center">
+        데이터를 가져오는데 실패했습니다.
+      </div>
+    );
+
+  const handleMoveToCurrentLocation = () => {
+    moveCurrentLocation(locate);
+    setSelectedCarousel(null);
   };
-
-  const moveCurrentLocation = () => {
-    if (!map) return;
-
-    map.setCenter(new window.kakao.maps.LatLng(center.lat, center.lng));
-  };
-
-  const filteredMarkers = center
-    ? markers.filter(
-        (m) =>
-          radius === null ||
-          getDistance(center, { lat: m.lat, lng: m.lng }) <= radius,
-      )
-    : [];
 
   return (
     <div className="relative h-[calc(100vh-57px)] overflow-hidden">
-      <KakaoMap center={center} level={7} onCreate={setMap}>
-        <MapMarker position={center} />
-
-        {radius !== null && (
-          <Circle
-            center={center}
-            radius={radius}
-            strokeWeight={8}
-            strokeColor="#0da3e4"
-          />
-        )}
-
-        {filteredMarkers.map((m) => (
-          <MapMarker key={m.id} position={{ lat: m.lat, lng: m.lng }} />
-        ))}
-      </KakaoMap>
-
+      <MapView
+        center={position}
+        radius={radius}
+        markers={markers}
+        setLocate={setLocate}
+        onMarkerClick={(id) => setSelectedModal(id)}
+        locate={locate}
+        onSelectCarousel={
+          selectedCarouselData
+            ? {
+                id: selectedCarouselData.id,
+                latitude: selectedCarouselData.latitude
+                  ? Number(selectedCarouselData.latitude)
+                  : null,
+                longitude: selectedCarouselData.longitude
+                  ? Number(selectedCarouselData.longitude)
+                  : null,
+              }
+            : undefined
+        }
+      />
+      {selectedModal && selectedModalData && (
+        <EventDetailModal
+          event={selectedModalData}
+          open={!!selectedModal}
+          onClose={() => setSelectedModal(null)}
+        />
+      )}
       <Button
-        className="hover:bg-muted absolute right-4 bottom-54 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white md:h-12 md:w-12"
-        onClick={moveCurrentLocation}
+        className="hover:bg-muted absolute right-4 bottom-54 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-lg md:h-12 md:w-12"
+        onClick={handleMoveToCurrentLocation}
       >
         <LocateFixed className="size-5 text-black md:size-6" />
       </Button>
 
-      <div className="absolute right-0 bottom-6 left-0 z-5 px-4">
-        <Carousel
-          opts={{
-            align: "center",
-          }}
-        >
-          <CarouselContent className="-ml-4">
-            {MOCK_EVENTS.map((event, index) => (
-              <CarouselItem
-                key={index}
-                className="basis-[80%] pl-4 md:basis-86"
-              >
-                <EventCard {...event} />
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-        </Carousel>
-      </div>
+      <EventCarousel
+        events={filteredEvents}
+        onCarouselClick={(id) => setSelectedModal(id)}
+        onSelectCarousel={setSelectedCarousel}
+      />
     </div>
   );
 }

@@ -1,12 +1,15 @@
-import { Card, CardContent } from "@/components/ui/card";
+"use client";
+
 import EventDetailOrganization from "@/components/map/EventDetailModal/EventDetailModalRight/EventDetailOrganization";
 import EventDetailModalButton from "@/components/map/EventDetailModal/EventDetailModalRight/EventDetailButton";
-import { Check, Tally1 } from "lucide-react";
-import { MOCK_DETAIL } from "@/mocks/events";
+import { Tally1 } from "lucide-react";
+import { BaseEvent } from "@/types/event";
 
-export default function EventDetailModalRight() {
-  const config = MOCK_DETAIL;
+type Props = {
+  event: BaseEvent;
+};
 
+export default function EventDetailModalRight({ event }: Props) {
   return (
     <div className="flex h-full flex-col gap-6 md:justify-between">
       <div className="flex flex-col gap-2">
@@ -15,33 +18,35 @@ export default function EventDetailModalRight() {
           축제 소개
         </p>
         <p className="text-caption text-etc font-medium">
-          {config.description}
+          {event.description ||
+            event.fstvlCo ||
+            "상세 정보가 등록되지 않았습니다."}
         </p>
       </div>
+
       <div className="flex flex-col gap-2">
         <p className="text-desc1 flex font-medium">
           <Tally1 className="text-symbol-sky" />
           조직 및 운영
         </p>
-        <EventDetailOrganization organization={config.organization} />
+        <EventDetailOrganization
+          organization={{
+            host: event.host || event.auspcInsttNm || "-", // 주최기관
+            organizer: event.organizer || event.mnnstNm || "-", // 주관기관
+            sponsor: event.sponsor || event.suprtInsttNm || "-",
+            provider: event.provider || event.insttNm || "-", // 제공기관
+          }}
+        />
       </div>
+
       <div className="flex flex-col gap-2">
         <p className="text-desc1 flex flex-row font-medium">
           <Tally1 className="text-symbol-sky" />
-          참고 사항
+          관련 정보
         </p>
-        {config.information.map((info, index) => (
-          <Card
-            key={index}
-            className="border border-slate-100 bg-slate-50/50 p-1"
-          >
-            <CardContent className="text-etc text-caption flex items-center gap-2 p-2">
-              <Check size={14} className="text-symbol-sky" />
-              {info}
-            </CardContent>
-          </Card>
-        ))}
+        <p className="text-caption text-slate-400">준비 중입니다.</p>
       </div>
+
       <EventDetailModalButton />
     </div>
   );

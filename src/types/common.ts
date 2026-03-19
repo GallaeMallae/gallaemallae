@@ -120,6 +120,20 @@ export interface DetailCardItem {
 }
 
 // ==============================
+// 공공 데이터 포탈
+// ==============================
+export interface FestivalApiItem {
+  fstvlNm: string;
+  opar: string;
+  fstvlStartDate: string;
+  fstvlEndDate: string;
+  fstvlCo: string;
+  phoneNumber: string;
+  homepageUrl: string;
+  latitude: string;
+  longitude: string;
+  rdnmadr: string;
+}
 // 사용자 프로필 타입
 // ==============================
 export type Profile = Tables<"profiles">;

@@ -10,7 +10,11 @@ export default function SidebarDistance({
   radius: number | null;
   setRadius: (r: number | null) => void;
 }) {
-  const distances = [3000, 5000, 10000];
+  const distances = [
+    { label: "전체", value: "all" },
+    { label: "5km", value: "5000" },
+    { label: "10km", value: "10000" },
+  ];
 
   return (
     <Tabs
@@ -24,8 +28,8 @@ export default function SidebarDistance({
       <TabsList className="flex w-full gap-1 rounded-xl border border-gray-100 bg-white p-1 shadow-sm">
         {distances.map((d) => (
           <TabsTrigger
-            key={d}
-            value={String(d)}
+            key={d.label}
+            value={d.value}
             className={cn(
               "text-caption flex-1 cursor-pointer rounded-lg py-2 text-center transition-all",
               "data-[state=active]:bg-symbol-sky data-[state=active]:text-white",
@@ -33,7 +37,7 @@ export default function SidebarDistance({
               "data-[state=inactive]:hover:bg-muted",
             )}
           >
-            {d >= 1000 ? `${d / 1000}km` : `${d}m`}
+            {d.label}
           </TabsTrigger>
         ))}
       </TabsList>
