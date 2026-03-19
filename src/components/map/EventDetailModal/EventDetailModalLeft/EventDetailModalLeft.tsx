@@ -12,7 +12,7 @@ type Props = {
 
 export default function EventDetailModalLeft({ event }: Props) {
   const start = event.fstvlStartDate || event.startDate || event.start_date;
-  const end = event.fstvlEndDate || event.end_date;
+  const end = event.fstvlEndDate || event.endDate || event.end_date;
 
   const location =
     event.rdnmadr ||
@@ -46,7 +46,7 @@ export default function EventDetailModalLeft({ event }: Props) {
       <div className="flex flex-col gap-2">
         <EventIntroduce
           type="date"
-          value={start && end ? `${start} ~ ${end}` : start || "-"}
+          value={start && end ? `${start} ~ ${end}` : start || end || "-"}
         />
         <EventIntroduce type="place" value={location || "-"} />
         <EventIntroduce type="tel" value={tel || "-"} />
