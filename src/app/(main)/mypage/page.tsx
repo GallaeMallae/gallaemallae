@@ -19,7 +19,7 @@ import { mapWeatherCard } from "@/utils/mapper";
 import { useLikedEventsData } from "@/hooks/queries/useLikedEventsData";
 import { usePlannedEventsData } from "@/hooks/queries/usePlannedEventsData";
 import { useProfileData } from "@/hooks/queries/useProfileData";
-import { useMyPageRecommendEventData } from "@/hooks/queries/useMypageRecommendEventData";
+import { useMypageRecommendEventData } from "@/hooks/queries/useMypageRecommendEventData";
 import RecommendEventCardSkeleton from "@/components/common/skeleton/RecommendEventCardSkeleton";
 
 export default function Mypage() {
@@ -34,7 +34,7 @@ export default function Mypage() {
   const { data: weatherData } = useWeatherData(coords, isInitialized);
   const { data: airPollutionData } = useAirPollutionData(coords, isInitialized);
   const { data: recommendEventData, isLoading: isRecommendEventCardLoading } =
-    useMyPageRecommendEventData(profile?.id);
+    useMypageRecommendEventData();
   const { data: likedEvents = [] } = useLikedEventsData();
   const { data: plannedEvents = [] } = usePlannedEventsData();
 

@@ -25,7 +25,7 @@ export async function fetchRecommendType(
   return res.json();
 }
 
-export async function fetchMyPageRecommendEvent(): Promise<Event> {
+export async function fetchMypageRecommendEvent(): Promise<Event> {
   const res = await fetch("/api/mypage/recommend", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
