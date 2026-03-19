@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Heart, Calendar, MapPin } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { formatDateRange } from "@/utils/date";
 import { EventCardItem } from "@/types/common";
 import { CATEGORY_LABELS } from "@/types/common";
@@ -12,6 +13,7 @@ export default function EventCard({
   startDate,
   endDate,
   category,
+  isLiked,
 }: EventCardItem) {
   return (
     <Card className="relative cursor-pointer rounded-2xl">
@@ -22,6 +24,12 @@ export default function EventCard({
           size="icon"
           aria-label="좋아요"
         >
+          <Heart
+            className={cn(
+              "h-5 w-5",
+              isLiked ? "fill-red-500 text-red-500" : "text-etc",
+            )}
+          />
           <Heart />
         </Button>
 
