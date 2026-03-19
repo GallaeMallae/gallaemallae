@@ -22,7 +22,6 @@ export default function EventCard({
           variant="ghost"
           size="icon"
           aria-label="좋아요"
-          aria-pressed={isLiked}
         >
           <Heart
             className={cn(

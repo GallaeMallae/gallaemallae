@@ -1,11 +1,34 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { INTRODUCE_CARD_CONFIG } from "@/lib/constants";
-import { MOCK_INTRODUCE } from "@/mocks/events";
 import { IntroduceType } from "@/types/common";
 
-export default function EventIntroduce({ type }: { type: IntroduceType }) {
+type Props = {
+  type: IntroduceType;
+  value?: string | null;
+};
+
+export default function EventIntroduce({ type, value }: Props) {
   const config = INTRODUCE_CARD_CONFIG[type];
   const Icon = config.icon;
+
+  const renderValue = () => {
+    if (!value) return "-";
+
+    if (type === "homepage") {
+      const url = value.startsWith("http") ? value : `https://${value}`;
+      return (
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="break-all text-blue-500 underline"
+        >
+          {value}
+        </a>
+      );
+    }
+    return value;
+  };
 
   return (
     <Card className="rounded-2xl border border-slate-200 bg-white">
@@ -19,7 +42,7 @@ export default function EventIntroduce({ type }: { type: IntroduceType }) {
         <div>
           <p className="text-caption text-etc">{config.title}</p>
 
-          <p className="text-caption font-semibold">{MOCK_INTRODUCE[type]}</p>
+          <p className="text-caption font-semibold">{renderValue()}</p>
         </div>
       </CardContent>
     </Card>
