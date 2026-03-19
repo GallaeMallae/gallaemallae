@@ -172,7 +172,7 @@ export async function GET(req: Request) {
 // {
 //   "crons": [
 //     {
-//       "path": "/api/cron/remind",
+//       "path": "/api/remind",
 //       "schedule": "0 0 * * *"
 //     }
 //   ]
