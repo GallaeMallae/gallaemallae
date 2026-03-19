@@ -36,7 +36,7 @@ export default function Mypage() {
   const { data: weatherData } = useWeatherData(coords, isInitialized);
   const { data: airPollutionData } = useAirPollutionData(coords, isInitialized);
   const { data: recommendEventData, isLoading: isRecommendEventCardLoading } =
-    useMypageRecommendEventData();
+    useMypageRecommendEventData(locationNameData);
   const { data: likedEvents = [] } = useLikedEventsData();
   const { data: plannedEvents = [] } = usePlannedEventsData();
 
@@ -114,6 +114,9 @@ export default function Mypage() {
     (plan) => plan.event.id === recommendEventData?.id,
   );
 
+  const isPreparing = !locationNameData || !profile?.id;
+  const showSkeleton = isPreparing || isRecommendEventCardLoading;
+
   return (
     <div className="flex flex-col gap-6">
       <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
@@ -128,7 +131,7 @@ export default function Mypage() {
             <WeatherCard {...weather} />
           )}
           <div className="flex h-full flex-col">
-            {isRecommendEventCardLoading ? (
+            {showSkeleton ? (
               <RecommendEventCardSkeleton />
             ) : recommendEventData ? (
               <MyPageEventRecommendCard
@@ -138,7 +141,7 @@ export default function Mypage() {
                 planId={matchedPlanId}
               />
             ) : (
-              // 180일 내에 추천할 행사가 없는 경우 보여줄 Empty UI
+              // 정말로 180일치 다 뒤졌는데 결과가 null일 때만 이게 나옴
               <div className="flex h-full flex-col items-center justify-center rounded-2xl border bg-white p-6 shadow-sm">
                 <p className="text-title1 text-etc font-bold">
                   새로운 추천 행사가 없습니다.

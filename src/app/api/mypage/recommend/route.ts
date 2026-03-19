@@ -15,7 +15,7 @@ interface FlattenedEvent {
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-export async function POST() {
+export async function POST(request: Request) {
   const supabase = await createClient();
   const {
     data: { user },
@@ -23,6 +23,8 @@ export async function POST() {
 
   if (!user)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const { userLocation } = await request.json();
 
   try {
     const { data: rawLikes, error: likesError } = await supabase
@@ -167,6 +169,7 @@ export async function POST() {
     const prompt = `
       # 페르소나: 전문 이벤트 큐레이터
       # 입력 데이터
+      - 사용자의 현 위치: ${userLocation || "위치 정보 없음"}
       - 1. 사용자 관심 리스트 (과거 이력):
         - ${likedList || "없음"}
         

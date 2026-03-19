@@ -252,10 +252,10 @@ export const QUERY_KEYS = {
     pm10?: number,
     pm25?: number,
   ) => ["recommendType", weatherType, temp, pm10, pm25],
-  MYPAGE_RECOMMENDATION: (userId?: string) =>
+  MYPAGE_RECOMMENDATION: (userId?: string, location?: string) =>
     userId
-      ? ["mypage", "recommendation", userId]
-      : ["mypage", "recommendation"],
+      ? ["mypage", "recommendation", userId, location].filter(Boolean)
+      : ["mypage", "recommendation", location].filter(Boolean),
 } as const;
 
 export const CATEGORY_NAME_MAP = {
