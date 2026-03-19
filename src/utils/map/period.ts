@@ -1,9 +1,5 @@
 import { PeriodFilter } from "@/types/common";
 
-/**
- * T는 최소한 start_date를 문자열로 가지고 있는 객체라면 무엇이든 가능해.
- * 이렇게 하면 API 데이터든, DB 데이터든 상관없이 다 받아줄 수 있어!
- */
 export function filterEventByPeriod<T extends { start_date: string | null }>(
   events: T[],
   period: PeriodFilter,
@@ -26,9 +22,8 @@ export function filterEventByPeriod<T extends { start_date: string | null }>(
     }
 
     if (period === "주간") {
-      const nextWeek = new Date();
+      const nextWeek = new Date(today);
       nextWeek.setDate(today.getDate() + 7);
-      // 오늘부터 일주일 후 사이의 이벤트인지 확인
       return start >= today && start <= nextWeek;
     }
 
@@ -39,6 +34,6 @@ export function filterEventByPeriod<T extends { start_date: string | null }>(
       );
     }
 
-    return true; // 기본값
+    return true;
   });
 }
