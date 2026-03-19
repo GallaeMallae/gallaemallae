@@ -10,29 +10,34 @@ import { useEventLike } from "@/hooks/mutations/useEventLike";
 import { useEventPlan } from "@/hooks/mutations/useEventPlan";
 import { useProfileData } from "@/hooks/queries/useProfileData";
 import { toast } from "sonner";
+import { useDeleteEventPlan } from "@/hooks/mutations/useDeleteEventPlan";
 
 interface MyPageEventRecommendCardProps {
   event: Event;
   isLiked: boolean;
   isPlanned: boolean;
+  planId: string;
 }
 
 export default function MyPageEventRecommendCard({
   event,
   isLiked,
   isPlanned,
+  planId,
 }: MyPageEventRecommendCardProps) {
   const { data: profile } = useProfileData();
 
   const { mutate: toggleLike } = useEventLike(event.id);
   const { mutate: addPlan, isPending: isPlanLoading } = useEventPlan();
+  const { mutate: deletePlan, isPending: isDeletePlanLoading } =
+    useDeleteEventPlan();
 
   const handleLikeClick = () => {
     // 현재 좋아요 상태를 넘겨주면 훅 내부 로직에 따라 delete/insert 처리
     toggleLike(isLiked);
   };
 
-  const handlePlanClick = () => {
+  const handleAddPlanClick = () => {
     if (!profile?.id) return toast.error("로그인이 필요합니다.");
 
     addPlan({
@@ -40,6 +45,12 @@ export default function MyPageEventRecommendCard({
       eventId: event.id,
       visitDate: event.start_date, // 현재 단계에서는 기본값으로 행사 시작일 설정
     });
+  };
+
+  const handleDeletePlanClick = () => {
+    if (!profile?.id) return toast.error("로그인이 필요합니다.");
+
+    deletePlan(planId);
   };
 
   return (
@@ -103,14 +114,26 @@ export default function MyPageEventRecommendCard({
         </div>
 
         <div className="flex gap-2">
-          <Button
-            size={"sm"}
-            className="hover:bg-symbol-sky"
-            onClick={() => handlePlanClick()}
-            disabled={isPlanLoading || isPlanned}
-          >
-            일정에 추가
-          </Button>
+          {isPlanned ? (
+            <Button
+              size={"sm"}
+              className="hover:bg-symbol-sky"
+              onClick={() => handleDeletePlanClick()}
+              disabled={isDeletePlanLoading}
+            >
+              일정에서 제거
+            </Button>
+          ) : (
+            <Button
+              size={"sm"}
+              className="hover:bg-symbol-sky"
+              onClick={() => handleAddPlanClick()}
+              disabled={isPlanLoading}
+            >
+              일정에 추가
+            </Button>
+          )}
+
           <Button size={"sm"} variant={"outline"}>
             행사 정보
           </Button>

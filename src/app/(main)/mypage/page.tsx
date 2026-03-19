@@ -75,6 +75,12 @@ export default function Mypage() {
     plan_id: plan.id,
   }));
 
+  // 추천받은 행사를 일정에 추가했을 경우 planId를 props로 보내주기 위함
+  const matchedPlan = formattedPlannedEvents.find(
+    (plan) => plan.id === recommendEventData?.id,
+  );
+  const matchedPlanId = matchedPlan?.plan_id;
+
   const dailyEvents = formattedPlannedEvents.filter((event) => {
     if (!selectedDate) return false;
 
@@ -107,7 +113,7 @@ export default function Mypage() {
           ) : (
             <WeatherCard {...weather} />
           )}
-          <div className="hidden h-full flex-col md:flex">
+          <div className="flex h-full flex-col">
             {isRecommendEventCardLoading || !recommendEventData ? (
               <RecommendEventCardSkeleton />
             ) : (
@@ -115,6 +121,7 @@ export default function Mypage() {
                 event={recommendEventData}
                 isLiked={isLiked}
                 isPlanned={isPlanned}
+                planId={matchedPlanId}
               />
             )}
           </div>
