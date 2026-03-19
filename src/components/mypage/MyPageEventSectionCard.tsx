@@ -5,7 +5,7 @@ import MypageAgendaCard from "@/components/mypage/MypageAgendaCard";
 import MypageLikedCard from "@/components/mypage/MypageLikedCard";
 import { Bookmark, Heart, LucideIcon } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { EventCardItem } from "@/types/common";
+import { MypageDisplayEvent } from "@/types/common";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 
@@ -23,7 +23,7 @@ interface MypageEventSectionCardProps {
   title: string;
   iconName: "bookmark" | "heart";
   iconClassName?: string;
-  events: EventCardItem[];
+  events: MypageDisplayEvent[];
   onEventClick: (date: string) => void;
 }
 
@@ -34,7 +34,6 @@ export default function MypageEventSectionCard({
   events,
   onEventClick,
 }: MypageEventSectionCardProps) {
-  // todo: 작동 확인하려고 useState 사용했지만 추후에는 Tanstack Query 사용하는 방식으로 변경 필요
   const [visibleCount, setVisibleCount] = useState(3);
 
   const Icon = ICON_MAP[iconName];
@@ -59,17 +58,16 @@ export default function MypageEventSectionCard({
           </div>
         </div>
       </CardHeader>
-      {/* todo: Tanstack Query 적용되면 데스크탑 버전에서는 무한 스크롤 방식 적용하기 */}
       <CardContent className="flex min-h-0 flex-1 flex-col p-0">
         <ScrollArea className="min-h-0 w-full flex-1 px-4">
           <div className="flex w-full flex-col gap-2">
             {events.length > 0 ? (
               <>
-                {slicedEvents.map((event, index) => (
+                {slicedEvents.map((event) => (
                   <SelectedCard
-                    key={index}
-                    {...event}
-                    onClick={() => onEventClick(event.startDate)}
+                    key={event.plan_id || event.id}
+                    event={event}
+                    onClick={() => onEventClick(event.display_date)}
                   />
                 ))}
 
@@ -86,7 +84,7 @@ export default function MypageEventSectionCard({
                 )}
               </>
             ) : (
-              <div className="text-muted-foreground text-desc2 py-4 text-center">
+              <div className="text-etc text-desc2 py-4 text-center">
                 행사를 추가해 보아요
               </div>
             )}

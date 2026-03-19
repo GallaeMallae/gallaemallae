@@ -17,8 +17,7 @@ import {
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { MOCK_EVENTS } from "@/mocks/events";
-import { CALENDAR_CATEGORY_STYLES } from "@/lib/constants";
+import { CALENDAR_CATEGORY_STYLES, CATEGORY_NAME_MAP } from "@/lib/constants";
 import {
   Popover,
   PopoverContent,
@@ -26,6 +25,9 @@ import {
 } from "@/components/ui/popover";
 import MypageSelectedDateEventsCard from "@/components/mypage/MypageSelectedDateEventsCard";
 import { isSameDay, isWithinInterval, parseISO, startOfDay } from "date-fns";
+import { MypageDisplayEvent } from "@/types/common";
+
+type CategoryKey = keyof typeof CATEGORY_NAME_MAP;
 
 function useIsDesktop() {
   const [isDesktop, setIsDesktop] = React.useState(false);
@@ -40,14 +42,24 @@ function useIsDesktop() {
   return isDesktop;
 }
 
+const getCategoryStyle = (categories?: string[] | null) => {
+  const eng = (categories?.[0] || "etc") as CategoryKey;
+  const kor = CATEGORY_NAME_MAP[eng] || "기타";
+  return CALENDAR_CATEGORY_STYLES[kor] || CALENDAR_CATEGORY_STYLES["기타"];
+};
+
 function Calendar({
   className,
   classNames,
   showOutsideDays = true,
   components,
+  plannedEvents = [],
+  nickname,
   ...props
 }: React.ComponentProps<typeof DayPicker> & {
   buttonVariant?: React.ComponentProps<typeof Button>["variant"];
+  plannedEvents?: MypageDisplayEvent[];
+  nickname?: string;
 }) {
   const isDesktop = useIsDesktop();
   const [activePopoverDate, setActivePopoverDate] = React.useState<Date | null>(
@@ -134,7 +146,9 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        MonthCaption: CustomMonthCaption,
+        MonthCaption: (captionProps) => (
+          <CustomMonthCaption {...captionProps} nickname={nickname} />
+        ),
         Root: ({ className, rootRef, ...props }) => {
           return (
             <div
@@ -169,6 +183,7 @@ function Calendar({
         DayButton: (dayButtonProps) => (
           <CalendarDayButton
             {...dayButtonProps}
+            plannedEvents={plannedEvents}
             isDesktop={isDesktop}
             activePopoverDate={activePopoverDate}
             setActivePopoverDate={setActivePopoverDate}
@@ -191,6 +206,7 @@ function Calendar({
 }
 
 interface CalendarDayButtonProps extends DayButtonProps {
+  plannedEvents: MypageDisplayEvent[];
   isDesktop: boolean;
   activePopoverDate: Date | null;
   setActivePopoverDate: (date: Date | null) => void;
@@ -200,6 +216,7 @@ function CalendarDayButton({
   className,
   day,
   modifiers,
+  plannedEvents,
   isDesktop,
   activePopoverDate,
   setActivePopoverDate,
@@ -214,9 +231,9 @@ function CalendarDayButton({
   const targetDate = startOfDay(day.date);
   const isSunday = day.date.getDay() === 0;
 
-  const dayEvents = MOCK_EVENTS.filter((event) => {
-    const startDate = parseISO(event.startDate);
-    const endDate = parseISO(event.endDate);
+  const dayEvents = plannedEvents.filter((event) => {
+    const startDate = parseISO(event.start_date);
+    const endDate = parseISO(event.end_date);
     return isWithinInterval(targetDate, { start: startDate, end: endDate });
   });
 
@@ -302,16 +319,14 @@ function CalendarDayButton({
             {/* 데스크탑은 이벤트 배지 출력 */}
             <div className="hidden w-full flex-1 flex-col gap-1 md:flex">
               {visibleEvents.map((event, index) => {
-                const style =
-                  CALENDAR_CATEGORY_STYLES[event.category] ||
-                  CALENDAR_CATEGORY_STYLES["기타"];
+                const style = getCategoryStyle(event.categories);
 
-                const isStart = isSameDay(day.date, parseISO(event.startDate));
+                const isStart = isSameDay(day.date, parseISO(event.start_date));
                 const shouldShowTitle = isStart || isSunday;
 
                 return (
                   <div
-                    key={`desktop-${event.title}-${index}`}
+                    key={`desktop-${event.name}-${index}`}
                     className={cn(
                       "text-caption flex h-[40%] max-h-6 w-full items-center px-2 font-semibold",
                       style.sub,
@@ -319,10 +334,10 @@ function CalendarDayButton({
                       isStart ? "border-l-4 " + style.border : "border-l-0",
                       !shouldShowTitle && "text-transparent",
                     )}
-                    title={event.title}
+                    title={event.name}
                   >
                     <span className="text-desc2 hidden truncate @[100px]:block">
-                      {shouldShowTitle ? event.title : ""}
+                      {shouldShowTitle ? event.name : ""}
                     </span>
                   </div>
                 );
@@ -334,9 +349,7 @@ function CalendarDayButton({
               <div className="flex w-full justify-center md:hidden">
                 {(() => {
                   const firstEvent = dayEvents[0];
-                  const style =
-                    CALENDAR_CATEGORY_STYLES[firstEvent.category] ||
-                    CALENDAR_CATEGORY_STYLES["기타"];
+                  const style = getCategoryStyle(firstEvent.categories);
 
                   return (
                     <div
@@ -349,7 +362,7 @@ function CalendarDayButton({
           </div>
         </Button>
       </PopoverTrigger>
-      {/* 2. 팝오버 내용: 전체 일정 리스트 */}
+      {/* 팝오버 내용: 전체 일정 리스트 */}
       {dayEvents.length > 0 && (
         <PopoverContent
           className="w-full min-w-100"
@@ -383,8 +396,10 @@ function CalendarDayButton({
 
 function CustomMonthCaption({
   calendarMonth,
+  nickname,
 }: {
   calendarMonth: { date: Date };
+  nickname?: string;
 }) {
   const { goToMonth, nextMonth, previousMonth } = useDayPicker();
   const date = calendarMonth.date;
@@ -392,10 +407,12 @@ function CustomMonthCaption({
   const m = String(date.getMonth() + 1).padStart(2, "0");
 
   return (
-    <div className="mb-4 flex w-full items-center justify-between px-1">
+    <div className="xs:justify-between xs:items-center xs:flex-row mb-4 flex w-full flex-col items-center justify-center gap-2">
       <div className="flex items-center gap-2">
         <CalendarIcon className="text-symbol-sky size-4 md:size-6" />
-        <span className="md:text-title2 font-bold">나의 일정</span>
+        <span className="text-desc1 md:text-title2 font-bold">
+          {nickname ? `${nickname}님의 일정` : "나의 일정"}
+        </span>
       </div>
       <div className="flex items-center gap-0 md:gap-2">
         <button
@@ -406,7 +423,7 @@ function CustomMonthCaption({
         >
           <ChevronLeftIcon className="size-4" />
         </button>
-        <span className="min-w-20 text-center text-sm font-bold">
+        <span className="text-desc2 min-w-20 text-center leading-none font-bold">
           {y}. {m}.
         </span>
         <button

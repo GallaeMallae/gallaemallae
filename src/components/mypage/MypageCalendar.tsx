@@ -1,8 +1,10 @@
 "use client";
 
 import { Calendar } from "@/components/ui/calendar";
+import { MypageDisplayEvent } from "@/types/common";
 
 interface MypageCalendarProps {
+  plannedEvents: MypageDisplayEvent[];
   selectedDate: Date | undefined;
   month: Date;
   onDateChange: (date: Date | undefined) => void;
@@ -10,6 +12,7 @@ interface MypageCalendarProps {
 }
 
 export function MypageCalendar({
+  plannedEvents,
   selectedDate,
   month,
   onDateChange,
@@ -18,6 +21,7 @@ export function MypageCalendar({
   return (
     <Calendar
       mode="single"
+      plannedEvents={plannedEvents}
       selected={selectedDate}
       onSelect={onDateChange}
       month={month}

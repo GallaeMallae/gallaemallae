@@ -109,7 +109,7 @@ export default function Area({
   return (
     <div className="relative h-[calc(100vh-57px)] overflow-hidden">
       <MapView
-        position={position}
+        center={position}
         radius={radius}
         markers={markers}
         setLocate={setLocate}

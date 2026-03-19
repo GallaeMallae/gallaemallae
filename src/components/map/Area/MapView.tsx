@@ -2,8 +2,9 @@
 
 import { Map, MapMarker, Circle } from "react-kakao-maps-sdk";
 import { useEffect } from "react";
+import KakaoMap from "@/components/common/KakaoMap";
 import { MARKER_ICONS } from "@/lib/constants";
-import { getDistance } from "@/utils/map/getDistance";
+import { getDistance } from "@/utils/geo";
 import { Category } from "@/types/common";
 
 type Position = { lat: number; lng: number };
@@ -16,7 +17,7 @@ type Marker = {
 };
 
 interface MapViewProps {
-  position: Position | null;
+  center: Position | null;
   radius: number | null;
   markers: Marker[];
   setLocate: (map: kakao.maps.Map) => void;
@@ -33,7 +34,7 @@ interface MapViewProps {
 }
 
 export default function MapView({
-  position,
+  center,
   radius,
   markers,
   setLocate,
@@ -41,11 +42,11 @@ export default function MapView({
   locate,
   onSelectCarousel,
 }: MapViewProps) {
-  const filteredMarkers = position
+  const filteredMarkers = center
     ? markers.filter(
         (m) =>
           radius === null ||
-          getDistance(position.lat, position.lng, m.lat, m.lng) <= radius,
+          getDistance(center, { lat: m.lat, lng: m.lng }) <= radius,
       )
     : [];
 
@@ -65,17 +66,16 @@ export default function MapView({
   }, [locate, onSelectCarousel]);
 
   return (
-    <Map
-      center={position ?? { lat: 37.49793, lng: 127.027596 }}
-      style={{ width: "100%", height: "100%" }}
-      level={3}
+    <KakaoMap
+      center={center ?? { lat: 37.49793, lng: 127.027596 }} // center로 바꾸면 됨
+      level={7}
       onCreate={setLocate}
     >
-      {position && <MapMarker position={position} />}
+      {center && <MapMarker position={center} />}
 
-      {position && radius !== null && (
+      {center && radius !== null && (
         <Circle
-          center={position}
+          center={center}
           radius={radius}
           strokeWeight={8}
           strokeColor="#0da3e4"
@@ -99,6 +99,6 @@ export default function MapView({
           />
         );
       })}
-    </Map>
+    </KakaoMap>
   );
 }

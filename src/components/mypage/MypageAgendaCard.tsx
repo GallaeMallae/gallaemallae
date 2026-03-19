@@ -1,29 +1,22 @@
 import { Badge } from "@/components/ui/badge";
-import { EventCardItem } from "@/types/common";
+import { CATEGORY_NAME_MAP } from "@/lib/constants";
+import { MypageDisplayEvent } from "@/types/common";
 import { calculateDDay, formatDate } from "@/utils/date";
 
-// todo: selectedDate는 일정 추가 기능 넣을때 내려올 예정이므로 그때까진 startDate로 표시
-// todo: 지금 당장은 selectedDate는 달력에서 선택한 날짜임! 사용자가 일정 언제 갈지 선택한 날짜 아님!!
-interface MypageAgendaCardProps extends Omit<EventCardItem, "isLiked"> {
-  onClick?: () => void;
+interface MypageAgendaCardProps {
+  event: MypageDisplayEvent;
   selectedDate?: string;
+  onClick?: () => void;
 }
 
+export type CategoryKey = keyof typeof CATEGORY_NAME_MAP;
+
 export default function MypageAgendaCard({
-  title,
-  location,
-  startDate,
-  endDate,
-  selectedDate,
-  category,
+  event,
   onClick,
 }: MypageAgendaCardProps) {
-  // todo: 지금은 startDate로 보여주지만 기능 붙이면서부터는 사용자가 지정한 날짜를 보여줘야함
-  const formatStartDate = formatDate(startDate);
-  const dDay = calculateDDay(startDate);
-  // const dDay = selectedDate
-  //   ? calculateDDay(selectedDate)
-  //   : calculateDDay(startDate);
+  const formatVisitDate = formatDate(event.display_date);
+  const dDay = calculateDDay(event.display_date);
 
   return (
     <div
@@ -31,17 +24,29 @@ export default function MypageAgendaCard({
       onClick={onClick}
     >
       <div className="flex items-center justify-between">
-        <Badge className="rounded-sm" variant={category}>
-          {category}
-        </Badge>
+        <div className="flex gap-2">
+          {event.categories?.map((category) => {
+            const categoryLabel =
+              CATEGORY_NAME_MAP[category as CategoryKey] || "기타";
+
+            return (
+              <Badge
+                key={category}
+                className="shrink-0 rounded-sm"
+                variant={categoryLabel}
+              >
+                {CATEGORY_NAME_MAP[category as CategoryKey] || "기타"}
+              </Badge>
+            );
+          })}
+        </div>
         <div className="text-desc2 text-symbol-sky font-semibold">{dDay}</div>
       </div>
       <div>
-        <div className="text-desc2 truncate font-semibold">{title}</div>
-        <div className="text-desc2 text-muted-foreground flex gap-2 truncate">
-          {/* {selectedDate ? formatDate(selectedDate) : formatStartDate},{" "} */}
-          <span>{formatStartDate}</span>
-          <span>{location}</span>
+        <div className="text-desc2 truncate font-semibold">{event.name}</div>
+        <div className="text-desc2 text-etc space-x-2 truncate">
+          <span>{formatVisitDate}</span>
+          <span>{event.venue}</span>
         </div>
       </div>
     </div>
