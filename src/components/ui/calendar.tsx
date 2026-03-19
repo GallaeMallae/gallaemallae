@@ -24,23 +24,17 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import MypageSelectedDateEventsCard from "@/components/mypage/MypageSelectedDateEventsCard";
-import { isSameDay, isWithinInterval, parseISO, startOfDay } from "date-fns";
+import {
+  format,
+  isSameDay,
+  isWithinInterval,
+  parseISO,
+  startOfDay,
+} from "date-fns";
 import { MypageDisplayEvent } from "@/types/common";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 type CategoryKey = keyof typeof CATEGORY_NAME_MAP;
-
-function useIsDesktop() {
-  const [isDesktop, setIsDesktop] = React.useState(false);
-
-  React.useEffect(() => {
-    const checkSize = () => setIsDesktop(window.innerWidth >= 768);
-    checkSize();
-    window.addEventListener("resize", checkSize);
-    return () => window.removeEventListener("resize", checkSize);
-  }, []);
-
-  return isDesktop;
-}
 
 const getCategoryStyle = (categories?: string[] | null) => {
   const eng = (categories?.[0] || "etc") as CategoryKey;
@@ -55,17 +49,18 @@ function Calendar({
   components,
   plannedEvents = [],
   nickname,
+  activePopoverDate,
+  onActivePopoverDate,
+  isDesktop,
   ...props
 }: React.ComponentProps<typeof DayPicker> & {
   buttonVariant?: React.ComponentProps<typeof Button>["variant"];
   plannedEvents?: MypageDisplayEvent[];
   nickname?: string;
+  activePopoverDate?: Date | null;
+  onActivePopoverDate?: (date: Date | null) => void;
+  isDesktop: boolean;
 }) {
-  const isDesktop = useIsDesktop();
-  const [activePopoverDate, setActivePopoverDate] = React.useState<Date | null>(
-    null,
-  );
-
   const defaultClassNames = getDefaultClassNames();
 
   return (
@@ -186,7 +181,7 @@ function Calendar({
             plannedEvents={plannedEvents}
             isDesktop={isDesktop}
             activePopoverDate={activePopoverDate}
-            setActivePopoverDate={setActivePopoverDate}
+            onActivePopoverDate={onActivePopoverDate}
           />
         ),
         WeekNumber: ({ children, ...props }) => {
@@ -208,8 +203,8 @@ function Calendar({
 interface CalendarDayButtonProps extends DayButtonProps {
   plannedEvents: MypageDisplayEvent[];
   isDesktop: boolean;
-  activePopoverDate: Date | null;
-  setActivePopoverDate: (date: Date | null) => void;
+  activePopoverDate?: Date | null;
+  onActivePopoverDate?: (date: Date | null) => void;
 }
 
 function CalendarDayButton({
@@ -219,7 +214,7 @@ function CalendarDayButton({
   plannedEvents,
   isDesktop,
   activePopoverDate,
-  setActivePopoverDate,
+  onActivePopoverDate,
   ...props
 }: CalendarDayButtonProps) {
   const ref = React.useRef<HTMLButtonElement>(null);
@@ -250,21 +245,21 @@ function CalendarDayButton({
 
     if (dayEvents.length > 0) {
       if (isPopoverOpen) {
-        setActivePopoverDate(null);
+        onActivePopoverDate?.(null);
       } else {
         // 팝오버가 꺼져있었다면 선택한 날짜 열기
-        setActivePopoverDate(day.date);
+        onActivePopoverDate?.(day.date);
       }
     } else {
       // 행사가 없는 날 클릭시 팝오버 닫기
-      setActivePopoverDate(null);
+      onActivePopoverDate?.(null);
     }
   };
 
   return (
     <Popover
       open={isDesktop && isPopoverOpen}
-      onOpenChange={(open) => !open && setActivePopoverDate(null)}
+      onOpenChange={(open) => !open && onActivePopoverDate?.(null)}
     >
       <PopoverTrigger asChild disabled={dayEvents.length === 0}>
         <Button
@@ -273,7 +268,8 @@ function CalendarDayButton({
           variant="ghost"
           onClick={handleDayClick}
           // size="icon"
-          data-day={day.date.toLocaleDateString()}
+          // data-day={day.date.toLocaleDateString()}
+          data-day={format(day.date, "yyyy-MM-dd")}
           data-selected-single={
             modifiers.selected &&
             !modifiers.range_start &&
@@ -362,10 +358,9 @@ function CalendarDayButton({
           </div>
         </Button>
       </PopoverTrigger>
-      {/* 팝오버 내용: 전체 일정 리스트 */}
       {dayEvents.length > 0 && (
         <PopoverContent
-          className="w-full min-w-100"
+          className="w-full min-w-100 overflow-hidden p-0"
           align="start"
           side="bottom"
         >
@@ -377,17 +372,21 @@ function CalendarDayButton({
                 weekday: "short",
               })}
             </div>
-            <div className="text-muted-foreground text-desc2">
+            <div className="text-etc text-desc2">
               총 {dayEvents.length}개의 일정이 있습니다.
             </div>
           </div>
-          <div className="flex flex-col overflow-y-auto p-6">
-            <MypageSelectedDateEventsCard
-              selectedDate={activePopoverDate}
-              events={dayEvents}
-              displayMode="desktop"
-            />
-          </div>
+          {/* ScrollArea 내부 뷰포트에 높이 지정해야 스크롤바 작동함  */}
+          <ScrollArea className="*:data-[slot=scroll-area-viewport]:max-h-96">
+            <div className="p-6">
+              {isDesktop && (
+                <MypageSelectedDateEventsCard
+                  selectedDate={activePopoverDate ?? null}
+                  events={dayEvents}
+                />
+              )}
+            </div>
+          </ScrollArea>
         </PopoverContent>
       )}
     </Popover>

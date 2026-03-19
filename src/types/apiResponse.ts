@@ -1,4 +1,4 @@
-import { RecommendType } from "./common";
+import { Event, RecommendType } from "./common";
 
 // OpenAI API 갈래말래 추천 Res
 export interface FetchRecommendTypeResponse {
@@ -35,4 +35,9 @@ export interface FetchLocationNameResponse {
       region_3depth_name: string;
     };
   }[];
+}
+
+// OpenAI API 마이페이지 행사 추천 Res
+export interface FetchMypageRecommendEventResponse extends Event {
+  recommendReason: string; // 나중에 recommendReason 필요없어지면 그냥 Event 타입 써도됨
 }
