@@ -17,10 +17,12 @@ export default function Area({
   radius,
   category,
   period,
+  search,
 }: {
   radius: number | null;
   category: Category[];
   period: PeriodFilter;
+  search: string;
 }) {
   const { position, moveCurrentLocation } = useCurrentLocation();
   const { data: events = [], isLoading, error: queryError } = useEvents();
@@ -34,9 +36,19 @@ export default function Area({
   const [selectedModal, setSelectedModal] = useState<string | null>(null);
 
   const filteredEvents = useMemo(() => {
-    const byCategory = filterEventsByCategory(events, category);
-    return filterEventByPeriod(byCategory, period);
-  }, [events, category, period]);
+    let result = filterEventsByCategory(events, category);
+    result = filterEventByPeriod(result, period);
+
+    // 4. 검색어 필터링 추가
+    if (search.trim()) {
+      result = result.filter((event) => {
+        const title = event.title || event.fstvlNm || "";
+        return title.toLowerCase().includes(search.toLowerCase());
+      });
+    }
+
+    return result;
+  }, [events, category, period, search]);
 
   // 지도 마커 데이터 생성
   const markers = useMemo(() => {
