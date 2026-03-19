@@ -1,11 +1,12 @@
 import { Database } from "@/types/supabase";
+import { getKstNow } from "@/utils/date";
 import { createClient, QueryData } from "@supabase/supabase-js";
 import { addDays, format } from "date-fns";
 import { ko } from "date-fns/locale";
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
-export async function GET(req: Request) {
+export async function GET() {
   // 해당 부분 보안 로직은 Vercel에서 CRON_SECRET 발급받아서 적용시 사용
   // const authHeader = req.headers.get("authorization");
   // if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
@@ -18,14 +19,8 @@ export async function GET(req: Request) {
   );
 
   try {
-    const now = new Date();
-    // 만약 배포 환경(Vercel)이라면 UTC 기준이므로 한국 시간에 맞추기 위해 9시간을 더함
-    const kstOffset = 9 * 60 * 60 * 1000;
-    const isVercel = process.env.VERCEL === "1"; // Vercel 환경인지 확인
-    const kstNow = isVercel ? new Date(now.getTime() + kstOffset) : now;
-    // Vercel 환경 변수에서 Key: TZ, Value: Asia/Seoul 라고 설정시 계산 필요 없이 new Date()로 한국 시간 사용 가능
-
-    const targetDate = format(addDays(kstNow, 7), "yyyy-MM-dd");
+    // 배포 이후 Vercel에서 TZ: Asia/Seoul 설정만 해두면 new Date() 써도 문제없음
+    const targetDate = format(addDays(getKstNow(), 7), "yyyy-MM-dd");
 
     const query = supabase
       .from("event_plans")

@@ -1,5 +1,7 @@
-import { FetchRecommendTypeResponse } from "@/types/apiResponse";
-import { Event } from "@/types/common";
+import {
+  FetchMypageRecommendEventResponse,
+  FetchRecommendTypeResponse,
+} from "@/types/apiResponse";
 
 export async function fetchRecommendType(
   weather: string,
@@ -25,7 +27,7 @@ export async function fetchRecommendType(
   return res.json();
 }
 
-export async function fetchMypageRecommendEvent(): Promise<Event> {
+export async function fetchMypageRecommendEvent(): Promise<FetchMypageRecommendEventResponse> {
   const res = await fetch("/api/mypage/recommend", {
     method: "POST",
     headers: { "Content-Type": "application/json" },

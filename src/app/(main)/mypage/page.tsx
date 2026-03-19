@@ -181,6 +181,7 @@ export default function Mypage() {
             <MypageSelectedDateEventsCard
               selectedDate={selectedDate}
               events={dailyEvents}
+              // 이거 displayMode 줄필요있나? isDesktop 쓰는법은?
               displayMode="mobile"
             />
           )}

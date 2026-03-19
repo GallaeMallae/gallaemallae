@@ -45,3 +45,11 @@ export function calculateDDay(targetDate?: string | Date | null): string {
   if (diffDays > 0) return `D-${diffDays}`;
   return `D+${Math.abs(diffDays)}`;
 }
+
+// 배포 이후 Vercel에서 TZ: Asia/Seoul 설정만 해두면 필요없어지긴 함
+export function getKstNow() {
+  const current = new Date();
+  // 현재 서버 시간과 UTC의 차이(분)를 밀리초로 변환해 UTC 0시로 만든 뒤, 한국 시간(+9시간)을 더함
+  const utc = current.getTime() + current.getTimezoneOffset() * 60 * 1000;
+  return new Date(utc + 9 * 60 * 60 * 1000);
+}

@@ -95,12 +95,10 @@ export default function MypageEventSectionCard({
                 ))}
 
                 <div ref={observerRef} className="w-full">
-                  {hasMore && (
+                  {hasMore && !isDesktop && (
                     <button
-                      className={cn(
-                        "w-full pt-2",
-                        isDesktop ? "pointer-events-none opacity-0" : "block",
-                      )}
+                      type="button"
+                      className="w-full pt-2"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleLoadMore();

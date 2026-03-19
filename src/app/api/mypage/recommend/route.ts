@@ -1,5 +1,7 @@
 import { CATEGORY_NAME_MAP } from "@/lib/constants";
+import { getKstNow } from "@/utils/date";
 import { createClient } from "@/utils/supabase/server";
+import { addDays, format } from "date-fns";
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
 
@@ -21,23 +23,28 @@ export async function POST() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
-    const { data: rawLikes } = await supabase
+    const { data: rawLikes, error: likesError } = await supabase
       .from("event_likes")
       .select("events(id, name, categories)")
       .eq("user_id", user.id);
 
-    const { data: rawPlans } = await supabase
+    if (likesError) throw likesError;
+
+    const { data: rawPlans, error: plansError } = await supabase
       .from("event_plans")
       .select("events(id, name, categories)")
       .eq("user_id", user.id);
 
+    if (plansError) throw plansError;
+
     // 조인 때문에 events 계층 추가된 것을 평탄화
-    const likedEvents: FlattenedEvent[] = (
-      rawLikes?.map((item) => item.events) || []
-    ).filter(Boolean) as FlattenedEvent[];
-    const plannedEvents: FlattenedEvent[] = (
-      rawPlans?.map((item) => item.events) || []
-    ).filter(Boolean) as FlattenedEvent[];
+    const likedEvents: FlattenedEvent[] = rawLikes
+      .map((item) => item.events)
+      .filter(Boolean) as FlattenedEvent[];
+
+    const plannedEvents: FlattenedEvent[] = rawPlans
+      .map((item) => item.events)
+      .filter(Boolean) as FlattenedEvent[];
 
     const formatUserEventData = (events: FlattenedEvent[]) => {
       return events
@@ -90,12 +97,10 @@ export async function POST() {
     ];
 
     // 30일 이내의 모든 행사 후보군 조회
-    const now = new Date();
-    const startDate = now.toISOString().split("T")[0];
-    // 30일(30 * 24시간 * 60분 * 60초 * 1000밀리초) 계산
-    const endDate = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000)
-      .toISOString()
-      .split("T")[0];
+    // 배포 이후 Vercel에서 TZ: Asia/Seoul 설정만 해두면 new Date() 써도 문제없음
+    const kstNow = getKstNow();
+    const startDate = format(kstNow, "yyyy-MM-dd");
+    const endDate = format(addDays(kstNow, 30), "yyyy-MM-dd");
 
     let query = supabase
       .from("events")
