@@ -1,13 +1,12 @@
-import { Tables } from "@/types/supabase";
 import { Category } from "@/types/common";
 
-type Event = Tables<"events">;
-
-export function filterEventsByCategory(events: Event[], category: Category[]) {
-  if (category.includes("all")) return events;
+export function filterEventsByCategory<
+  T extends { categories?: string[] | null },
+>(events: T[], category: Category[]): T[] {
+  if (category.includes("all") || category.length === 0) return events;
 
   return events.filter((event) => {
-    const eventCategories = event.categories ?? [];
+    const eventCategories = event.categories ?? ["festival"];
 
     return eventCategories.some((cat) => category.includes(cat as Category));
   });
