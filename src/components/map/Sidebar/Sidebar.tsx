@@ -15,6 +15,8 @@ export default function Sidebar({
   setCategory,
   period,
   setPeriod,
+  search,
+  setSearch,
 }: {
   radius: number | null;
   setRadius: (r: number | null) => void;
@@ -22,6 +24,8 @@ export default function Sidebar({
   setCategory: (c: Category[]) => void;
   period: PeriodFilter;
   setPeriod: (p: PeriodFilter) => void;
+  search: string;
+  setSearch: (s: string) => void;
 }) {
   const toggleCategory = (value: Category) => {
     if (value === "all") {
@@ -41,13 +45,14 @@ export default function Sidebar({
     setCategory(["all"]);
     setRadius(null);
     setPeriod("전체");
+    setSearch("");
   };
 
   return (
     <>
       {/* ======= 데스크탑 ======= */}
       <div className="bg-background-base hidden flex-col justify-center gap-6 p-6 md:flex">
-        <SidebarSearch />
+        <SidebarSearch value={search} onChange={setSearch} />
 
         <div className="flex items-center justify-between">
           <p className="text-title2 font-bold">필터</p>
@@ -96,7 +101,7 @@ export default function Sidebar({
 
       {/* ======= 모바일 ======= */}
       <div className="flex w-full flex-col gap-4 p-2 md:hidden">
-        <SidebarSearch />
+        <SidebarSearch value={search} onChange={setSearch} />
 
         <div className="flex flex-col gap-2">
           <div className="flex w-full gap-2">
