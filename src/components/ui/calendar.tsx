@@ -50,16 +50,17 @@ function Calendar({
   components,
   plannedEvents = [],
   nickname,
+  activePopoverDate,
+  setActivePopoverDate,
   ...props
 }: React.ComponentProps<typeof DayPicker> & {
   buttonVariant?: React.ComponentProps<typeof Button>["variant"];
   plannedEvents?: MypageDisplayEvent[];
   nickname?: string;
+  activePopoverDate: Date | null;
+  setActivePopoverDate: (date: Date | null) => void;
 }) {
   const isDesktop = useIsDesktop();
-  const [activePopoverDate, setActivePopoverDate] = React.useState<Date | null>(
-    null,
-  );
 
   const defaultClassNames = getDefaultClassNames();
 
@@ -376,8 +377,8 @@ function CalendarDayButton({
               총 {dayEvents.length}개의 일정이 있습니다.
             </div>
           </div>
-
-          <ScrollArea className="h-100">
+          {/* ScrollArea 내부 뷰포트에 높이 지정해야 스크롤바 작동함  */}
+          <ScrollArea className="*:data-[slot=scroll-area-viewport]:max-h-96">
             <div className="p-6">
               <MypageSelectedDateEventsCard
                 selectedDate={activePopoverDate}

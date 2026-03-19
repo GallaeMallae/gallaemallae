@@ -27,6 +27,7 @@ export default function Mypage() {
     new Date(),
   );
   const [month, setMonth] = useState<Date>(new Date());
+  const [activePopoverDate, setActivePopoverDate] = useState<Date | null>(null);
 
   const { data: profile } = useProfileData();
   const { coords, isInitialized, isDefaultLocation } = useLocationStore();
@@ -57,6 +58,7 @@ export default function Mypage() {
     if (newDate) {
       setSelectedDate(newDate);
       setMonth(newDate);
+      setActivePopoverDate(newDate);
     } else {
       console.error("Invalid date string provided:", dateString);
       toast.error("유효하지 않은 날짜 형식입니다.");
@@ -160,6 +162,8 @@ export default function Mypage() {
               onSelect={setSelectedDate}
               onMonthChange={setMonth}
               nickname={profile?.nickname ?? undefined}
+              activePopoverDate={activePopoverDate}
+              setActivePopoverDate={setActivePopoverDate}
               captionLayout="dropdown"
             />
           </div>

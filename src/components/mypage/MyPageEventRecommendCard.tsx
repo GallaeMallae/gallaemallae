@@ -16,7 +16,7 @@ interface MyPageEventRecommendCardProps {
   event: Event;
   isLiked: boolean;
   isPlanned: boolean;
-  planId: string;
+  planId?: string;
 }
 
 export default function MyPageEventRecommendCard({
@@ -49,6 +49,7 @@ export default function MyPageEventRecommendCard({
 
   const handleDeletePlanClick = () => {
     if (!profile?.id) return toast.error("로그인이 필요합니다.");
+    if (!planId) return;
 
     deletePlan(planId);
   };
