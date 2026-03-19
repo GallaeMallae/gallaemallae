@@ -42,13 +42,12 @@ export default function MapView({
   locate,
   onSelectCarousel,
 }: MapViewProps) {
-  const filteredMarkers = center
-    ? markers.filter(
-        (m) =>
-          radius === null ||
-          getDistance(center, { lat: m.lat, lng: m.lng }) <= radius,
-      )
-    : [];
+  const filteredMarkers =
+    !center || radius === null
+      ? markers
+      : markers.filter(
+          (m) => getDistance(center, { lat: m.lat, lng: m.lng }) <= radius,
+        );
 
   useEffect(() => {
     if (!locate) return;
