@@ -32,21 +32,9 @@ import {
   startOfDay,
 } from "date-fns";
 import { MypageDisplayEvent } from "@/types/common";
+import { useIsDesktop } from "@/hooks/useIsDesktop";
 
 type CategoryKey = keyof typeof CATEGORY_NAME_MAP;
-
-function useIsDesktop() {
-  const [isDesktop, setIsDesktop] = React.useState(false);
-
-  React.useEffect(() => {
-    const checkSize = () => setIsDesktop(window.innerWidth >= 768);
-    checkSize();
-    window.addEventListener("resize", checkSize);
-    return () => window.removeEventListener("resize", checkSize);
-  }, []);
-
-  return isDesktop;
-}
 
 const getCategoryStyle = (categories?: string[] | null) => {
   const eng = (categories?.[0] || "etc") as CategoryKey;
