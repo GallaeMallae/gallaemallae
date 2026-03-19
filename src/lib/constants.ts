@@ -265,5 +265,5 @@ export const MARKER_ICONS = {
   performance: "/images/MapMarker/MapMarker-performance.png",
   exhibition: "/images/MapMarker/MapMarker-exhibition.png",
   other: "/images/MapMarker/MapMarker-other.png",
-  myLocation: "images/MapMarker/MapMarker-myLocation.png",
+  myLocation: "/images/MapMarker/MapMarker-myLocation.png",
 } as const;
