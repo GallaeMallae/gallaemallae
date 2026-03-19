@@ -33,6 +33,7 @@ import {
 } from "date-fns";
 import { MypageDisplayEvent } from "@/types/common";
 import { useIsDesktop } from "@/hooks/useIsDesktop";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 type CategoryKey = keyof typeof CATEGORY_NAME_MAP;
 
@@ -357,10 +358,9 @@ function CalendarDayButton({
           </div>
         </Button>
       </PopoverTrigger>
-      {/* 팝오버 내용: 전체 일정 리스트 */}
       {dayEvents.length > 0 && (
         <PopoverContent
-          className="w-full min-w-100"
+          className="w-full min-w-100 overflow-hidden p-0"
           align="start"
           side="bottom"
         >
@@ -372,17 +372,20 @@ function CalendarDayButton({
                 weekday: "short",
               })}
             </div>
-            <div className="text-muted-foreground text-desc2">
+            <div className="text-etc text-desc2">
               총 {dayEvents.length}개의 일정이 있습니다.
             </div>
           </div>
-          <div className="flex flex-col overflow-y-auto p-6">
-            <MypageSelectedDateEventsCard
-              selectedDate={activePopoverDate}
-              events={dayEvents}
-              displayMode="desktop"
-            />
-          </div>
+
+          <ScrollArea className="h-100">
+            <div className="p-6">
+              <MypageSelectedDateEventsCard
+                selectedDate={activePopoverDate}
+                events={dayEvents}
+                displayMode="desktop"
+              />
+            </div>
+          </ScrollArea>
         </PopoverContent>
       )}
     </Popover>
