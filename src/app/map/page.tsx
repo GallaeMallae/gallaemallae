@@ -9,6 +9,7 @@ export default function MapPage() {
   const [radius, setRadius] = useState<number | null>(null);
   const [category, setCategory] = useState<Category[]>(["all"]);
   const [period, setPeriod] = useState<PeriodFilter>("전체");
+  const [search, setSearch] = useState("");
 
   return (
     <div className="relative w-full overflow-hidden md:flex">
@@ -20,11 +21,18 @@ export default function MapPage() {
           setCategory={setCategory}
           period={period}
           setPeriod={setPeriod}
+          search={search}
+          setSearch={setSearch}
         />
       </div>
 
       <div className="flex-1">
-        <Area radius={radius} category={category} period={period} />
+        <Area
+          radius={radius}
+          category={category}
+          period={period}
+          search={search}
+        />
       </div>
     </div>
   );

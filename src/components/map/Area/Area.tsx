@@ -90,8 +90,8 @@ export default function Area({
     );
 
   const handleMoveToCurrentLocation = () => {
-    moveCurrentLocation(locate); // 지도를 내 위치로 이동시키는 기존 로직
-    setSelectedCarousel(null); // 🚨 캐러셀 선택을 해제해서 지도가 튕기는 걸 방지!
+    moveCurrentLocation(locate);
+    setSelectedCarousel(null);
   };
 
   return (
