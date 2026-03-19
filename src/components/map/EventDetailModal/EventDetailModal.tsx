@@ -36,7 +36,12 @@ export default function EventDetailModal({ event, open, onClose }: Props) {
               </DialogTitle>
             </div>
 
-            <Button variant="ghost" size="icon" onClick={onClose}>
+            <Button
+              aria-label="닫기"
+              variant="ghost"
+              size="icon"
+              onClick={onClose}
+            >
               <X />
             </Button>
           </div>
