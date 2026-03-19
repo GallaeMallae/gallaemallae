@@ -147,6 +147,7 @@ export default function Mypage() {
           <div className="xs:p-6 flex-1 rounded-2xl border bg-white p-4 shadow-sm">
             <Calendar
               mode="single"
+              plannedEvents={formattedPlannedEvents}
               selected={selectedDate}
               month={month}
               onSelect={setSelectedDate}

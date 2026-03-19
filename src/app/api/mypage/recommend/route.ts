@@ -175,18 +175,14 @@ export async function POST() {
       messages: [{ role: "user", content: prompt }],
     });
 
-    console.log("completion", completion);
-
     const aiResult = JSON.parse(completion.choices[0].message.content || "{}");
-    console.log("aiResult: ", aiResult);
     const selectedEvent = shuffledCandidates[aiResult.idx];
-    console.log("selectedEvent: ", selectedEvent);
 
     if (!selectedEvent) throw new Error("AI가 유효하지 않은 번호를 선택함");
 
     return NextResponse.json({
       ...selectedEvent,
-      // recommendReason: aiResult.reason,
+      recommendReason: aiResult.reason,
     });
   } catch (error) {
     return NextResponse.json(
