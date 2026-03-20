@@ -22,6 +22,7 @@ import { useProfileData } from "@/hooks/queries/useProfileData";
 import { useMypageRecommendEventData } from "@/hooks/queries/useMypageRecommendEventData";
 import RecommendEventCardSkeleton from "@/components/common/skeleton/RecommendEventCardSkeleton";
 import { useIsDesktop } from "@/hooks/useIsDesktop";
+import EventDetailModalTest from "@/components/modal/EventDetailModalTest";
 
 export default function Mypage() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
@@ -29,6 +30,7 @@ export default function Mypage() {
   );
   const [month, setMonth] = useState<Date>(new Date());
   const [activePopoverDate, setActivePopoverDate] = useState<Date | null>(null);
+  const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
 
   const { data: profile } = useProfileData();
   const { coords, isInitialized, isDefaultLocation } = useLocationStore();
@@ -139,6 +141,7 @@ export default function Mypage() {
                 isLiked={isLiked}
                 isPlanned={isPlanned}
                 planId={matchedPlanId}
+                onEventClick={() => setSelectedEventId(recommendEventData.id)}
               />
             ) : (
               // 정말로 180일치 다 뒤졌는데 결과가 null일 때만 이게 나옴
@@ -204,6 +207,14 @@ export default function Mypage() {
           )}
         </div>
       </div>
+
+      {selectedEventId && (
+        <EventDetailModalTest
+          event={recommendEventData}
+          open={!!selectedEventId}
+          onClose={() => setSelectedEventId(null)}
+        />
+      )}
     </div>
   );
 }

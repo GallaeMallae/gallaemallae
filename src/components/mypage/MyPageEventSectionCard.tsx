@@ -38,6 +38,7 @@ export default function MypageEventSectionCard({
 }: MypageEventSectionCardProps) {
   const [visibleCount, setVisibleCount] = useState(3);
   const observerRef = useRef<HTMLDivElement>(null);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   const Icon = ICON_MAP[iconName];
   const SelectedCard = EVENT_CARD_COMPONENTS[iconName];
@@ -55,13 +56,21 @@ export default function MypageEventSectionCard({
   useEffect(() => {
     if (!isDesktop || !hasMore) return;
 
+    const viewport = scrollAreaRef.current?.querySelector(
+      "[data-radix-scroll-area-viewport]",
+    );
+
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
           handleLoadMore();
         }
       },
-      { threshold: 0.1 },
+      {
+        root: viewport, // 브라우저가 아닌 ScrollArea를 기준으로 감지
+        threshold: 0.5,
+        rootMargin: "20px",
+      },
     );
 
     if (observerRef.current) {
@@ -82,7 +91,7 @@ export default function MypageEventSectionCard({
         </div>
       </CardHeader>
       <CardContent className="flex min-h-0 flex-1 flex-col p-0">
-        <ScrollArea className="min-h-0 w-full flex-1 px-4">
+        <ScrollArea ref={scrollAreaRef} className="min-h-0 w-full flex-1 px-4">
           <div className="flex w-full flex-col gap-1">
             {events.length > 0 ? (
               <>
