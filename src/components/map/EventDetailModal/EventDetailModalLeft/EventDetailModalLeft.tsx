@@ -4,25 +4,20 @@ import EventRecommendCard from "@/components/map/EventDetailModal/EventDetailMod
 import EventRecommendWeather from "@/components/map/EventDetailModal/EventDetailModalLeft/EventWeatherInfoCard";
 import EventIntroduce from "@/components/map/EventDetailModal/EventDetailModalLeft/EventIntroduce";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { BaseEvent } from "@/types/event";
+import { Event } from "@/types/event";
 
 type Props = {
-  event: BaseEvent;
+  event: Event;
 };
 
 export default function EventDetailModalLeft({ event }: Props) {
-  const start = event.fstvlStartDate || event.startDate || event.start_date;
-  const end = event.fstvlEndDate || event.endDate || event.end_date;
+  const start = event.startDate;
+  const end = event.endDate;
 
-  const location =
-    event.rdnmadr ||
-    event.opar ||
-    event.lnmadr ||
-    event.road_address ||
-    event.venue;
+  const location = event.place;
 
-  const tel = event.phoneNumber || event.phone;
-  const homepage = event.homepageUrl || event.homepage_url;
+  const tel = event.phone;
+  const homepage = event.homepage;
 
   return (
     <div className="flex w-full flex-col gap-6 md:w-80 md:justify-between">

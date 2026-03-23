@@ -1,50 +1,47 @@
-import { CategoryId } from "@/types/common";
-import { PeriodFilter } from "@/types/common";
+import { CategoryId, PeriodFilter } from "@/types/common";
+import { Event } from "@/types/event";
 
-export function filterEventsByCategory<
-  T extends { categories?: string[] | null },
->(events: T[], category: CategoryId[]): T[] {
-  if (category.includes("all") || category.length === 0) return events;
-
-  return events.filter((event) => {
-    const eventCategories = event.categories ?? ["festival"];
-
-    return eventCategories.some((cat) => category.includes(cat as CategoryId));
-  });
+export function filterEventsByCategory(
+  events: Event[],
+  category: CategoryId[],
+): Event[] {
+  if (category.includes("all")) return events;
+  return events.filter((event) =>
+    event.categories.some((cat) => category.includes(cat as CategoryId)),
+  );
 }
 
-export function filterEventByPeriod<T extends { start_date: string | null }>(
-  events: T[],
+export function filterEventByPeriod(
+  events: Event[],
   period: PeriodFilter,
-): T[] {
-  if (period === "전체") return events;
-
+): Event[] {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
   return events.filter((event) => {
-    if (!event.start_date) return false;
+    if (!event.startDate) return false;
 
-    const start = new Date(event.start_date);
+    const date = new Date(event.startDate);
+    if (isNaN(date.getTime())) return false;
 
-    if (isNaN(start.getTime())) return false;
+    if (date < today) return false;
+
+    if (period === "전체") return true;
+
+    let endDate = new Date(today);
 
     if (period === "당일") {
-      return start.toDateString() === today.toDateString();
+      endDate.setDate(today.getDate() + 1);
     }
 
     if (period === "주간") {
-      const nextWeek = new Date(today);
-      nextWeek.setDate(today.getDate() + 7);
-      return start >= today && start <= nextWeek;
+      endDate.setDate(today.getDate() + 7);
     }
 
     if (period === "월간") {
-      return (
-        start.getMonth() === today.getMonth() &&
-        start.getFullYear() === today.getFullYear()
-      );
+      endDate = new Date(today.getFullYear(), today.getMonth() + 1, 1);
     }
-    return true;
+
+    return date < endDate;
   });
 }

@@ -3,10 +3,10 @@
 import EventDetailOrganization from "@/components/map/EventDetailModal/EventDetailModalRight/EventDetailOrganization";
 import EventDetailModalButton from "@/components/map/EventDetailModal/EventDetailModalRight/EventDetailButton";
 import { Tally1 } from "lucide-react";
-import { BaseEvent } from "@/types/event";
+import { Event } from "@/types/event";
 
 type Props = {
-  event: BaseEvent;
+  event: Event;
 };
 
 export default function EventDetailModalRight({ event }: Props) {
@@ -18,9 +18,7 @@ export default function EventDetailModalRight({ event }: Props) {
           축제 소개
         </p>
         <p className="text-caption text-etc font-medium">
-          {event.description ||
-            event.fstvlCo ||
-            "상세 정보가 등록되지 않았습니다."}
+          {event.description || "상세 정보가 등록되지 않았습니다."}
         </p>
       </div>
 
@@ -31,10 +29,10 @@ export default function EventDetailModalRight({ event }: Props) {
         </p>
         <EventDetailOrganization
           organization={{
-            host: event.host || event.auspcInsttNm || "-", // 주최기관
-            organizer: event.organizer || event.mnnstNm || "-", // 주관기관
-            sponsor: event.sponsor || event.suprtInsttNm || "-",
-            provider: event.provider || event.insttNm || "-", // 제공기관
+            host: event.host || "-", // 주최기관
+            organizer: event.organizer || "-", // 주관기관
+            sponsor: event.sponsor || "-",
+            provider: event.provider || "-", // 제공기관
           }}
         />
       </div>

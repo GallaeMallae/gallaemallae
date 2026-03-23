@@ -9,8 +9,7 @@ import { useState, useMemo } from "react";
 import { useKakaoLoader } from "react-kakao-maps-sdk";
 import { useEvents } from "@/hooks/queries/useEvents";
 import { useCurrentLocation } from "@/hooks/useCurrentLocation";
-import { filterEventsByCategory } from "@/utils/filter";
-import { filterEventByPeriod } from "@/utils/filter";
+import { filterEventsByCategory, filterEventByPeriod } from "@/utils/filter";
 import { CategoryId, PeriodFilter } from "@/types/common";
 
 export default function Area({
@@ -39,43 +38,28 @@ export default function Area({
     let result = filterEventsByCategory(events, category);
     result = filterEventByPeriod(result, period);
 
-    // 4. 검색어 필터링 추가
+    // 검색어 필터링
     if (search.trim()) {
       result = result.filter((event) => {
-        const title = event.title || event.fstvlNm || "";
+        const title = event.title ?? "";
         return title.toLowerCase().includes(search.toLowerCase());
       });
     }
-    console.log("필터된 결과:", result);
     return result;
   }, [events, category, period, search]);
 
   // 지도 마커 데이터 생성
   const markers = useMemo(() => {
     return filteredEvents
-      .filter((event) => event.latitude && event.longitude)
+      .filter((event) => event.lat && event.lon)
       .map((event) => {
-        const text =
-          (event.title || event.fstvlNm || "") +
-          (event.description || event.fstvlCo || "");
-
-        let category: CategoryId = "all";
-
-        if (text.includes("공연")) {
-          category = "performance";
-        } else if (text.includes("전시")) {
-          category = "exhibition";
-        } else if (text.includes("축제")) {
-          category = "festival";
-        } else {
-          category = "etc";
-        }
+        const category = event.categories[0] as CategoryId;
 
         return {
           id: event.id,
-          lat: Number(event.latitude),
-          lng: Number(event.longitude),
-          category: category,
+          lat: Number(event.lat),
+          lng: Number(event.lon),
+          category,
         };
       });
   }, [filteredEvents]);
@@ -119,11 +103,11 @@ export default function Area({
           selectedCarouselData
             ? {
                 id: selectedCarouselData.id,
-                latitude: selectedCarouselData.latitude
-                  ? Number(selectedCarouselData.latitude)
+                latitude: selectedCarouselData.lat
+                  ? Number(selectedCarouselData.lat)
                   : null,
-                longitude: selectedCarouselData.longitude
-                  ? Number(selectedCarouselData.longitude)
+                longitude: selectedCarouselData.lon
+                  ? Number(selectedCarouselData.lon)
                   : null,
               }
             : undefined

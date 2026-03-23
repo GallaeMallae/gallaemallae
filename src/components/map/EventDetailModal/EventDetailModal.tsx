@@ -7,11 +7,11 @@ import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CategoryId } from "@/types/common";
-import { BaseEvent } from "@/types/event";
+import { Event } from "@/types/event";
 import { CATEGORY_NAME_MAP } from "@/lib/constants";
 
 type Props = {
-  event: BaseEvent | null;
+  event: Event | null;
   open: boolean;
   onClose: () => void;
 };

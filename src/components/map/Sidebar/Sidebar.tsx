@@ -28,21 +28,15 @@ export default function Sidebar({
   setSearch: (s: string) => void;
 }) {
   const toggleCategory = (id: CategoryId) => {
-    if (id === "all") {
-      setCategory(["all"]);
-      return;
-    }
-
     if (category.includes(id)) {
       const next = category.filter((c) => c !== id);
-      setCategory(next.length ? next : ["all"]);
+      setCategory(next);
     } else {
-      setCategory([...category.filter((c) => c !== "all"), id]);
+      setCategory([...category, id]);
     }
   };
-
   const handleReset = () => {
-    setCategory(["all"]);
+    setCategory([]);
     setRadius(null);
     setPeriod("전체");
     setSearch("");
@@ -64,8 +58,6 @@ export default function Sidebar({
             초기화
           </Button>
         </div>
-
-        {/* ===== 카테고리 (Tabs 스타일) ===== */}
         <div>
           <p className="text-desc1 text-etc font-bold">카테고리</p>
 
@@ -114,7 +106,6 @@ export default function Sidebar({
             </div>
           </div>
 
-          {/* ===== 모바일 Tabs 스타일 ===== */}
           <div className="flex w-full rounded-xl bg-white shadow-sm">
             {CATEGORY_MENU.map((item) => {
               const isActive = category.includes(item.id as CategoryId);
