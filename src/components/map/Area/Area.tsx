@@ -11,6 +11,7 @@ import { useEvents } from "@/hooks/queries/useEvents";
 import { useCurrentLocation } from "@/hooks/useCurrentLocation";
 import { filterEventsByCategory, filterEventByPeriod } from "@/utils/filter";
 import { CategoryId, PeriodFilter } from "@/types/common";
+import { filterEventsByDistance } from "@/utils/filterByDistance";
 
 export default function Area({
   radius,
@@ -38,15 +39,17 @@ export default function Area({
     let result = filterEventsByCategory(events, category);
     result = filterEventByPeriod(result, period);
 
-    // 검색어 필터링
+    result = filterEventsByDistance(result, position, radius);
+
     if (search.trim()) {
       result = result.filter((event) => {
         const title = event.title ?? "";
         return title.toLowerCase().includes(search.toLowerCase());
       });
     }
+
     return result;
-  }, [events, category, period, search]);
+  }, [events, category, period, search, position, radius]);
 
   // 지도 마커 데이터 생성
   const markers = useMemo(() => {
