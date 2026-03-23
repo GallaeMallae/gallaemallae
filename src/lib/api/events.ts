@@ -1,7 +1,7 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { Database } from "@/types/supabase";
 import { Category } from "@/types/common";
-import { Event } from "@/types/event";
+import { Tables } from "@/types/supabase";
 
 export type EventCategory = Exclude<Category, "전체">;
 
@@ -68,12 +68,13 @@ export async function fetchLikedEvents(
     );
 }
 
-export const fetchEventsData = async (): Promise<Event[]> => {
+export const fetchEventsData = async (): Promise<Tables<"events">[]> => {
   const res = await fetch("/api/event");
 
   if (!res.ok) {
     throw new Error("이벤트 데이터 가져오기 실패했습니다");
   }
+
   const data = await res.json();
   return data;
 };
