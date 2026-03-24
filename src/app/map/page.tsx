@@ -23,7 +23,6 @@ export default function MapPage() {
   );
 
   const [period, setPeriod] = useState<PeriodFilter>("전체");
-
   const [search, setSearch] = useState(qSearch ?? "");
 
   useEffect(() => {

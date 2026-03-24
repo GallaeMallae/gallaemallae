@@ -11,7 +11,7 @@ import { useEvents } from "@/hooks/queries/useEvents";
 import { useCurrentLocation } from "@/hooks/useCurrentLocation";
 import { filterEventsByCategory, filterEventByPeriod } from "@/utils/filter";
 import { CategoryId, PeriodFilter } from "@/types/common";
-import { filterEventsByDistance } from "@/utils/filterByDistance";
+import { filterEventsByDistance } from "@/utils/filter";
 
 export default function Area({
   radius,
