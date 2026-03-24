@@ -2,14 +2,47 @@
 
 import Sidebar from "@/components/map/Sidebar/Sidebar";
 import Area from "@/components/map/Area/Area";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CategoryId, PeriodFilter } from "@/types/common";
+import { useSearchParams, useRouter } from "next/navigation";
 
 export default function MapPage() {
-  const [radius, setRadius] = useState<number | null>(null);
-  const [category, setCategory] = useState<CategoryId[]>(["all"]);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const qCategory = searchParams.get("category");
+  const qRadius = searchParams.get("radius");
+  const qSearch = searchParams.get("search");
+
+  const [radius, setRadius] = useState<number | null>(
+    qRadius ? Number(qRadius) : null,
+  );
+
+  const [category, setCategory] = useState<CategoryId[]>(
+    qCategory ? [qCategory as CategoryId] : ["all"],
+  );
+
   const [period, setPeriod] = useState<PeriodFilter>("전체");
-  const [search, setSearch] = useState("");
+
+  const [search, setSearch] = useState(qSearch ?? "");
+
+  useEffect(() => {
+    const params = new URLSearchParams();
+
+    if (category[0] && category[0] !== "all") {
+      params.set("category", category[0]);
+    }
+
+    if (radius) {
+      params.set("radius", String(radius));
+    }
+
+    if (search) {
+      params.set("search", search);
+    }
+
+    router.replace(`/map?${params.toString()}`);
+  }, [category, radius, search]);
 
   return (
     <div className="relative w-full overflow-hidden md:flex">
