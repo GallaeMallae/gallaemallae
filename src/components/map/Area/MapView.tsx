@@ -1,7 +1,7 @@
 "use client";
 
-import { Map, MapMarker, Circle } from "react-kakao-maps-sdk";
-import { useEffect } from "react";
+import { MapMarker, Circle } from "react-kakao-maps-sdk";
+import { useEffect, useRef } from "react";
 import KakaoMap from "@/components/common/KakaoMap";
 import { MARKER_ICONS } from "@/lib/constants";
 import { CategoryId } from "@/types/common";
@@ -42,10 +42,16 @@ export default function MapView({
   onSelectCarousel,
 }: MapViewProps) {
   const filteredMarkers = markers;
+  const isFirstRender = useRef(true);
 
   useEffect(() => {
     if (!locate) return;
     if (!onSelectCarousel) return;
+
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
 
     if (onSelectCarousel.latitude == null || onSelectCarousel.longitude == null)
       return;
