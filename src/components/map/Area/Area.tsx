@@ -9,9 +9,12 @@ import { useState, useMemo } from "react";
 import { useKakaoLoader } from "react-kakao-maps-sdk";
 import { useEvents } from "@/hooks/queries/useEvents";
 import { useCurrentLocation } from "@/hooks/useCurrentLocation";
-import { filterEventsByCategory, filterEventByPeriod } from "@/utils/filter";
+import {
+  filterEventsByCategory,
+  filterEventByPeriod,
+  filterEventsByDistance,
+} from "@/utils/filter";
 import { CategoryId, PeriodFilter } from "@/types/common";
-import { filterEventsByDistance } from "@/utils/filter";
 
 export default function Area({
   radius,
@@ -21,6 +24,7 @@ export default function Area({
 }: {
   radius: number | null;
   category: CategoryId[];
+
   period: PeriodFilter;
   search: string;
 }) {
@@ -56,7 +60,7 @@ export default function Area({
     return filteredEvents
       .filter((event) => event.lat && event.lon)
       .map((event) => {
-        const category = event.categories[0] as CategoryId;
+        const category = (event.categories?.[0] as CategoryId) ?? "etc";
 
         return {
           id: event.id,

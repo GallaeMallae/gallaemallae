@@ -28,15 +28,21 @@ export default function Sidebar({
   setSearch: (s: string) => void;
 }) {
   const toggleCategory = (id: CategoryId) => {
-    if (category.includes(id)) {
-      const next = category.filter((c) => c !== id);
-      setCategory(next);
+    if (id === "all") {
+      setCategory(["all"]);
+      return;
+    }
+
+    const base = category.filter((c) => c !== "all");
+    if (base.includes(id)) {
+      const next = base.filter((c) => c !== id);
+      setCategory(next.length ? next : ["all"]);
     } else {
-      setCategory([...category, id]);
+      setCategory([...base, id]);
     }
   };
   const handleReset = () => {
-    setCategory([]);
+    setCategory(["all"]);
     setRadius(null);
     setPeriod("전체");
     setSearch("");

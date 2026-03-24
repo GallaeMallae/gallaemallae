@@ -22,28 +22,29 @@ export function filterEventByPeriod(
   return events.filter((event) => {
     if (!event.startDate) return false;
 
-    const date = new Date(event.startDate);
-    if (isNaN(date.getTime())) return false;
+    const startDate = new Date(event.startDate);
+    const endDate = new Date(event.endDate ?? event.startDate);
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) return false;
 
-    if (date < today) return false;
+    if (endDate < today) return false;
 
     if (period === "전체") return true;
 
-    let endDate = new Date(today);
+    let boundary = new Date(today);
 
     if (period === "당일") {
-      endDate.setDate(today.getDate() + 1);
+      boundary.setDate(today.getDate() + 1);
     }
 
     if (period === "주간") {
-      endDate.setDate(today.getDate() + 7);
+      boundary.setDate(today.getDate() + 7);
     }
 
     if (period === "월간") {
-      endDate = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+      boundary = new Date(today.getFullYear(), today.getMonth() + 1, 1);
     }
 
-    return date < endDate;
+    return startDate < boundary;
   });
 }
 
@@ -55,13 +56,13 @@ export const filterEventsByDistance = (
   if (!center || radius === null) return events;
 
   return events.filter((event) => {
-    if (!event.lat || !event.lon) return false;
+    if (event.lat == null || event.lon == null) return false;
 
     const distance = getDistance(center, {
       lat: Number(event.lat),
       lng: Number(event.lon),
     });
 
-    return distance <= radius / 1000;
+    return distance <= radius;
   });
 };
