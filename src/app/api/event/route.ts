@@ -1,21 +1,23 @@
 import { NextResponse } from "next/server";
-import { transformEvent } from "@/utils/transform";
+import { createClient } from "@/utils/supabase/server";
 
 export async function GET() {
-  const SERVICE_KEY = process.env.NEXT_API_KEY;
   try {
-    const res = await fetch(
-      `http://api.data.go.kr/openapi/tn_pubr_public_cltur_fstvl_api?serviceKey=${SERVICE_KEY}&pageNo=1&numOfRows=100&type=json`,
-    );
+    const supabase = await createClient();
 
-    const data = await res.json();
+    const { data, error } = await supabase
+      .from("events")
+      .select("*")
+      .order("created_at", { ascending: false });
 
-    const items = data.response?.body?.items ?? [];
-    const transformed = items.map(transformEvent).filter(Boolean);
+    if (error) {
+      console.error("DB 조회 실패:", error);
+      return NextResponse.json({ error: "데이터 조회 실패" }, { status: 500 });
+    }
 
-    return NextResponse.json(transformed);
+    return NextResponse.json(data);
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: "fetch failed" }, { status: 500 });
+    console.error("서버 에러:", error);
+    return NextResponse.json({ error: "서버 에러 발생" }, { status: 500 });
   }
 }
