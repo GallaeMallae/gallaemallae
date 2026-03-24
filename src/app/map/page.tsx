@@ -11,37 +11,32 @@ export default function MapPage() {
   const router = useRouter();
 
   const qCategory = searchParams.get("category");
-  const qRadius = searchParams.get("radius");
-  const qSearch = searchParams.get("search");
-
-  const [radius, setRadius] = useState<number | null>(
-    qRadius ? Number(qRadius) : null,
-  );
+  const qMode = searchParams.get("mode");
 
   const [category, setCategory] = useState<CategoryId[]>(
     qCategory ? [qCategory as CategoryId] : ["all"],
   );
+  const [mode, setMode] = useState<"all" | "near">(
+    qMode === "near" ? "near" : "all",
+  );
 
+  const [radius, setRadius] = useState<number | null>(null);
   const [period, setPeriod] = useState<PeriodFilter>("전체");
-  const [search, setSearch] = useState(qSearch ?? "");
+  const [search, setSearch] = useState("");
+
+  const effectiveRadius = mode === "near" ? 5000 : radius;
 
   useEffect(() => {
     const params = new URLSearchParams();
+
+    params.set("mode", mode);
 
     if (category[0] && category[0] !== "all") {
       params.set("category", category[0]);
     }
 
-    if (radius) {
-      params.set("radius", String(radius));
-    }
-
-    if (search) {
-      params.set("search", search);
-    }
-
     router.replace(`/map?${params.toString()}`);
-  }, [category, radius, search]);
+  }, [category, mode]);
 
   return (
     <div className="relative w-full overflow-hidden md:flex">
@@ -60,7 +55,7 @@ export default function MapPage() {
 
       <div className="flex-1">
         <Area
-          radius={radius}
+          radius={radius || effectiveRadius}
           category={category}
           period={period}
           search={search}
