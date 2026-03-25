@@ -5,9 +5,12 @@ export async function GET() {
   try {
     const supabase = await createClient();
 
+    const today = new Date().toISOString().split("T")[0];
+
     const { data, error } = await supabase
       .from("events")
       .select("*")
+      .gte("start_date", today)
       .order("created_at", { ascending: false });
 
     if (error) {
