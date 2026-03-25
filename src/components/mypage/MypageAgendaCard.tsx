@@ -15,18 +15,25 @@ import { MoreVertical, Pencil, Trash } from "lucide-react";
 interface MypageAgendaCardProps {
   event: MypageDisplayEvent;
   selectedDate?: string;
+  onClick?: () => void;
 }
 
 export type CategoryKey = keyof typeof CATEGORY_NAME_MAP;
 
-export default function MypageAgendaCard({ event }: MypageAgendaCardProps) {
+export default function MypageAgendaCard({
+  event,
+  onClick,
+}: MypageAgendaCardProps) {
   const { mutate: deletePlan, isPending: isDeletePlanLoading } =
     useDeleteEventPlan();
   const formatVisitDate = formatDate(event.display_date);
   const dDay = calculateDDay(event.display_date);
 
   return (
-    <div className="hover:bg-muted flex cursor-pointer flex-col gap-1 rounded-xl p-2">
+    <div
+      className="hover:bg-muted flex cursor-pointer flex-col gap-1 rounded-xl p-2"
+      onClick={onClick}
+    >
       <div className="flex items-center justify-between">
         <div className="flex gap-2">
           {event.categories?.map((category) => {

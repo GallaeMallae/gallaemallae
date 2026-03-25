@@ -35,7 +35,6 @@ export default function MyPageEventRecommendCard({
     useDeleteEventPlan();
 
   const handleLikeClick = () => {
-    // 현재 좋아요 상태를 넘겨주면 훅 내부 로직에 따라 delete/insert 처리
     toggleLike(isLiked);
   };
 

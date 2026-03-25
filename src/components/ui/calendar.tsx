@@ -265,7 +265,7 @@ function CalendarDayButton({
       open={isDesktop && isPopoverOpen}
       onOpenChange={(open) => !open && onActivePopoverDate?.(null)}
     >
-      <PopoverTrigger asChild disabled={dayEvents.length === 0}>
+      <PopoverTrigger asChild>
         <Button
           {...props}
           ref={ref}

@@ -10,7 +10,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { toast } from "sonner";
 import { useState } from "react";
 import { parseSafeDate } from "@/utils/date";
-import { isWithinInterval, parseISO, startOfDay } from "date-fns";
+import { isSameDay, isWithinInterval, parseISO, startOfDay } from "date-fns";
 import { useLocationStore } from "@/stores/locationStore";
 import { useLocationNameData } from "@/hooks/queries/useLocationNameData";
 import { useWeatherData } from "@/hooks/queries/useWeatherData";
@@ -73,12 +73,16 @@ export default function Mypage() {
   };
 
   const handlePopoverChange = (date: Date | null) => {
-    setActivePopoverDate(date);
-
-    // 팝오버가 닫힐 때(date가 null일 때) 선택된 날짜도 초기화(undefined)
-    if (date === null) {
+    if (
+      date === null &&
+      activePopoverDate !== null &&
+      selectedDate &&
+      isSameDay(activePopoverDate, selectedDate)
+    ) {
       setSelectedDate(undefined);
     }
+
+    setActivePopoverDate(date);
   };
 
   // 관심 목록 데이터 가공
