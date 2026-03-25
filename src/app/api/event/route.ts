@@ -10,7 +10,7 @@ export async function GET() {
     const { data, error } = await supabase
       .from("events")
       .select("*")
-      .gte("start_date", today)
+      .gte("end_date", today)
       .order("created_at", { ascending: false });
 
     if (error) {
