@@ -59,6 +59,10 @@ export default function Mypage() {
       )
     : null;
 
+  const handleDetailClick = (eventId: string) => {
+    setSelectedEventId(eventId);
+  };
+
   const handleEventClick = (dateString: string) => {
     const newDate = parseSafeDate(dateString);
 
@@ -96,6 +100,13 @@ export default function Mypage() {
     display_date: plan.visit_date || plan.event.start_date,
     plan_id: plan.id,
   }));
+
+  // 행사 상세보기 데이터를 위해 행사 id값 기준 find
+  const selectedEvent = [
+    recommendEventData,
+    ...formattedLikedEvents,
+    ...formattedPlannedEvents,
+  ].find((event) => event?.id === selectedEventId);
 
   // 추천받은 행사를 일정에 추가했을 경우 planId를 props로 보내주기 위함
   const matchedPlan = formattedPlannedEvents.find(
@@ -148,7 +159,7 @@ export default function Mypage() {
                 isLiked={isLiked}
                 isPlanned={isPlanned}
                 planId={matchedPlanId}
-                onEventClick={() => setSelectedEventId(recommendEventData.id)}
+                onDetailClick={handleDetailClick}
               />
             ) : (
               // 정말로 180일치 다 뒤졌는데 결과가 null일 때만 이게 나옴
@@ -203,6 +214,7 @@ export default function Mypage() {
               nickname={profile?.nickname ?? undefined}
               activePopoverDate={activePopoverDate}
               onActivePopoverDate={handlePopoverChange}
+              onDetailClick={handleDetailClick}
               isDesktop={isDesktop}
               captionLayout="dropdown"
             />
@@ -212,6 +224,7 @@ export default function Mypage() {
             <MypageSelectedDateEventsCard
               selectedDate={selectedDate}
               events={dailyEvents}
+              onDetailClick={handleDetailClick}
             />
           )}
         </div>
@@ -219,7 +232,7 @@ export default function Mypage() {
 
       {selectedEventId && (
         <EventDetailModal
-          event={recommendEventData}
+          event={selectedEvent ?? null}
           open={!!selectedEventId}
           onClose={() => setSelectedEventId(null)}
         />

@@ -51,6 +51,7 @@ function Calendar({
   nickname,
   activePopoverDate,
   onActivePopoverDate,
+  onDetailClick,
   isDesktop,
   ...props
 }: React.ComponentProps<typeof DayPicker> & {
@@ -59,6 +60,7 @@ function Calendar({
   nickname?: string;
   activePopoverDate?: Date | null;
   onActivePopoverDate?: (date: Date | null) => void;
+  onDetailClick: (eventId: string) => void;
   isDesktop: boolean;
 }) {
   const defaultClassNames = getDefaultClassNames();
@@ -184,6 +186,7 @@ function Calendar({
             {...dayButtonProps}
             plannedEvents={plannedEvents}
             isDesktop={isDesktop}
+            onDetailClick={onDetailClick}
             activePopoverDate={activePopoverDate}
             onActivePopoverDate={onActivePopoverDate}
           />
@@ -209,6 +212,7 @@ interface CalendarDayButtonProps extends DayButtonProps {
   isDesktop: boolean;
   activePopoverDate?: Date | null;
   onActivePopoverDate?: (date: Date | null) => void;
+  onDetailClick: (eventId: string) => void;
 }
 
 function CalendarDayButton({
@@ -217,8 +221,10 @@ function CalendarDayButton({
   modifiers,
   plannedEvents,
   isDesktop,
+  onDetailClick,
   activePopoverDate,
   onActivePopoverDate,
+
   ...props
 }: CalendarDayButtonProps) {
   const ref = React.useRef<HTMLButtonElement>(null);
@@ -387,6 +393,7 @@ function CalendarDayButton({
                 <MypageSelectedDateEventsCard
                   selectedDate={activePopoverDate ?? null}
                   events={dayEvents}
+                  onDetailClick={onDetailClick}
                 />
               )}
             </div>

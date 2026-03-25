@@ -17,7 +17,7 @@ interface MyPageEventRecommendCardProps {
   isLiked: boolean;
   isPlanned: boolean;
   planId?: string;
-  onEventClick: () => void;
+  onDetailClick: (eventId: string) => void;
 }
 
 export default function MyPageEventRecommendCard({
@@ -25,7 +25,7 @@ export default function MyPageEventRecommendCard({
   isLiked,
   isPlanned,
   planId,
-  onEventClick,
+  onDetailClick,
 }: MyPageEventRecommendCardProps) {
   const { data: profile } = useProfileData();
 
@@ -136,7 +136,11 @@ export default function MyPageEventRecommendCard({
             </Button>
           )}
 
-          <Button size={"sm"} variant={"outline"} onClick={onEventClick}>
+          <Button
+            size={"sm"}
+            variant={"outline"}
+            onClick={() => onDetailClick(event.id)}
+          >
             행사 정보
           </Button>
         </div>

@@ -8,11 +8,13 @@ import { formatDate } from "@/utils/date";
 interface MypageSelectedDateEventsCardProps {
   selectedDate: Date | null;
   events: MypageDisplayEvent[];
+  onDetailClick?: (eventId: string) => void;
 }
 
 export default function MypageSelectedDateEventsCard({
   events,
   selectedDate,
+  onDetailClick,
 }: MypageSelectedDateEventsCardProps) {
   const formattedSelectedDate = formatDate(selectedDate);
 
@@ -36,6 +38,7 @@ export default function MypageSelectedDateEventsCard({
                 <MypageAgendaCard
                   event={event}
                   selectedDate={formattedSelectedDate}
+                  onDetailClick={onDetailClick}
                 />
               </CardContent>
             </Card>

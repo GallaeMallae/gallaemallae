@@ -16,6 +16,7 @@ interface MypageAgendaCardProps {
   event: MypageDisplayEvent;
   selectedDate?: string;
   onClick?: () => void;
+  onDetailClick?: (eventId: string) => void;
 }
 
 export type CategoryKey = keyof typeof CATEGORY_NAME_MAP;
@@ -23,16 +24,25 @@ export type CategoryKey = keyof typeof CATEGORY_NAME_MAP;
 export default function MypageAgendaCard({
   event,
   onClick,
+  onDetailClick,
 }: MypageAgendaCardProps) {
   const { mutate: deletePlan, isPending: isDeletePlanLoading } =
     useDeleteEventPlan();
   const formatVisitDate = formatDate(event.display_date);
   const dDay = calculateDDay(event.display_date);
 
+  const handleCardClick = () => {
+    if (onDetailClick) {
+      onDetailClick(event.id);
+    } else if (onClick) {
+      onClick();
+    }
+  };
+
   return (
     <div
       className="hover:bg-muted flex cursor-pointer flex-col gap-1 rounded-xl p-2"
-      onClick={onClick}
+      onClick={handleCardClick}
     >
       <div className="flex items-center justify-between">
         <div className="flex gap-2">
