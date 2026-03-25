@@ -5,7 +5,7 @@ import { EventApi } from "@/utils/transform";
 export const insertEvents = async () => {
   const SERVICE_KEY = process.env.NEXT_API_KEY;
   const res = await fetch(
-    `http://api.data.go.kr/openapi/tn_pubr_public_cltur_fstvl_api?serviceKey=${SERVICE_KEY}&pageNo=1&numOfRows=100&type=json`,
+    `http://api.data.go.kr/openapi/tn_pubr_public_cltur_fstvl_api?serviceKey=${SERVICE_KEY}&pageNo=1&numOfRows=1000&type=json`,
   );
   const json = await res.json();
   if (!res.ok) {
@@ -18,7 +18,13 @@ export const insertEvents = async () => {
   }
   const data: EventApi[] = items;
 
+  const today = new Date().toISOString().split("T")[0];
+
   const events = data
+    .filter((event) => {
+      if (!event.fstvlStartDate) return false;
+      return event.fstvlStartDate >= today;
+    })
     .map(transformEvent)
     .filter(
       (v): v is NonNullable<ReturnType<typeof transformEvent>> => v !== null,
