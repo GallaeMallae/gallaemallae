@@ -39,8 +39,10 @@ export default function Mypage() {
   const { data: airPollutionData } = useAirPollutionData(coords, isInitialized);
   const { data: recommendEventData, isLoading: isRecommendEventCardLoading } =
     useMypageRecommendEventData(locationNameData);
-  const { data: likedEvents = [] } = useLikedEventsData();
-  const { data: plannedEvents = [] } = usePlannedEventsData();
+  const { data: likedEvents = [], isLoading: isLikedEventLoading } =
+    useLikedEventsData();
+  const { data: plannedEvents = [], isLoading: isPlannedEventLoading } =
+    usePlannedEventsData();
 
   const isDesktop = useIsDesktop();
 
@@ -117,7 +119,8 @@ export default function Mypage() {
   );
 
   const isPreparing = !locationNameData || !profile?.id;
-  const showSkeleton = isPreparing || isRecommendEventCardLoading;
+  const showRecommendEventCardSkeleton =
+    isPreparing || isRecommendEventCardLoading;
 
   return (
     <div className="flex flex-col gap-6">
@@ -133,7 +136,7 @@ export default function Mypage() {
             <WeatherCard {...weather} />
           )}
           <div className="flex h-full flex-col">
-            {showSkeleton ? (
+            {showRecommendEventCardSkeleton ? (
               <RecommendEventCardSkeleton />
             ) : recommendEventData ? (
               <MyPageEventRecommendCard
@@ -166,6 +169,7 @@ export default function Mypage() {
               iconName="bookmark"
               iconClassName="text-symbol-sky fill-symbol-sky"
               isDesktop={isDesktop}
+              isLoading={isPlannedEventLoading}
               events={formattedPlannedEvents}
               onEventClick={handleEventClick}
             />
@@ -176,6 +180,7 @@ export default function Mypage() {
               iconName="heart"
               iconClassName="text-red-500 fill-red-500"
               isDesktop={isDesktop}
+              isLoading={isLikedEventLoading}
               events={formattedLikedEvents}
               onEventClick={handleEventClick}
             />

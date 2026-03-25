@@ -8,6 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { MypageDisplayEvent } from "@/types/common";
 import { cn } from "@/lib/utils";
 import { useCallback, useEffect, useRef, useState } from "react";
+import EventCardSkeleton from "@/components/common/skeleton/EventCardSkeleton";
 
 const ICON_MAP: Record<string, LucideIcon> = {
   bookmark: Bookmark,
@@ -24,6 +25,7 @@ interface MypageEventSectionCardProps {
   iconName: "bookmark" | "heart";
   iconClassName?: string;
   isDesktop: boolean;
+  isLoading: boolean;
   events: MypageDisplayEvent[];
   onEventClick: (date: string) => void;
 }
@@ -33,6 +35,7 @@ export default function MypageEventSectionCard({
   iconName,
   iconClassName,
   isDesktop,
+  isLoading,
   events,
   onEventClick,
 }: MypageEventSectionCardProps) {
@@ -93,7 +96,13 @@ export default function MypageEventSectionCard({
       <CardContent className="flex min-h-0 flex-1 flex-col p-0">
         <ScrollArea ref={scrollAreaRef} className="min-h-0 w-full flex-1 px-4">
           <div className="flex w-full flex-col gap-1">
-            {events.length > 0 ? (
+            {isLoading ? (
+              <div className="flex flex-col gap-1 py-1">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <EventCardSkeleton key={`skeleton-${i}`} />
+                ))}
+              </div>
+            ) : events.length > 0 ? (
               <>
                 {slicedEvents.map((event) => (
                   <SelectedCard
