@@ -1,11 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
+import { QUERY_KEYS } from "@/lib/constants";
 import { fetchEventsData } from "@/lib/api/events";
 import { Event } from "@/types/event";
 
 export const useEvents = () => {
   return useQuery<Event[]>({
-    queryKey: ["events"],
-    queryFn: fetchEventsData,
-    staleTime: 1000 * 60 * 60, // 1시간 캐싱
+    queryKey: QUERY_KEYS.EVENTS,
+    queryFn: async () => {
+      const data = await fetchEventsData();
+      return data;
+    },
+    staleTime: 1000 * 60 * 60,
   });
 };
