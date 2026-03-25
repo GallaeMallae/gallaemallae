@@ -1,7 +1,7 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { Database } from "@/types/supabase";
 import { Category } from "@/types/common";
-import { Event, PublicEventResponse } from "@/types/event";
+import { Tables } from "@/types/supabase";
 
 export type EventCategory = Exclude<Category, "전체">;
 
@@ -68,41 +68,13 @@ export async function fetchLikedEvents(
     );
 }
 
-export const fetchEventsData = async (): Promise<Event[]> => {
-  const response = await fetch("/api/events");
-  if (!response.ok) throw new Error("네트워크 응답 에러");
+export const fetchEventsData = async (): Promise<Tables<"events">[]> => {
+  const res = await fetch("/api/event");
 
-  const data: PublicEventResponse[] = await response.json();
+  if (!res.ok) {
+    throw new Error("이벤트 데이터 가져오기 실패했습니다");
+  }
 
-  return data.map((item, index) => {
-    const title = item.fstvlNm;
-    const content = item.fstvlCo || "";
-    const text = title + content;
-
-    // ✅ 네가 정해준 딱 4가지 기준으로만 분류
-    let category: "festival" | "performance" | "exhibition" | "etc" = "etc";
-
-    if (text.includes("공연")) {
-      category = "performance";
-    } else if (text.includes("전시")) {
-      category = "exhibition";
-    } else if (text.includes("축제")) {
-      category = "festival";
-    } else {
-      category = "etc";
-    }
-
-    return {
-      ...item,
-      id: `${item.fstvlNm}-${index}`,
-      title: title,
-      latitude: parseFloat(String(item.latitude)) || 0,
-      longitude: parseFloat(String(item.longitude)) || 0,
-      category: category,
-      categories: [category],
-      start_date: item.fstvlStartDate || null,
-      startDate: item.fstvlStartDate || "",
-      endDate: item.fstvlEndDate || "",
-    };
-  });
+  const data = await res.json();
+  return data;
 };

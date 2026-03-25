@@ -9,8 +9,11 @@ import { useState, useMemo } from "react";
 import { useKakaoLoader } from "react-kakao-maps-sdk";
 import { useEvents } from "@/hooks/queries/useEvents";
 import { useCurrentLocation } from "@/hooks/useCurrentLocation";
-import { filterEventsByCategory } from "@/utils/filter";
-import { filterEventByPeriod } from "@/utils/filter";
+import {
+  filterEventsByCategory,
+  filterEventByPeriod,
+  filterEventsByDistance,
+} from "@/utils/filter";
 import { CategoryId, PeriodFilter } from "@/types/common";
 
 export default function Area({
@@ -21,11 +24,13 @@ export default function Area({
 }: {
   radius: number | null;
   category: CategoryId[];
+
   period: PeriodFilter;
   search: string;
 }) {
   const { position, moveCurrentLocation } = useCurrentLocation();
   const { data: events = [], isLoading, error: queryError } = useEvents();
+  console.log(events);
 
   const [locate, setLocate] = useState<kakao.maps.Map | null>(null);
   const [loading, kakaoError] = useKakaoLoader({
@@ -39,43 +44,30 @@ export default function Area({
     let result = filterEventsByCategory(events, category);
     result = filterEventByPeriod(result, period);
 
-    // 4. 검색어 필터링 추가
+    result = filterEventsByDistance(result, position, radius);
+
     if (search.trim()) {
       result = result.filter((event) => {
-        const title = event.title || event.fstvlNm || "";
+        const title = event.name ?? "";
         return title.toLowerCase().includes(search.toLowerCase());
       });
     }
-    console.log("필터된 결과:", result);
+
     return result;
-  }, [events, category, period, search]);
+  }, [events, category, period, search, position, radius]);
 
   // 지도 마커 데이터 생성
   const markers = useMemo(() => {
     return filteredEvents
       .filter((event) => event.latitude && event.longitude)
       .map((event) => {
-        const text =
-          (event.title || event.fstvlNm || "") +
-          (event.description || event.fstvlCo || "");
-
-        let category: CategoryId = "all";
-
-        if (text.includes("공연")) {
-          category = "performance";
-        } else if (text.includes("전시")) {
-          category = "exhibition";
-        } else if (text.includes("축제")) {
-          category = "festival";
-        } else {
-          category = "etc";
-        }
+        const category = (event.categories?.[0] as CategoryId) ?? "etc";
 
         return {
           id: event.id,
           lat: Number(event.latitude),
           lng: Number(event.longitude),
-          category: category,
+          category,
         };
       });
   }, [filteredEvents]);

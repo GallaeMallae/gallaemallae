@@ -4,26 +4,19 @@ import EventRecommendCard from "@/components/map/EventDetailModal/EventDetailMod
 import EventRecommendWeather from "@/components/map/EventDetailModal/EventDetailModalLeft/EventWeatherInfoCard";
 import EventIntroduce from "@/components/map/EventDetailModal/EventDetailModalLeft/EventIntroduce";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { BaseEvent } from "@/types/event";
+import { Event } from "@/types/event";
 
 type Props = {
-  event: BaseEvent;
+  event: Event;
 };
 
 export default function EventDetailModalLeft({ event }: Props) {
-  const start = event.fstvlStartDate || event.startDate || event.start_date;
-  const end = event.fstvlEndDate || event.endDate || event.end_date;
-
-  const location =
-    event.rdnmadr ||
-    event.opar ||
-    event.lnmadr ||
-    event.road_address ||
-    event.venue;
-
-  const tel = event.phoneNumber || event.phone;
-  const homepage = event.homepageUrl || event.homepage_url;
-
+  const date =
+    event.start_date && event.end_date
+      ? event.start_date === event.end_date
+        ? event.start_date
+        : `${event.start_date} - ${event.end_date}`
+      : event.start_date || event.end_date || "-";
   return (
     <div className="flex w-full flex-col gap-6 md:w-80 md:justify-between">
       <Card className="gap-2 rounded-2xl">
@@ -44,13 +37,10 @@ export default function EventDetailModalLeft({ event }: Props) {
       </Card>
 
       <div className="flex flex-col gap-2">
-        <EventIntroduce
-          type="date"
-          value={start && end ? `${start} ~ ${end}` : start || end || "-"}
-        />
-        <EventIntroduce type="place" value={location || "-"} />
-        <EventIntroduce type="tel" value={tel || "-"} />
-        <EventIntroduce type="homepage" value={homepage || "-"} />
+        <EventIntroduce type="date" value={date} />
+        <EventIntroduce type="place" value={event.venue || "-"} />
+        <EventIntroduce type="tel" value={event.phone || "-"} />
+        <EventIntroduce type="homepage" value={event.homepage_url || "-"} />
       </div>
     </div>
   );

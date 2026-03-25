@@ -6,15 +6,12 @@ import {
 } from "@/components/ui/carousel";
 import EventCard from "@/components/common/EventCard";
 import { useState, useEffect } from "react";
-import { Tables } from "@/types/supabase";
 import { CategoryId } from "@/types/common";
-import { Event as PublicEvent } from "@/types/event";
+import { Event } from "@/types/event";
 import { CATEGORY_NAME_MAP } from "@/lib/constants";
 
-type CombinedEvent = Tables<"events"> | PublicEvent;
-
 interface EventCarouselProps {
-  events: CombinedEvent[];
+  events: Event[];
   onCarouselClick: (id: string) => void;
   onSelectCarousel: (id: string) => void;
 }
@@ -52,21 +49,10 @@ export default function EventCarousel({
       >
         <CarouselContent className="-ml-4">
           {events.map((event) => {
-            const isPublic = "title" in event;
-
-            const title =
-              (isPublic ? event.title || event.fstvlNm : event.name) || "";
-
-            const location =
-              (isPublic
-                ? event.rdnmadr || event.opar || event.lnmadr || event.venue
-                : event.venue) || "장소 정보 없음";
+            const title = event.name ?? "";
+            const location = event.venue ?? "";
             const startDate = event.start_date ?? "";
-            const endDate =
-              (isPublic
-                ? event.endDate || event.fstvlEndDate
-                : event.end_date) || "";
-
+            const endDate = event.end_date ?? "";
             const categoryId = (event.categories?.[0] as CategoryId) ?? "etc";
             const category = CATEGORY_NAME_MAP[categoryId] ?? "기타";
 

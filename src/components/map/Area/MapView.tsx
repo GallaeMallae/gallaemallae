@@ -1,10 +1,9 @@
 "use client";
 
-import { Map, MapMarker, Circle } from "react-kakao-maps-sdk";
-import { useEffect } from "react";
+import { MapMarker, Circle } from "react-kakao-maps-sdk";
+import { useEffect, useRef } from "react";
 import KakaoMap from "@/components/common/KakaoMap";
 import { MARKER_ICONS } from "@/lib/constants";
-import { getDistance } from "@/utils/geo";
 import { CategoryId } from "@/types/common";
 
 type Position = { lat: number; lng: number };
@@ -42,16 +41,17 @@ export default function MapView({
   locate,
   onSelectCarousel,
 }: MapViewProps) {
-  const filteredMarkers =
-    !center || radius === null
-      ? markers
-      : markers.filter(
-          (m) => getDistance(center, { lat: m.lat, lng: m.lng }) <= radius,
-        );
+  const filteredMarkers = markers;
+  const isFirstRender = useRef(true);
 
   useEffect(() => {
     if (!locate) return;
     if (!onSelectCarousel) return;
+
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
 
     if (onSelectCarousel.latitude == null || onSelectCarousel.longitude == null)
       return;
@@ -66,7 +66,7 @@ export default function MapView({
 
   return (
     <KakaoMap
-      center={center ?? { lat: 37.49793, lng: 127.027596 }} // center로 바꾸면 됨
+      center={center ?? { lat: 37.49793, lng: 127.027596 }}
       level={7}
       onCreate={setLocate}
     >
