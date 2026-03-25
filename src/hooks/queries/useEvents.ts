@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/lib/constants";
 import { fetchEventsData } from "@/lib/api/events";
-import { toEvent } from "@/utils/mapper";
 import { Event } from "@/types/event";
 
 export const useEvents = () => {
@@ -9,7 +8,7 @@ export const useEvents = () => {
     queryKey: QUERY_KEYS.EVENTS,
     queryFn: async () => {
       const data = await fetchEventsData();
-      return data.map(toEvent);
+      return data;
     },
     staleTime: 1000 * 60 * 60,
   });

@@ -3,8 +3,6 @@ import {
   FetchAirPollutionResponse,
 } from "@/types/apiResponse";
 import { WeatherCardItem } from "@/types/common";
-import { Tables } from "@/types/supabase";
-import { Event } from "@/types/event";
 
 /**
  * @param type - OpenWeather API에서 제공하는 날씨 타입 (ex: Clear, Clouds, Rain, Snow 등)
@@ -78,25 +76,3 @@ export function mapWeatherCard(
     ultrafineDust: mapPm25Level(airPollution.components.pm2_5),
   };
 }
-
-export const toEvent = (row: Tables<"events">): Event => ({
-  id: row.id,
-  title: row.name,
-  startDate: row.start_date,
-  endDate: row.end_date,
-  place: row.venue,
-  phone: row.phone,
-  homepage: row.homepage_url,
-  description: row.description,
-  host: row.host,
-  organizer: row.organizer,
-  sponsor: row.sponsor,
-  provider: row.provider,
-  lat: row.latitude,
-  lon: row.longitude,
-  categories: row.categories ?? [],
-  dataReferenceDate: row.data_reference_date,
-  relatedInfo: row.related_info,
-  roadAddress: row.road_address,
-  lotAddress: row.lot_address,
-});

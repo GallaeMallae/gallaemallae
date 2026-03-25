@@ -1,21 +1,21 @@
 export interface Event {
   id: string;
-  title?: string;
-  startDate?: string;
-  endDate?: string | null;
-  place?: string | null;
+  name?: string;
+  start_date?: string;
+  end_date?: string | null;
+  venue?: string | null;
   phone?: string | null;
-  homepage?: string | null;
+  homepage_url?: string | null;
   description?: string | null;
   host?: string | null;
   organizer?: string | null;
   sponsor?: string | null;
   provider?: string | null;
-  lat?: string | number | null;
-  lon?: string | number | null;
+  latitude?: string | number | null;
+  longitude?: string | number | null;
   categories: string[];
-  dataReferenceDate?: string | null;
-  relatedInfo?: string | null;
-  roadAddress?: string | null;
-  lotAddress?: string | null;
+  data_reference_date?: string | null;
+  related_info?: string | null;
+  road_address?: string | null;
+  lot_address?: string | null;
 }

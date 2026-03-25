@@ -49,10 +49,10 @@ export default function EventCarousel({
       >
         <CarouselContent className="-ml-4">
           {events.map((event) => {
-            const title = event.title ?? "";
-            const location = event.place ?? "";
-            const startDate = event.startDate ?? "";
-            const endDate = event.endDate ?? "";
+            const title = event.name ?? "";
+            const location = event.venue ?? "";
+            const startDate = event.start_date ?? "";
+            const endDate = event.end_date ?? "";
             const categoryId = (event.categories?.[0] as CategoryId) ?? "etc";
             const category = CATEGORY_NAME_MAP[categoryId] ?? "기타";
 

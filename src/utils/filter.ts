@@ -20,10 +20,10 @@ export function filterEventByPeriod(
   today.setHours(0, 0, 0, 0);
 
   return events.filter((event) => {
-    if (!event.startDate) return false;
+    if (!event.start_date) return false;
 
-    const startDate = new Date(event.startDate);
-    const endDate = new Date(event.endDate ?? event.startDate);
+    const startDate = new Date(event.start_date);
+    const endDate = new Date(event.end_date ?? event.start_date);
     if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) return false;
 
     if (endDate < today) return false;
@@ -56,11 +56,11 @@ export const filterEventsByDistance = (
   if (!center || radius === null) return events;
 
   return events.filter((event) => {
-    if (event.lat == null || event.lon == null) return false;
+    if (event.latitude == null || event.longitude == null) return false;
 
     const distance = getDistance(center, {
-      lat: Number(event.lat),
-      lng: Number(event.lon),
+      lat: Number(event.latitude),
+      lng: Number(event.longitude),
     });
 
     return distance <= radius;

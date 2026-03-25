@@ -12,11 +12,11 @@ type Props = {
 
 export default function EventDetailModalLeft({ event }: Props) {
   const date =
-    event.startDate && event.endDate
-      ? event.startDate === event.endDate
-        ? event.startDate
-        : `${event.startDate} - ${event.endDate}`
-      : event.startDate || event.endDate || "-";
+    event.start_date && event.end_date
+      ? event.start_date === event.end_date
+        ? event.start_date
+        : `${event.start_date} - ${event.end_date}`
+      : event.start_date || event.end_date || "-";
   return (
     <div className="flex w-full flex-col gap-6 md:w-80 md:justify-between">
       <Card className="gap-2 rounded-2xl">
@@ -38,9 +38,9 @@ export default function EventDetailModalLeft({ event }: Props) {
 
       <div className="flex flex-col gap-2">
         <EventIntroduce type="date" value={date} />
-        <EventIntroduce type="place" value={event.place || "-"} />
+        <EventIntroduce type="place" value={event.venue || "-"} />
         <EventIntroduce type="tel" value={event.phone || "-"} />
-        <EventIntroduce type="homepage" value={event.homepage || "-"} />
+        <EventIntroduce type="homepage" value={event.homepage_url || "-"} />
       </div>
     </div>
   );

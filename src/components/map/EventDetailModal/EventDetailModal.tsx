@@ -30,7 +30,7 @@ export default function EventDetailModal({ event, open, onClose }: Props) {
             <div className="flex flex-col gap-2">
               <Badge variant={category}>{category}</Badge>
               <DialogTitle>
-                <p className="text-h2"> {event.title}</p>
+                <p className="text-h2"> {event.name}</p>
               </DialogTitle>
             </div>
 

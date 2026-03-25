@@ -30,6 +30,7 @@ export default function Area({
 }) {
   const { position, moveCurrentLocation } = useCurrentLocation();
   const { data: events = [], isLoading, error: queryError } = useEvents();
+  console.log(events);
 
   const [locate, setLocate] = useState<kakao.maps.Map | null>(null);
   const [loading, kakaoError] = useKakaoLoader({
@@ -47,7 +48,7 @@ export default function Area({
 
     if (search.trim()) {
       result = result.filter((event) => {
-        const title = event.title ?? "";
+        const title = event.name ?? "";
         return title.toLowerCase().includes(search.toLowerCase());
       });
     }
@@ -58,14 +59,14 @@ export default function Area({
   // 지도 마커 데이터 생성
   const markers = useMemo(() => {
     return filteredEvents
-      .filter((event) => event.lat && event.lon)
+      .filter((event) => event.latitude && event.longitude)
       .map((event) => {
         const category = (event.categories?.[0] as CategoryId) ?? "etc";
 
         return {
           id: event.id,
-          lat: Number(event.lat),
-          lng: Number(event.lon),
+          lat: Number(event.latitude),
+          lng: Number(event.longitude),
           category,
         };
       });
@@ -110,11 +111,11 @@ export default function Area({
           selectedCarouselData
             ? {
                 id: selectedCarouselData.id,
-                latitude: selectedCarouselData.lat
-                  ? Number(selectedCarouselData.lat)
+                latitude: selectedCarouselData.latitude
+                  ? Number(selectedCarouselData.latitude)
                   : null,
-                longitude: selectedCarouselData.lon
-                  ? Number(selectedCarouselData.lon)
+                longitude: selectedCarouselData.longitude
+                  ? Number(selectedCarouselData.longitude)
                   : null,
               }
             : undefined
