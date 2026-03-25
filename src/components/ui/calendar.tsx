@@ -142,7 +142,11 @@ function Calendar({
       }}
       components={{
         MonthCaption: (captionProps) => (
-          <CustomMonthCaption {...captionProps} nickname={nickname} />
+          <CustomMonthCaption
+            {...captionProps}
+            nickname={nickname}
+            onActivePopoverDate={onActivePopoverDate}
+          />
         ),
         Root: ({ className, rootRef, ...props }) => {
           return (
@@ -396,14 +400,34 @@ function CalendarDayButton({
 function CustomMonthCaption({
   calendarMonth,
   nickname,
+  onActivePopoverDate,
 }: {
   calendarMonth: { date: Date };
   nickname?: string;
+  onActivePopoverDate?: (date: Date | null) => void;
 }) {
-  const { goToMonth, nextMonth, previousMonth } = useDayPicker();
+  const { goToMonth, nextMonth, previousMonth, isSelected, dayPickerProps } =
+    useDayPicker();
   const date = calendarMonth.date;
   const y = date.getFullYear();
   const m = String(date.getMonth() + 1).padStart(2, "0");
+  const today = new Date();
+
+  const isTodayMonth =
+    date.getFullYear() === today.getFullYear() &&
+    date.getMonth() === today.getMonth();
+
+  const isTodaySelected = isSelected?.(today);
+  const isDisableToday = isTodayMonth && isTodaySelected;
+
+  const handleTodayClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    goToMonth(today);
+    if (dayPickerProps.mode === "single" && dayPickerProps.onSelect) {
+      dayPickerProps.onSelect(today, today, {}, e); // 선택될날짜, 현재날짜, modifiers, 이벤트
+    }
+    onActivePopoverDate?.(today);
+  };
 
   return (
     <div className="xs:justify-between xs:items-center xs:flex-row mb-4 flex w-full flex-col items-center justify-center gap-2">
@@ -414,6 +438,15 @@ function CustomMonthCaption({
         </span>
       </div>
       <div className="flex items-center gap-0 md:gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          className="mr-1 h-7 px-2 text-xs font-bold md:mr-2 md:h-8 md:px-3 md:text-sm"
+          onClick={handleTodayClick}
+          disabled={isDisableToday}
+        >
+          오늘
+        </Button>
         <button
           type="button"
           aria-label="이전 달"

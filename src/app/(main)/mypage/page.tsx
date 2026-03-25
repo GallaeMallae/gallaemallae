@@ -22,7 +22,7 @@ import { useProfileData } from "@/hooks/queries/useProfileData";
 import { useMypageRecommendEventData } from "@/hooks/queries/useMypageRecommendEventData";
 import RecommendEventCardSkeleton from "@/components/common/skeleton/RecommendEventCardSkeleton";
 import { useIsDesktop } from "@/hooks/useIsDesktop";
-import EventDetailModalTest from "@/components/modal/EventDetailModalTest";
+import EventDetailModal from "@/components/map/EventDetailModal/EventDetailModal";
 
 export default function Mypage() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
@@ -209,7 +209,7 @@ export default function Mypage() {
       </div>
 
       {selectedEventId && (
-        <EventDetailModalTest
+        <EventDetailModal
           event={recommendEventData}
           open={!!selectedEventId}
           onClose={() => setSelectedEventId(null)}
