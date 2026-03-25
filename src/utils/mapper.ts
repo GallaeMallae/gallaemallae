@@ -95,4 +95,8 @@ export const toEvent = (row: Tables<"events">): Event => ({
   lat: row.latitude,
   lon: row.longitude,
   categories: row.categories ?? [],
+  dataReferenceDate: row.data_reference_date,
+  relatedInfo: row.related_info,
+  roadAddress: row.road_address,
+  lotAddress: row.lot_address,
 });

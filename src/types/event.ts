@@ -14,4 +14,8 @@ export interface Event {
   lat?: string | number | null;
   lon?: string | number | null;
   categories: string[];
+  dataReferenceDate?: string | null;
+  relatedInfo?: string | null;
+  roadAddress?: string | null;
+  lotAddress?: string | null;
 }

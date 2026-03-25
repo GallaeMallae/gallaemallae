@@ -17,6 +17,8 @@ export interface EventApi {
   latitude?: string;
   longitude?: string;
   insttNm?: string;
+  relateInfo?: string;
+  referenceDate?: string;
 }
 
 export const transformEvent = (
@@ -53,5 +55,9 @@ export const transformEvent = (
     latitude: Number(item.latitude),
     longitude: Number(item.longitude),
     categories: [category],
+    data_reference_date: item.referenceDate,
+    road_address: item.rdnmadr,
+    related_info: item.relateInfo,
+    lot_address: item.rdnmadr,
   };
 };

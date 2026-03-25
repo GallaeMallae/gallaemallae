@@ -5,7 +5,7 @@ import { EventApi } from "@/utils/transform";
 export const insertEvents = async () => {
   const SERVICE_KEY = process.env.NEXT_API_KEY;
   const res = await fetch(
-    `https://api.data.go.kr/openapi/tn_pubr_public_cltur_fstvl_api?serviceKey=${SERVICE_KEY}&pageNo=1&numOfRows=100&type=json`,
+    `http://api.data.go.kr/openapi/tn_pubr_public_cltur_fstvl_api?serviceKey=${SERVICE_KEY}&pageNo=1&numOfRows=100&type=json`,
   );
   const json = await res.json();
   if (!res.ok) {
