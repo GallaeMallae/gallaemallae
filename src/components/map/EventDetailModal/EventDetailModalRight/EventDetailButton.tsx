@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { useDeleteEventPlan } from "@/hooks/mutations/useDeleteEventPlan";
 import { useEventLike } from "@/hooks/mutations/useEventLike";
@@ -10,7 +12,7 @@ import { Event } from "@/types/event";
 import { ArrowRight, Heart, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useOpenAlertModal } from "@/stores/alertModalStore";
-import router from "next/router";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 type EventDetailModalButtonProps = {
   event: Event;
@@ -30,20 +32,39 @@ export default function EventDetailModalButton({
 
   const openAlert = useOpenAlertModal();
 
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   const isLiked = likedEvents.some((e) => e.id === event.id);
   const matchedPlan = plannedEvents.find((plan) => plan.event.id === event.id);
   const isPlanned = !!matchedPlan;
   const planId = matchedPlan?.id;
 
+  const handleNeedLogin = () => {
+    const currentPath = `${pathname}${searchParams.toString() ? `?${searchParams.toString()}` : ""}`;
+
+    openAlert({
+      title: "로그인이 필요한 기능입니다.",
+      description: "로그인 페이지로 이동하시겠습니까?",
+      onAction: () => {
+        router.push(`/login?next=${encodeURIComponent(currentPath)}`);
+      },
+    });
+  };
+
+  const handleLikeClick = () => {
+    if (!profile?.id) {
+      handleNeedLogin();
+      return;
+    }
+
+    toggleLike(isLiked);
+  };
+
   const handleAddPlan = () => {
     if (!profile?.id) {
-      openAlert({
-        title: "로그인이 필요한 기능입니다.",
-        description: "로그인 페이지로 이동하시겠습니까?",
-        onAction: () => {
-          router.push(`/login`);
-        },
-      });
+      handleNeedLogin();
       return;
     }
 
@@ -102,7 +123,7 @@ export default function EventDetailModalButton({
         size="icon"
         aria-label="좋아요"
         className="h-12 w-12 p-0"
-        onClick={() => toggleLike(isLiked)}
+        onClick={handleLikeClick}
       >
         <Heart
           className={cn(
