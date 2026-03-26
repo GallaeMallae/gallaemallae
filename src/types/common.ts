@@ -54,6 +54,7 @@ export interface EventCardItem {
   endDate: string;
   category: Category;
   isLiked: boolean;
+  onClick?: () => void;
 }
 
 export type Event = Tables<"events">;

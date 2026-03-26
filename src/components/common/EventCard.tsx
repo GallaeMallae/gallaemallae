@@ -13,9 +13,10 @@ export default function EventCard({
   endDate,
   category,
   isLiked,
+  onClick,
 }: EventCardItem) {
   return (
-    <Card className="relative cursor-pointer rounded-2xl">
+    <Card className="relative cursor-pointer rounded-2xl" onClick={onClick}>
       <CardContent>
         <Button
           className="absolute top-4 right-4 hover:bg-transparent"

@@ -12,9 +12,14 @@ import { MapMarker } from "react-kakao-maps-sdk";
 import { useLocationStore } from "@/stores/locationStore";
 import { EventCardItem, MapMode } from "@/types/common";
 
+interface NearEventsProps {
+  events: EventCardItem[];
+  onEventClick: (id: string) => void;
+}
+
 const PAGE_SIZE = 5;
 
-export default function NearEvents({ events }: { events: EventCardItem[] }) {
+export default function NearEvents({ events, onEventClick }: NearEventsProps) {
   const router = useRouter();
   const { coords } = useLocationStore();
 
@@ -73,7 +78,11 @@ export default function NearEvents({ events }: { events: EventCardItem[] }) {
             ) : (
               <>
                 {visibleEvents.map((event) => (
-                  <EventCard key={event.id} {...event} />
+                  <EventCard
+                    key={event.id}
+                    {...event}
+                    onClick={() => onEventClick(event.id)}
+                  />
                 ))}
                 {hasMore && (
                   <div className="hidden md:block">

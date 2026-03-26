@@ -13,6 +13,7 @@ interface UpcomingEventsProps {
   events: EventCardItem[];
   period: PeriodFilter;
   onPeriodChange: (value: PeriodFilter) => void;
+  onEventClick: (id: string) => void;
 }
 
 const PAGE_SIZE = 10;
@@ -21,6 +22,7 @@ export default function UpcomingEvents({
   events,
   period,
   onPeriodChange,
+  onEventClick,
 }: UpcomingEventsProps) {
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
@@ -55,7 +57,7 @@ export default function UpcomingEvents({
                 key={event.id}
                 className="basis-[80%] md:basis-[30%]"
               >
-                <EventCard {...event} />
+                <EventCard {...event} onClick={() => onEventClick(event.id)} />
               </CarouselItem>
             ))}
             {hasMore && (

@@ -4,6 +4,7 @@ import MainBanner from "@/components/home/MainBanner";
 import CategoryMenu from "@/components/home/CategoryMenu";
 import UpcomingEvents from "@/components/home/UpcomingEvents";
 import NearEvents from "@/components/home/NearEvents";
+import EventDetailModal from "@/components/map/EventDetailModal/EventDetailModal";
 import { useState, useMemo } from "react";
 import { useLocationStore } from "@/stores/locationStore";
 import { useWeatherData } from "@/hooks/queries/useWeatherData";
@@ -25,6 +26,7 @@ export default function Home() {
 
   const { data: eventData } = useEvents();
 
+  const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodFilter>("전체");
 
   const isWeatherReady =
@@ -60,6 +62,13 @@ export default function Home() {
     return mapEventCard(filteredByDistance);
   }, [eventData, coords, isInitialized]);
 
+  const selectedEvent =
+    eventData?.find((e) => e.id === selectedEventId) ?? null;
+
+  const handleEventClick = (id: string) => {
+    setSelectedEventId(id);
+  };
+
   return (
     <div className="flex flex-col gap-8">
       <MainBanner
@@ -74,8 +83,16 @@ export default function Home() {
         events={upcomingEventItems}
         period={selectedPeriod}
         onPeriodChange={setSelectedPeriod}
+        onEventClick={handleEventClick}
       />
-      <NearEvents events={nearEventItems} />
+      <NearEvents events={nearEventItems} onEventClick={handleEventClick} />
+
+      {/* 이벤트 상세 모달 */}
+      <EventDetailModal
+        event={selectedEvent}
+        open={!!selectedEventId}
+        onClose={() => setSelectedEventId(null)}
+      />
     </div>
   );
 }
