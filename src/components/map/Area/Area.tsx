@@ -14,6 +14,7 @@ import {
   filterEventByPeriod,
   filterEventsByDistance,
 } from "@/utils/filter";
+import { mapEventCard } from "@/utils/mapper";
 import { CategoryId, PeriodFilter } from "@/types/common";
 
 export default function Area({
@@ -30,7 +31,6 @@ export default function Area({
 }) {
   const { position, moveCurrentLocation } = useCurrentLocation();
   const { data: events = [], isLoading, error: queryError } = useEvents();
-  console.log(events);
 
   const [locate, setLocate] = useState<kakao.maps.Map | null>(null);
   const [loading, kakaoError] = useKakaoLoader({
@@ -55,6 +55,10 @@ export default function Area({
 
     return result;
   }, [events, category, period, search, position, radius]);
+
+  const carouselEvents = useMemo(() => {
+    return mapEventCard(filteredEvents);
+  }, [filteredEvents]);
 
   // 지도 마커 데이터 생성
   const markers = useMemo(() => {
@@ -136,7 +140,7 @@ export default function Area({
       </Button>
 
       <EventCarousel
-        events={filteredEvents}
+        events={carouselEvents}
         onCarouselClick={(id) => setSelectedModal(id)}
         onSelectCarousel={setSelectedCarousel}
       />
