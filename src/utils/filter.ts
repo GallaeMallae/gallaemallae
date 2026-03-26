@@ -20,7 +20,7 @@ export function filterEventByPeriod(
   today.setHours(0, 0, 0, 0);
 
   return events.filter((event) => {
-    if (!event.start_date) return false;
+    if (!event.start_date || !event.name) return false;
 
     const startDate = new Date(event.start_date);
     const endDate = new Date(event.end_date ?? event.start_date);

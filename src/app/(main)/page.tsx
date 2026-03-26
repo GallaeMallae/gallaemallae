@@ -4,13 +4,15 @@ import MainBanner from "@/components/home/MainBanner";
 import CategoryMenu from "@/components/home/CategoryMenu";
 import UpcomingEvents from "@/components/home/UpcomingEvents";
 import NearEvents from "@/components/home/NearEvents";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useLocationStore } from "@/stores/locationStore";
 import { useWeatherData } from "@/hooks/queries/useWeatherData";
 import { useLocationNameData } from "@/hooks/queries/useLocationNameData";
 import { useAirPollutionData } from "@/hooks/queries/useAirPollutionData";
 import { useRecommendTypeData } from "@/hooks/queries/useRecommendTypeData";
-import { mapWeatherCard } from "@/utils/mapper";
+import { useEvents } from "@/hooks/queries/useEvents";
+import { mapWeatherCard, mapEventCard } from "@/utils/mapper";
+import { filterEventByPeriod } from "@/utils/filter";
 import { PeriodFilter } from "@/types/common";
 import { MOCK_EVENTS } from "@/mocks/events";
 
@@ -22,8 +24,9 @@ export default function Home() {
   const { data: recommendTypeData, isLoading: isRecommendTypeLoading } =
     useRecommendTypeData(weatherData, airPollutionData);
 
-  const [selectedPeriodTab, setSelectedPeriodTab] =
-    useState<PeriodFilter>("전체");
+  const { data: eventData } = useEvents();
+
+  const [selectedPeriod, setSelectedPeriod] = useState<PeriodFilter>("전체");
 
   const isWeatherReady =
     !!locationNameData && !!weatherData && !!airPollutionData;
@@ -40,6 +43,12 @@ export default function Home() {
 
   const recommendType = recommendTypeData?.recommendType ?? null;
 
+  const eventCardItems = useMemo(() => {
+    if (!eventData) return [];
+    const filteredEvents = filterEventByPeriod(eventData, selectedPeriod);
+    return mapEventCard(filteredEvents);
+  }, [eventData, selectedPeriod]);
+
   return (
     <div className="flex flex-col gap-8">
       <MainBanner
@@ -50,9 +59,10 @@ export default function Home() {
       />
       <CategoryMenu />
       <UpcomingEvents
-        events={MOCK_EVENTS}
-        period={selectedPeriodTab}
-        onPeriodChange={setSelectedPeriodTab}
+        key={selectedPeriod}
+        events={eventCardItems}
+        period={selectedPeriod}
+        onPeriodChange={setSelectedPeriod}
       />
       <NearEvents events={MOCK_EVENTS} />
     </div>

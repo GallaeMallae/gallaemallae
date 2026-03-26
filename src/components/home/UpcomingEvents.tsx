@@ -44,18 +44,27 @@ export default function UpcomingEvents({
           align: "center",
         }}
       >
-        <CarouselContent className="overflow-visible">
-          {visibleEvents.map((event, index) => (
-            <CarouselItem key={index} className="basis-[80%] md:basis-[30%]">
-              <EventCard {...event} />
-            </CarouselItem>
-          ))}
-          {hasMore && (
-            <CarouselItem className="basis-[80%] md:basis-[30%]">
-              <MoreCard onClick={handleSeeMore} />
-            </CarouselItem>
-          )}
-        </CarouselContent>
+        {visibleEvents.length === 0 ? (
+          <div className="text-etc py-18 text-center">
+            예정된 행사가 없습니다.
+          </div>
+        ) : (
+          <CarouselContent className="overflow-visible">
+            {visibleEvents.map((event) => (
+              <CarouselItem
+                key={event.id}
+                className="basis-[80%] md:basis-[30%]"
+              >
+                <EventCard {...event} />
+              </CarouselItem>
+            ))}
+            {hasMore && (
+              <CarouselItem className="basis-[80%] md:basis-[30%]">
+                <MoreCard onClick={handleSeeMore} />
+              </CarouselItem>
+            )}
+          </CarouselContent>
+        )}
       </Carousel>
     </section>
   );
