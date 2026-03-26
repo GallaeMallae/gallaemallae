@@ -3,7 +3,18 @@ import { Plus } from "lucide-react";
 
 export default function MoreCard({ onClick }: { onClick: () => void }) {
   return (
-    <Card className="cursor-pointer rounded-2xl" onClick={onClick}>
+    <Card
+      className="cursor-pointer rounded-2xl"
+      role="button"
+      onClick={onClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onClick();
+        }
+      }}
+      aria-label="더보기"
+    >
       <CardContent className="flex flex-col items-center justify-center gap-4 py-6">
         <div className="bg-symbol-sky flex h-10 w-10 items-center justify-center rounded-full">
           <Plus className="h-6 w-6 text-white" />
