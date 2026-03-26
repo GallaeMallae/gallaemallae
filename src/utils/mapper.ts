@@ -99,8 +99,8 @@ export function mapEventCard(events: Event[]): EventCardItem[] {
         event.road_address ??
         event.lot_address ??
         "장소 정보 없음",
-      startDate: event.start_date!,
-      endDate: event.end_date ?? event.start_date!,
+      startDate: event.start_date,
+      endDate: event.end_date ?? event.start_date,
       category: CATEGORY_NAME_MAP[categoryId] ?? "기타",
       isLiked: false,
     };
