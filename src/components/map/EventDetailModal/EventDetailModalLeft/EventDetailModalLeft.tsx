@@ -4,7 +4,7 @@ import EventRecommendCard from "@/components/map/EventDetailModal/EventDetailMod
 import EventRecommendWeather from "@/components/map/EventDetailModal/EventDetailModalLeft/EventWeatherInfoCard";
 import EventIntroduce from "@/components/map/EventDetailModal/EventDetailModalLeft/EventIntroduce";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { Event } from "@/types/event";
+import { Event } from "@/types/common";
 
 type Props = {
   event: Event;

@@ -46,6 +46,8 @@ export interface RecommendCardConfigItem {
 // ==============================
 // 행사 카드 관련 타입
 // ==============================
+export type Event = Tables<"events">;
+
 export interface EventCardItem {
   id: string;
   title: string;
@@ -56,8 +58,6 @@ export interface EventCardItem {
   isLiked: boolean;
   onClick?: () => void;
 }
-
-export type Event = Tables<"events">;
 
 export type MypageDisplayEvent = Event & {
   display_date: string; // 관심 목록이면 start_date, 일정이면 visit_date

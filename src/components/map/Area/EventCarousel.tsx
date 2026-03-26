@@ -6,8 +6,7 @@ import {
 } from "@/components/ui/carousel";
 import EventCard from "@/components/common/EventCard";
 import { useState, useEffect } from "react";
-import { CategoryId } from "@/types/common";
-import { Event } from "@/types/event";
+import { CategoryId, Event } from "@/types/common";
 import { CATEGORY_NAME_MAP } from "@/lib/constants";
 
 interface EventCarouselProps {

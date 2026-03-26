@@ -2,8 +2,12 @@ import {
   FetchWeatherResponse,
   FetchAirPollutionResponse,
 } from "@/types/apiResponse";
-import { WeatherCardItem, EventCardItem, CategoryId } from "@/types/common";
-import { Event } from "@/types/event";
+import {
+  WeatherCardItem,
+  Event,
+  EventCardItem,
+  CategoryId,
+} from "@/types/common";
 import { CATEGORY_NAME_MAP } from "@/lib/constants";
 
 /**

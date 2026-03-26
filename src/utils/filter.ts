@@ -1,6 +1,6 @@
 import { getDistance } from "@/utils/geo";
 import { CategoryId, PeriodFilter, Coordinates } from "@/types/common";
-import { Event } from "@/types/event";
+import { Event } from "@/types/common";
 
 export function filterEventsByCategory(
   events: Event[],
