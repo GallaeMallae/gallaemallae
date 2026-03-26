@@ -23,8 +23,7 @@ export default function Home() {
   const { data: airPollutionData } = useAirPollutionData(coords, isInitialized);
   const { data: recommendTypeData, isLoading: isRecommendTypeLoading } =
     useRecommendTypeData(weatherData, airPollutionData);
-
-  const { data: eventData } = useEventsData();
+  const { data: eventsData, isLoading: isEventsLoading } = useEventsData();
 
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodFilter>("전체");
@@ -45,25 +44,25 @@ export default function Home() {
   const recommendType = recommendTypeData?.recommendType ?? null;
 
   const upcomingEventItems = useMemo(() => {
-    if (!eventData) return [];
-    const filteredEvents = filterEventByPeriod(eventData, selectedPeriod);
+    if (!eventsData) return [];
+    const filteredEvents = filterEventByPeriod(eventsData, selectedPeriod);
     return mapEventCard(filteredEvents);
-  }, [eventData, selectedPeriod]);
+  }, [eventsData, selectedPeriod]);
 
   const nearEventItems = useMemo(() => {
-    if (!eventData || !coords || !isInitialized) return [];
+    if (!eventsData || !coords || !isInitialized) return [];
 
     const filteredByDistance = filterEventsByDistance(
-      eventData,
+      eventsData,
       coords,
       10000, // 10km
     );
 
     return mapEventCard(filteredByDistance);
-  }, [eventData, coords, isInitialized]);
+  }, [eventsData, coords, isInitialized]);
 
   const selectedEvent =
-    eventData?.find((e) => e.id === selectedEventId) ?? null;
+    eventsData?.find((e) => e.id === selectedEventId) ?? null;
 
   const handleEventClick = (id: string) => {
     setSelectedEventId(id);
@@ -84,8 +83,13 @@ export default function Home() {
         period={selectedPeriod}
         onPeriodChange={setSelectedPeriod}
         onEventClick={handleEventClick}
+        isEventsLoading={isEventsLoading}
       />
-      <NearEvents events={nearEventItems} onEventClick={handleEventClick} />
+      <NearEvents
+        events={nearEventItems}
+        onEventClick={handleEventClick}
+        isEventsLoading={isEventsLoading}
+      />
 
       {/* 이벤트 상세 모달 */}
       <EventDetailModal

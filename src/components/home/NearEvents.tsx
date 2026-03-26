@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import EventCard from "@/components/common/EventCard";
 import MoreCard from "@/components/common/MoreCard";
 import KakaoMap from "@/components/common/KakaoMap";
+import EventCardSkeleton from "@/components/common/skeleton/EventCardSkeleton";
 import { Map } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -15,11 +16,16 @@ import { EventCardItem, MapMode } from "@/types/common";
 interface NearEventsProps {
   events: EventCardItem[];
   onEventClick: (id: string) => void;
+  isEventsLoading: boolean;
 }
 
 const PAGE_SIZE = 5;
 
-export default function NearEvents({ events, onEventClick }: NearEventsProps) {
+export default function NearEvents({
+  events,
+  onEventClick,
+  isEventsLoading,
+}: NearEventsProps) {
   const router = useRouter();
   const { coords } = useLocationStore();
 
@@ -56,7 +62,13 @@ export default function NearEvents({ events, onEventClick }: NearEventsProps) {
 
         <div className="md:flex-[0.6]">
           <div className="flex flex-col gap-4 md:h-full md:overflow-y-auto md:pr-2 md:pb-2">
-            {visibleEvents.length === 0 ? (
+            {isEventsLoading ? (
+              <>
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <EventCardSkeleton key={i} />
+                ))}
+              </>
+            ) : visibleEvents.length === 0 ? (
               <div className="text-etc flex h-full flex-col items-center justify-center gap-8 rounded-xl border py-18">
                 <div className="flex flex-col items-center">
                   <span className="text-desc1">근처에 행사가 없습니다.</span>
