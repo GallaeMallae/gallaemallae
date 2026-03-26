@@ -11,7 +11,7 @@ import { useWeatherData } from "@/hooks/queries/useWeatherData";
 import { useLocationNameData } from "@/hooks/queries/useLocationNameData";
 import { useAirPollutionData } from "@/hooks/queries/useAirPollutionData";
 import { useRecommendTypeData } from "@/hooks/queries/useRecommendTypeData";
-import { useEvents } from "@/hooks/queries/useEvents";
+import { useEventsData } from "@/hooks/queries/useEventsData";
 import { mapWeatherCard, mapEventCard } from "@/utils/mapper";
 import { filterEventByPeriod, filterEventsByDistance } from "@/utils/filter";
 import { PeriodFilter } from "@/types/common";
@@ -24,7 +24,7 @@ export default function Home() {
   const { data: recommendTypeData, isLoading: isRecommendTypeLoading } =
     useRecommendTypeData(weatherData, airPollutionData);
 
-  const { data: eventData } = useEvents();
+  const { data: eventData } = useEventsData();
 
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodFilter>("전체");

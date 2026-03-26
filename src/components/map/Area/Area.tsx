@@ -7,7 +7,7 @@ import EventDetailModal from "@/components/map/EventDetailModal/EventDetailModal
 import { LocateFixed } from "lucide-react";
 import { useState, useMemo } from "react";
 import { useKakaoLoader } from "react-kakao-maps-sdk";
-import { useEvents } from "@/hooks/queries/useEvents";
+import { useEventsData } from "@/hooks/queries/useEventsData";
 import { useCurrentLocation } from "@/hooks/useCurrentLocation";
 import {
   filterEventsByCategory,
@@ -30,7 +30,7 @@ export default function Area({
   search: string;
 }) {
   const { position, moveCurrentLocation } = useCurrentLocation();
-  const { data: events = [], isLoading, error: queryError } = useEvents();
+  const { data: events = [], isLoading, error: queryError } = useEventsData();
 
   const [locate, setLocate] = useState<kakao.maps.Map | null>(null);
   const [loading, kakaoError] = useKakaoLoader({
