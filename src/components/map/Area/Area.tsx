@@ -7,13 +7,14 @@ import EventDetailModal from "@/components/map/EventDetailModal/EventDetailModal
 import { LocateFixed } from "lucide-react";
 import { useState, useMemo } from "react";
 import { useKakaoLoader } from "react-kakao-maps-sdk";
-import { useEvents } from "@/hooks/queries/useEvents";
+import { useEventsData } from "@/hooks/queries/useEventsData";
 import { useCurrentLocation } from "@/hooks/useCurrentLocation";
 import {
   filterEventsByCategory,
   filterEventByPeriod,
   filterEventsByDistance,
 } from "@/utils/filter";
+import { mapEventCard } from "@/utils/mapper";
 import { CategoryId, PeriodFilter } from "@/types/common";
 
 export default function Area({
@@ -29,8 +30,7 @@ export default function Area({
   search: string;
 }) {
   const { position, moveCurrentLocation } = useCurrentLocation();
-  const { data: events = [], isLoading, error: queryError } = useEvents();
-  console.log(events);
+  const { data: events = [], isLoading, error: queryError } = useEventsData();
 
   const [locate, setLocate] = useState<kakao.maps.Map | null>(null);
   const [loading, kakaoError] = useKakaoLoader({
@@ -55,6 +55,10 @@ export default function Area({
 
     return result;
   }, [events, category, period, search, position, radius]);
+
+  const carouselEvents = useMemo(() => {
+    return mapEventCard(filteredEvents);
+  }, [filteredEvents]);
 
   // 지도 마커 데이터 생성
   const markers = useMemo(() => {
@@ -136,7 +140,7 @@ export default function Area({
       </Button>
 
       <EventCarousel
-        events={filteredEvents}
+        events={carouselEvents}
         onCarouselClick={(id) => setSelectedModal(id)}
         onSelectCarousel={setSelectedCarousel}
       />
