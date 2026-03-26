@@ -12,9 +12,8 @@ import { useAirPollutionData } from "@/hooks/queries/useAirPollutionData";
 import { useRecommendTypeData } from "@/hooks/queries/useRecommendTypeData";
 import { useEvents } from "@/hooks/queries/useEvents";
 import { mapWeatherCard, mapEventCard } from "@/utils/mapper";
-import { filterEventByPeriod } from "@/utils/filter";
+import { filterEventByPeriod, filterEventsByDistance } from "@/utils/filter";
 import { PeriodFilter } from "@/types/common";
-import { MOCK_EVENTS } from "@/mocks/events";
 
 export default function Home() {
   const { coords, isInitialized, isDefaultLocation } = useLocationStore();
@@ -43,11 +42,23 @@ export default function Home() {
 
   const recommendType = recommendTypeData?.recommendType ?? null;
 
-  const eventCardItems = useMemo(() => {
+  const upcomingEventItems = useMemo(() => {
     if (!eventData) return [];
     const filteredEvents = filterEventByPeriod(eventData, selectedPeriod);
     return mapEventCard(filteredEvents);
   }, [eventData, selectedPeriod]);
+
+  const nearEventItems = useMemo(() => {
+    if (!eventData || !coords || !isInitialized) return [];
+
+    const filteredByDistance = filterEventsByDistance(
+      eventData,
+      coords,
+      10000, // 10km
+    );
+
+    return mapEventCard(filteredByDistance);
+  }, [eventData, coords, isInitialized]);
 
   return (
     <div className="flex flex-col gap-8">
@@ -60,11 +71,11 @@ export default function Home() {
       <CategoryMenu />
       <UpcomingEvents
         key={selectedPeriod}
-        events={eventCardItems}
+        events={upcomingEventItems}
         period={selectedPeriod}
         onPeriodChange={setSelectedPeriod}
       />
-      <NearEvents events={MOCK_EVENTS} />
+      <NearEvents events={nearEventItems} />
     </div>
   );
 }

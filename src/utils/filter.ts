@@ -1,5 +1,5 @@
 import { getDistance } from "@/utils/geo";
-import { CategoryId, PeriodFilter } from "@/types/common";
+import { CategoryId, PeriodFilter, Coordinates } from "@/types/common";
 import { Event } from "@/types/event";
 
 export function filterEventsByCategory(
@@ -50,7 +50,7 @@ export function filterEventByPeriod(
 
 export const filterEventsByDistance = (
   events: Event[],
-  center: { lat: number; lng: number } | null,
+  center: Coordinates | null,
   radius: number | null,
 ): Event[] => {
   if (!center || radius === null) return events;
