@@ -12,7 +12,7 @@ export function useEventsData() {
   return useQuery<Event[]>({
     queryKey: QUERY_KEYS.EVENTS,
     queryFn: () => fetchEvents(supabase),
-    staleTime: 1000 * 60 * 5,
+    staleTime: Infinity,
     gcTime: 1000 * 60 * 30,
   });
 }

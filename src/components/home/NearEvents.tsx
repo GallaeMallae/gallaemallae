@@ -8,35 +8,46 @@ import KakaoMap from "@/components/common/KakaoMap";
 import EventCardSkeleton from "@/components/common/skeleton/EventCardSkeleton";
 import { Map } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { MapMarker } from "react-kakao-maps-sdk";
 import { useLocationStore } from "@/stores/locationStore";
-import { EventCardItem, MapMode } from "@/types/common";
-
-interface NearEventsProps {
-  events: EventCardItem[];
-  onEventClick: (id: string) => void;
-  isEventsLoading: boolean;
-}
+import { useEventsData } from "@/hooks/queries/useEventsData";
+import { filterEventsByDistance } from "@/utils/filter";
+import { mapEventCard } from "@/utils/mapper";
+import { MapMode } from "@/types/common";
 
 const PAGE_SIZE = 5;
 
 export default function NearEvents({
-  events,
   onEventClick,
-  isEventsLoading,
-}: NearEventsProps) {
+}: {
+  onEventClick: (id: string) => void;
+}) {
   const router = useRouter();
-  const { coords } = useLocationStore();
+  const { coords, isInitialized } = useLocationStore();
+  const { data: eventsData } = useEventsData();
+
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   const center = {
     lat: coords.lat,
     lng: coords.lng,
   };
 
-  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const nearEventCardItems = useMemo(() => {
+    if (!eventsData || !coords || !isInitialized) return [];
 
-  const visibleEvents = events.slice(0, visibleCount);
+    const filteredByDistance = filterEventsByDistance(
+      eventsData,
+      coords,
+      10000, // 10km
+    );
+
+    return mapEventCard(filteredByDistance);
+  }, [eventsData, coords, isInitialized]);
+
+  const visibleEvents = nearEventCardItems.slice(0, visibleCount);
+  const hasMore = nearEventCardItems.length > visibleCount;
 
   const handleSeeMore = () => {
     setVisibleCount((prev) => prev + PAGE_SIZE);
@@ -45,8 +56,6 @@ export default function NearEvents({
   const handleMapClick = (mode: MapMode) => {
     router.push(`/map?mode=${mode}`);
   };
-
-  const hasMore = events.length > visibleCount;
 
   return (
     <section>
@@ -62,7 +71,7 @@ export default function NearEvents({
 
         <div className="md:flex-[0.6]">
           <div className="flex flex-col gap-4 md:h-full md:overflow-y-auto md:pr-2 md:pb-2">
-            {isEventsLoading ? (
+            {!isInitialized ? (
               <>
                 {Array.from({ length: 3 }).map((_, i) => (
                   <EventCardSkeleton key={i} />

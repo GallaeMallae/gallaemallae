@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Carousel,
   CarouselContent,
@@ -6,42 +8,48 @@ import {
 import PeriodFilterTabs from "@/components/common/PeriodFilterTabs";
 import EventCard from "@/components/common/EventCard";
 import MoreCard from "@/components/common/MoreCard";
-import EventCardSkeleton from "@/components/common/skeleton/EventCardSkeleton";
-import { useState } from "react";
-import { EventCardItem, PeriodFilter } from "@/types/common";
-
-interface UpcomingEventsProps {
-  events: EventCardItem[];
-  period: PeriodFilter;
-  onPeriodChange: (value: PeriodFilter) => void;
-  onEventClick: (id: string) => void;
-  isEventsLoading: boolean;
-}
+import { useState, useMemo } from "react";
+import { useEventsData } from "@/hooks/queries/useEventsData";
+import { filterEventByPeriod } from "@/utils/filter";
+import { mapEventCard } from "@/utils/mapper";
+import { PeriodFilter } from "@/types/common";
 
 const PAGE_SIZE = 10;
 
 export default function UpcomingEvents({
-  events,
-  period,
-  onPeriodChange,
   onEventClick,
-  isEventsLoading,
-}: UpcomingEventsProps) {
+}: {
+  onEventClick: (id: string) => void;
+}) {
+  const { data: eventsData } = useEventsData();
+
+  const [selectedPeriod, setSelectedPeriod] = useState<PeriodFilter>("전체");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
-  const visibleEvents = events.slice(0, visibleCount);
+  const eventsCardItems = useMemo(() => {
+    if (!eventsData) return [];
+    const filteredEvents = filterEventByPeriod(eventsData, selectedPeriod);
+    return mapEventCard(filteredEvents);
+  }, [eventsData, selectedPeriod]);
+
+  const visibleEvents = eventsCardItems.slice(0, visibleCount);
+  const hasMore = eventsCardItems.length > visibleCount;
 
   const handleSeeMore = () => {
     setVisibleCount((prev) => prev + PAGE_SIZE);
   };
 
-  const hasMore = events.length > visibleCount;
-
   return (
     <section>
       <div className="mb-2 flex items-center justify-between">
         <h3 className="text-title2 font-bold">다가오는 행사</h3>
-        <PeriodFilterTabs value={period} onChange={onPeriodChange} />
+        <PeriodFilterTabs
+          value={selectedPeriod}
+          onChange={(period) => {
+            setSelectedPeriod(period);
+            setVisibleCount(PAGE_SIZE);
+          }}
+        />
       </div>
 
       <Carousel
@@ -49,15 +57,7 @@ export default function UpcomingEvents({
           align: "center",
         }}
       >
-        {isEventsLoading ? (
-          <CarouselContent className="overflow-visible">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <CarouselItem key={i} className="basis-[80%] md:basis-[30%]">
-                <EventCardSkeleton />
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-        ) : visibleEvents.length === 0 ? (
+        {visibleEvents.length === 0 ? (
           <div className="text-etc py-18 text-center">
             예정된 행사가 없습니다.
           </div>
