@@ -12,19 +12,21 @@ import { useProfileData } from "@/hooks/queries/useProfileData";
 import { toast } from "sonner";
 import { useDeleteEventPlan } from "@/hooks/mutations/useDeleteEventPlan";
 
-interface MyPageEventRecommendCardProps {
+interface MypageEventRecommendCardProps {
   event: Event;
   isLiked: boolean;
   isPlanned: boolean;
   planId?: string;
+  onDetailClick: (eventId: string) => void;
 }
 
-export default function MyPageEventRecommendCard({
+export default function MypageEventRecommendCard({
   event,
   isLiked,
   isPlanned,
   planId,
-}: MyPageEventRecommendCardProps) {
+  onDetailClick,
+}: MypageEventRecommendCardProps) {
   const { data: profile } = useProfileData();
 
   const { mutate: toggleLike } = useEventLike(event.id);
@@ -33,7 +35,6 @@ export default function MyPageEventRecommendCard({
     useDeleteEventPlan();
 
   const handleLikeClick = () => {
-    // 현재 좋아요 상태를 넘겨주면 훅 내부 로직에 따라 delete/insert 처리
     toggleLike(isLiked);
   };
 
@@ -118,7 +119,7 @@ export default function MyPageEventRecommendCard({
           {isPlanned ? (
             <Button
               size={"sm"}
-              className="hover:bg-symbol-sky"
+              className="bg-destructive hover:bg-destructive/80"
               onClick={() => handleDeletePlanClick()}
               disabled={isDeletePlanLoading}
             >
@@ -127,15 +128,19 @@ export default function MyPageEventRecommendCard({
           ) : (
             <Button
               size={"sm"}
-              className="hover:bg-symbol-sky"
+              className="bg-symbol-sky hover:bg-symbol-sky/80 text-white"
               onClick={() => handleAddPlanClick()}
               disabled={isPlanLoading}
             >
-              일정에 추가
+              나의 일정에 추가
             </Button>
           )}
 
-          <Button size={"sm"} variant={"outline"}>
+          <Button
+            size={"sm"}
+            variant={"outline"}
+            onClick={() => onDetailClick(event.id)}
+          >
             행사 정보
           </Button>
         </div>

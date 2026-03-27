@@ -41,7 +41,7 @@ export default function EventDetailModalRight({ event }: { event: Event }) {
         <p className="text-caption text-slate-400">준비 중입니다.</p>
       </div>
 
-      <EventDetailModalButton />
+      <EventDetailModalButton event={event} />
     </div>
   );
 }

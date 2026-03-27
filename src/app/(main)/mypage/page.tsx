@@ -1,16 +1,19 @@
 "use client";
 
 import WeatherCard from "@/components/common/WeatherCard";
-import MyPageEventRecommendCard from "@/components/mypage/MyPageEventRecommendCard";
+import MypageEventRecommendCard from "@/components/mypage/MypageEventRecommendCard";
 import MypageProfileCard from "@/components/mypage/MypageProfileCard";
-import MypageEventSectionCard from "@/components/mypage/MyPageEventSectionCard";
+import MypageEventSectionCard from "@/components/mypage/MypageEventSectionCard";
 import MypageSelectedDateEventsCard from "@/components/mypage/MypageSelectedDateEventsCard";
 import WeatherCardSkeleton from "@/components/common/skeleton/WeatherCardSkeleton";
+import EventDetailModal from "@/components/map/EventDetailModal/EventDetailModal";
 import { Calendar } from "@/components/ui/calendar";
+import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 import { useState } from "react";
 import { parseSafeDate } from "@/utils/date";
-import { isWithinInterval, parseISO, startOfDay } from "date-fns";
+import { isSameDay, isWithinInterval, parseISO, startOfDay } from "date-fns";
 import { useLocationStore } from "@/stores/locationStore";
 import { useLocationNameData } from "@/hooks/queries/useLocationNameData";
 import { useWeatherData } from "@/hooks/queries/useWeatherData";
@@ -29,6 +32,8 @@ export default function Mypage() {
   );
   const [month, setMonth] = useState<Date>(new Date());
   const [activePopoverDate, setActivePopoverDate] = useState<Date | null>(null);
+  const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const { data: profile } = useProfileData();
   const { coords, isInitialized, isDefaultLocation } = useLocationStore();
@@ -37,8 +42,10 @@ export default function Mypage() {
   const { data: airPollutionData } = useAirPollutionData(coords, isInitialized);
   const { data: recommendEventData, isLoading: isRecommendEventCardLoading } =
     useMypageRecommendEventData(locationNameData);
-  const { data: likedEvents = [] } = useLikedEventsData();
-  const { data: plannedEvents = [] } = usePlannedEventsData();
+  const { data: likedEvents = [], isLoading: isLikedEventLoading } =
+    useLikedEventsData();
+  const { data: plannedEvents = [], isLoading: isPlannedEventLoading } =
+    usePlannedEventsData();
 
   const isDesktop = useIsDesktop();
 
@@ -55,6 +62,35 @@ export default function Mypage() {
       )
     : null;
 
+  const handleDetailClick = (eventId: string) => {
+    setSelectedEventId(eventId);
+  };
+
+  const handleCalendarSelect = (date: Date | undefined) => {
+    if (!date) {
+      setSelectedDate(undefined);
+      setIsDrawerOpen(false);
+      return;
+    }
+
+    const targetDate = startOfDay(date);
+    const hasEvents = formattedPlannedEvents.some((event) => {
+      const startDate = parseISO(event.start_date);
+      const endDate = parseISO(event.end_date);
+      return isWithinInterval(targetDate, { start: startDate, end: endDate });
+    });
+
+    if (!hasEvents) {
+      setIsDrawerOpen(false);
+      return;
+    }
+
+    setSelectedDate(date);
+    if (!isDesktop) {
+      setIsDrawerOpen(true);
+    }
+  };
+
   const handleEventClick = (dateString: string) => {
     const newDate = parseSafeDate(dateString);
 
@@ -62,6 +98,10 @@ export default function Mypage() {
       setSelectedDate(newDate);
       setMonth(newDate);
       setActivePopoverDate(newDate);
+
+      if (!isDesktop) {
+        setIsDrawerOpen(true);
+      }
     } else {
       console.error("Invalid date string provided:", dateString);
       toast.error("유효하지 않은 날짜 형식입니다.");
@@ -69,11 +109,25 @@ export default function Mypage() {
   };
 
   const handlePopoverChange = (date: Date | null) => {
-    setActivePopoverDate(date);
-
-    // 팝오버가 닫힐 때(date가 null일 때) 선택된 날짜도 초기화(undefined)
-    if (date === null) {
+    if (
+      date === null &&
+      activePopoverDate !== null &&
+      selectedDate &&
+      isSameDay(activePopoverDate, selectedDate)
+    ) {
       setSelectedDate(undefined);
+      setIsDrawerOpen(false);
+    }
+
+    setActivePopoverDate(date);
+  };
+
+  const handleDrawerChange = (open: boolean) => {
+    setIsDrawerOpen(open);
+
+    if (!open) {
+      setSelectedDate(undefined);
+      setActivePopoverDate(null);
     }
   };
 
@@ -88,6 +142,13 @@ export default function Mypage() {
     display_date: plan.visit_date || plan.event.start_date,
     plan_id: plan.id,
   }));
+
+  // 행사 상세보기 데이터를 위해 행사 id값 기준 find
+  const selectedEvent = [
+    recommendEventData,
+    ...formattedLikedEvents,
+    ...formattedPlannedEvents,
+  ].find((event) => event?.id === selectedEventId);
 
   // 추천받은 행사를 일정에 추가했을 경우 planId를 props로 보내주기 위함
   const matchedPlan = formattedPlannedEvents.find(
@@ -115,7 +176,8 @@ export default function Mypage() {
   );
 
   const isPreparing = !locationNameData || !profile?.id;
-  const showSkeleton = isPreparing || isRecommendEventCardLoading;
+  const showRecommendEventCardSkeleton =
+    isPreparing || isRecommendEventCardLoading;
 
   return (
     <div className="flex flex-col gap-6">
@@ -131,14 +193,15 @@ export default function Mypage() {
             <WeatherCard {...weather} />
           )}
           <div className="flex h-full flex-col">
-            {showSkeleton ? (
+            {showRecommendEventCardSkeleton ? (
               <RecommendEventCardSkeleton />
             ) : recommendEventData ? (
-              <MyPageEventRecommendCard
+              <MypageEventRecommendCard
                 event={recommendEventData}
                 isLiked={isLiked}
                 isPlanned={isPlanned}
                 planId={matchedPlanId}
+                onDetailClick={handleDetailClick}
               />
             ) : (
               // 정말로 180일치 다 뒤졌는데 결과가 null일 때만 이게 나옴
@@ -163,6 +226,7 @@ export default function Mypage() {
               iconName="bookmark"
               iconClassName="text-symbol-sky fill-symbol-sky"
               isDesktop={isDesktop}
+              isLoading={isPlannedEventLoading}
               events={formattedPlannedEvents}
               onEventClick={handleEventClick}
             />
@@ -173,6 +237,7 @@ export default function Mypage() {
               iconName="heart"
               iconClassName="text-red-500 fill-red-500"
               isDesktop={isDesktop}
+              isLoading={isLikedEventLoading}
               events={formattedLikedEvents}
               onEventClick={handleEventClick}
             />
@@ -186,24 +251,43 @@ export default function Mypage() {
               plannedEvents={formattedPlannedEvents}
               selected={selectedDate}
               month={month}
-              onSelect={setSelectedDate}
+              onSelect={handleCalendarSelect}
               onMonthChange={setMonth}
               nickname={profile?.nickname ?? undefined}
               activePopoverDate={activePopoverDate}
               onActivePopoverDate={handlePopoverChange}
+              onDetailClick={handleDetailClick}
               isDesktop={isDesktop}
               captionLayout="dropdown"
             />
           </div>
 
-          {!isDesktop && selectedDate && dailyEvents.length > 0 && (
-            <MypageSelectedDateEventsCard
-              selectedDate={selectedDate}
-              events={dailyEvents}
-            />
+          {!isDesktop && (
+            <Drawer open={isDrawerOpen} onOpenChange={handleDrawerChange}>
+              <DrawerTitle className="sr-only">선택한 날짜 일정</DrawerTitle>
+              <DrawerContent>
+                <div className="flex h-[60dvh] max-h-128 w-full flex-col justify-center p-6">
+                  <ScrollArea className="min-h-0 flex-1">
+                    <MypageSelectedDateEventsCard
+                      selectedDate={selectedDate}
+                      events={dailyEvents}
+                      onDetailClick={handleDetailClick}
+                    />
+                  </ScrollArea>
+                </div>
+              </DrawerContent>
+            </Drawer>
           )}
         </div>
       </div>
+
+      {selectedEventId && (
+        <EventDetailModal
+          event={selectedEvent ?? null}
+          open={!!selectedEventId}
+          onClose={() => setSelectedEventId(null)}
+        />
+      )}
     </div>
   );
 }

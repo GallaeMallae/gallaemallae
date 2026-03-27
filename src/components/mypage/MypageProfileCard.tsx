@@ -5,9 +5,23 @@ import { Card, CardContent } from "@/components/ui/card";
 import { User } from "lucide-react";
 import Image from "next/image";
 import { useProfileData } from "@/hooks/queries/useProfileData";
+import { Button } from "@/components/ui/button";
+import { useOpenAlertModal } from "@/stores/alertModalStore";
+import { useLogout } from "@/hooks/useLogout";
 
 export default function MypageProfileCard() {
   const { data: profile } = useProfileData();
+  const openAlert = useOpenAlertModal();
+  const { logout } = useLogout();
+
+  const handleLogoutClick = () => {
+    console.log("클릭");
+    openAlert({
+      title: "로그아웃 하시겠습니까?",
+      description: "메인 페이지로 이동됩니다.",
+      onAction: () => logout(),
+    });
+  };
 
   return (
     <Card className="flex h-full flex-col justify-between rounded-2xl">
@@ -38,7 +52,16 @@ export default function MypageProfileCard() {
             </div>
           </div>
         </div>
-        <MypageProfileDialog profile={profile} />
+        <div className="flex w-full flex-col gap-2">
+          <MypageProfileDialog profile={profile} />
+          <Button
+            variant="outline"
+            className="border-destructive/20 text-destructive hover:bg-destructive/10 hover:text-destructive w-full font-bold shadow-sm md:hidden"
+            onClick={handleLogoutClick}
+          >
+            로그아웃
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );
