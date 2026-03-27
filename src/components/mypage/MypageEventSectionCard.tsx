@@ -61,7 +61,7 @@ export default function MypageEventSectionCard({
     if (!isDesktop || !hasMore) return;
 
     const viewport = scrollAreaRef.current?.querySelector(
-      "[data-radix-scroll-area-viewport]",
+      '[data-slot="scroll-area-viewport"]',
     );
 
     const observer = new IntersectionObserver(

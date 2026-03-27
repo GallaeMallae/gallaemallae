@@ -119,7 +119,7 @@ export default function MypageEventRecommendCard({
           {isPlanned ? (
             <Button
               size={"sm"}
-              className="hover:bg-symbol-sky"
+              className="bg-destructive hover:bg-destructive/80"
               onClick={() => handleDeletePlanClick()}
               disabled={isDeletePlanLoading}
             >
@@ -128,11 +128,11 @@ export default function MypageEventRecommendCard({
           ) : (
             <Button
               size={"sm"}
-              className="hover:bg-symbol-sky"
+              className="bg-symbol-sky hover:bg-symbol-sky/80 text-white"
               onClick={() => handleAddPlanClick()}
               disabled={isPlanLoading}
             >
-              일정에 추가
+              나의 일정에 추가
             </Button>
           )}
 

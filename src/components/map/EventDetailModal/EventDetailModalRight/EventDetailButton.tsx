@@ -123,6 +123,7 @@ export default function EventDetailModalButton({
         variant="ghost"
         size="icon"
         aria-label="좋아요"
+        aria-pressed={isLiked}
         className="h-12 w-12 p-0"
         onClick={handleLikeClick}
       >

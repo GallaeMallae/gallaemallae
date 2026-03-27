@@ -76,7 +76,7 @@ export default function MypageAgendaCard({
               </DropdownMenuGroup>
               <DropdownMenuItem
                 variant="destructive"
-                onClick={() => event.plan_id && deletePlan(event.plan_id)}
+                onSelect={() => event.plan_id && deletePlan(event.plan_id)}
               >
                 <Trash />
                 일정 삭제

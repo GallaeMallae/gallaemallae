@@ -8,7 +8,7 @@ import MypageSelectedDateEventsCard from "@/components/mypage/MypageSelectedDate
 import WeatherCardSkeleton from "@/components/common/skeleton/WeatherCardSkeleton";
 import EventDetailModal from "@/components/map/EventDetailModal/EventDetailModal";
 import { Calendar } from "@/components/ui/calendar";
-import { Drawer, DrawerContent } from "@/components/ui/drawer";
+import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 import { useState } from "react";
@@ -67,19 +67,27 @@ export default function Mypage() {
   };
 
   const handleCalendarSelect = (date: Date | undefined) => {
+    if (!date) {
+      setSelectedDate(undefined);
+      setIsDrawerOpen(false);
+      return;
+    }
+
+    const targetDate = startOfDay(date);
+    const hasEvents = formattedPlannedEvents.some((event) => {
+      const startDate = parseISO(event.start_date);
+      const endDate = parseISO(event.end_date);
+      return isWithinInterval(targetDate, { start: startDate, end: endDate });
+    });
+
+    if (!hasEvents) {
+      setIsDrawerOpen(false);
+      return;
+    }
+
     setSelectedDate(date);
-
-    if (!isDesktop && date) {
-      const targetDate = startOfDay(date);
-      const hasEvents = formattedPlannedEvents.some((event) => {
-        const startDate = parseISO(event.start_date);
-        const endDate = parseISO(event.end_date);
-        return isWithinInterval(targetDate, { start: startDate, end: endDate });
-      });
-
-      if (hasEvents) {
-        setIsDrawerOpen(true);
-      }
+    if (!isDesktop) {
+      setIsDrawerOpen(true);
     }
   };
 
@@ -256,6 +264,7 @@ export default function Mypage() {
 
           {!isDesktop && (
             <Drawer open={isDrawerOpen} onOpenChange={handleDrawerChange}>
+              <DrawerTitle className="sr-only">선택한 날짜 일정</DrawerTitle>
               <DrawerContent>
                 <div className="flex h-[60dvh] max-h-128 w-full flex-col justify-center p-6">
                   <ScrollArea className="min-h-0 flex-1">
