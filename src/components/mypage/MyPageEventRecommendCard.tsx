@@ -12,7 +12,7 @@ import { useProfileData } from "@/hooks/queries/useProfileData";
 import { toast } from "sonner";
 import { useDeleteEventPlan } from "@/hooks/mutations/useDeleteEventPlan";
 
-interface MyPageEventRecommendCardProps {
+interface MypageEventRecommendCardProps {
   event: Event;
   isLiked: boolean;
   isPlanned: boolean;
@@ -20,13 +20,13 @@ interface MyPageEventRecommendCardProps {
   onDetailClick: (eventId: string) => void;
 }
 
-export default function MyPageEventRecommendCard({
+export default function MypageEventRecommendCard({
   event,
   isLiked,
   isPlanned,
   planId,
   onDetailClick,
-}: MyPageEventRecommendCardProps) {
+}: MypageEventRecommendCardProps) {
   const { data: profile } = useProfileData();
 
   const { mutate: toggleLike } = useEventLike(event.id);

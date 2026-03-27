@@ -1,9 +1,9 @@
 "use client";
 
 import WeatherCard from "@/components/common/WeatherCard";
-import MyPageEventRecommendCard from "@/components/mypage/MyPageEventRecommendCard";
+import MypageEventRecommendCard from "@/components/mypage/MypageEventRecommendCard";
 import MypageProfileCard from "@/components/mypage/MypageProfileCard";
-import MypageEventSectionCard from "@/components/mypage/MyPageEventSectionCard";
+import MypageEventSectionCard from "@/components/mypage/MypageEventSectionCard";
 import MypageSelectedDateEventsCard from "@/components/mypage/MypageSelectedDateEventsCard";
 import WeatherCardSkeleton from "@/components/common/skeleton/WeatherCardSkeleton";
 import EventDetailModal from "@/components/map/EventDetailModal/EventDetailModal";
@@ -188,7 +188,7 @@ export default function Mypage() {
             {showRecommendEventCardSkeleton ? (
               <RecommendEventCardSkeleton />
             ) : recommendEventData ? (
-              <MyPageEventRecommendCard
+              <MypageEventRecommendCard
                 event={recommendEventData}
                 isLiked={isLiked}
                 isPlanned={isPlanned}
