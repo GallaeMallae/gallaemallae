@@ -6,7 +6,10 @@ import MypageProfileCard from "@/components/mypage/MypageProfileCard";
 import MypageEventSectionCard from "@/components/mypage/MyPageEventSectionCard";
 import MypageSelectedDateEventsCard from "@/components/mypage/MypageSelectedDateEventsCard";
 import WeatherCardSkeleton from "@/components/common/skeleton/WeatherCardSkeleton";
+import EventDetailModal from "@/components/map/EventDetailModal/EventDetailModal";
 import { Calendar } from "@/components/ui/calendar";
+import { Drawer, DrawerContent } from "@/components/ui/drawer";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 import { useState } from "react";
 import { parseSafeDate } from "@/utils/date";
@@ -22,7 +25,6 @@ import { useProfileData } from "@/hooks/queries/useProfileData";
 import { useMypageRecommendEventData } from "@/hooks/queries/useMypageRecommendEventData";
 import RecommendEventCardSkeleton from "@/components/common/skeleton/RecommendEventCardSkeleton";
 import { useIsDesktop } from "@/hooks/useIsDesktop";
-import EventDetailModal from "@/components/map/EventDetailModal/EventDetailModal";
 
 export default function Mypage() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
@@ -31,6 +33,7 @@ export default function Mypage() {
   const [month, setMonth] = useState<Date>(new Date());
   const [activePopoverDate, setActivePopoverDate] = useState<Date | null>(null);
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const { data: profile } = useProfileData();
   const { coords, isInitialized, isDefaultLocation } = useLocationStore();
@@ -63,6 +66,23 @@ export default function Mypage() {
     setSelectedEventId(eventId);
   };
 
+  const handleCalendarSelect = (date: Date | undefined) => {
+    setSelectedDate(date);
+
+    if (!isDesktop && date) {
+      const targetDate = startOfDay(date);
+      const hasEvents = formattedPlannedEvents.some((event) => {
+        const startDate = parseISO(event.start_date);
+        const endDate = parseISO(event.end_date);
+        return isWithinInterval(targetDate, { start: startDate, end: endDate });
+      });
+
+      if (hasEvents) {
+        setIsDrawerOpen(true);
+      }
+    }
+  };
+
   const handleEventClick = (dateString: string) => {
     const newDate = parseSafeDate(dateString);
 
@@ -70,6 +90,10 @@ export default function Mypage() {
       setSelectedDate(newDate);
       setMonth(newDate);
       setActivePopoverDate(newDate);
+
+      if (!isDesktop) {
+        setIsDrawerOpen(true);
+      }
     } else {
       console.error("Invalid date string provided:", dateString);
       toast.error("유효하지 않은 날짜 형식입니다.");
@@ -84,9 +108,19 @@ export default function Mypage() {
       isSameDay(activePopoverDate, selectedDate)
     ) {
       setSelectedDate(undefined);
+      setIsDrawerOpen(false);
     }
 
     setActivePopoverDate(date);
+  };
+
+  const handleDrawerChange = (open: boolean) => {
+    setIsDrawerOpen(open);
+
+    if (!open) {
+      setSelectedDate(undefined);
+      setActivePopoverDate(null);
+    }
   };
 
   // 관심 목록 데이터 가공
@@ -209,7 +243,7 @@ export default function Mypage() {
               plannedEvents={formattedPlannedEvents}
               selected={selectedDate}
               month={month}
-              onSelect={setSelectedDate}
+              onSelect={handleCalendarSelect}
               onMonthChange={setMonth}
               nickname={profile?.nickname ?? undefined}
               activePopoverDate={activePopoverDate}
@@ -220,12 +254,20 @@ export default function Mypage() {
             />
           </div>
 
-          {!isDesktop && selectedDate && dailyEvents.length > 0 && (
-            <MypageSelectedDateEventsCard
-              selectedDate={selectedDate}
-              events={dailyEvents}
-              onDetailClick={handleDetailClick}
-            />
+          {!isDesktop && (
+            <Drawer open={isDrawerOpen} onOpenChange={handleDrawerChange}>
+              <DrawerContent>
+                <div className="flex h-[60dvh] max-h-128 w-full flex-col justify-center p-6">
+                  <ScrollArea className="min-h-0 flex-1">
+                    <MypageSelectedDateEventsCard
+                      selectedDate={selectedDate}
+                      events={dailyEvents}
+                      onDetailClick={handleDetailClick}
+                    />
+                  </ScrollArea>
+                </div>
+              </DrawerContent>
+            </Drawer>
           )}
         </div>
       </div>
