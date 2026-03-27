@@ -6,8 +6,7 @@ import EventDetailModalRight from "@/components/map/EventDetailModal/EventDetail
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { CategoryId } from "@/types/common";
-import { Event } from "@/types/event";
+import { CategoryId, Event } from "@/types/common";
 import { CATEGORY_NAME_MAP } from "@/lib/constants";
 
 type Props = {

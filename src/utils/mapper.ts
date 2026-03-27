@@ -2,7 +2,13 @@ import {
   FetchWeatherResponse,
   FetchAirPollutionResponse,
 } from "@/types/apiResponse";
-import { WeatherCardItem } from "@/types/common";
+import {
+  WeatherCardItem,
+  Event,
+  EventCardItem,
+  CategoryId,
+} from "@/types/common";
+import { CATEGORY_NAME_MAP } from "@/lib/constants";
 
 /**
  * @param type - OpenWeather API에서 제공하는 날씨 타입 (ex: Clear, Clouds, Rain, Snow 등)
@@ -75,4 +81,28 @@ export function mapWeatherCard(
     fineDust: mapPm10Level(airPollution.components.pm10),
     ultrafineDust: mapPm25Level(airPollution.components.pm2_5),
   };
+}
+
+/**
+ * @param events - API로부터 조회한 이벤트 리스트
+ * @returns EventCard 컴포넌트에서 사용할 데이터 객체
+ */
+export function mapEventCard(events: Event[]): EventCardItem[] {
+  return events.map((event) => {
+    const categoryId = (event.categories?.[0] as CategoryId) ?? "etc";
+
+    return {
+      id: event.id,
+      title: event.name ?? "행사 제목 없음",
+      location:
+        event.venue ??
+        event.road_address ??
+        event.lot_address ??
+        "장소 정보 없음",
+      startDate: event.start_date,
+      endDate: event.end_date ?? event.start_date,
+      category: CATEGORY_NAME_MAP[categoryId] ?? "기타",
+      isLiked: false,
+    };
+  });
 }

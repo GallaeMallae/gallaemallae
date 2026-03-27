@@ -1,6 +1,6 @@
 import { getDistance } from "@/utils/geo";
-import { CategoryId, PeriodFilter } from "@/types/common";
-import { Event } from "@/types/event";
+import { CategoryId, PeriodFilter, Coordinates } from "@/types/common";
+import { Event } from "@/types/common";
 
 export function filterEventsByCategory(
   events: Event[],
@@ -20,7 +20,7 @@ export function filterEventByPeriod(
   today.setHours(0, 0, 0, 0);
 
   return events.filter((event) => {
-    if (!event.start_date) return false;
+    if (!event.start_date || !event.name) return false;
 
     const startDate = new Date(event.start_date);
     const endDate = new Date(event.end_date ?? event.start_date);
@@ -50,7 +50,7 @@ export function filterEventByPeriod(
 
 export const filterEventsByDistance = (
   events: Event[],
-  center: { lat: number; lng: number } | null,
+  center: Coordinates | null,
   radius: number | null,
 ): Event[] => {
   if (!center || radius === null) return events;

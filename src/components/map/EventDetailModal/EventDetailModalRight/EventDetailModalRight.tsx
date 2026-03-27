@@ -3,13 +3,9 @@
 import EventDetailOrganization from "@/components/map/EventDetailModal/EventDetailModalRight/EventDetailOrganization";
 import EventDetailModalButton from "@/components/map/EventDetailModal/EventDetailModalRight/EventDetailButton";
 import { Tally1 } from "lucide-react";
-import { Event } from "@/types/event";
+import { Event } from "@/types/common";
 
-type Props = {
-  event: Event;
-};
-
-export default function EventDetailModalRight({ event }: Props) {
+export default function EventDetailModalRight({ event }: { event: Event }) {
   return (
     <div className="flex h-full flex-col gap-6 md:justify-between">
       <div className="flex flex-col gap-2">
