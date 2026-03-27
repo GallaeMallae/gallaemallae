@@ -6,15 +6,9 @@ import UpcomingEvents from "@/components/home/UpcomingEvents";
 import NearEvents from "@/components/home/NearEvents";
 import EventDetailModal from "@/components/map/EventDetailModal/EventDetailModal";
 import { useState } from "react";
-import { useEventsData } from "@/hooks/queries/useEventsData";
 
 export default function Home() {
-  const { data: eventsData } = useEventsData();
-
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
-
-  const selectedEvent =
-    eventsData?.find((e) => e.id === selectedEventId) ?? null;
 
   const handleEventClick = (id: string) => {
     setSelectedEventId(id);
@@ -29,7 +23,7 @@ export default function Home() {
 
       {/* 이벤트 상세 모달 */}
       <EventDetailModal
-        event={selectedEvent}
+        eventId={selectedEventId}
         open={!!selectedEventId}
         onClose={() => setSelectedEventId(null)}
       />

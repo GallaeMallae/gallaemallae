@@ -1,21 +1,30 @@
 "use client";
 
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import EventDetailModalLeft from "@/components/map/EventDetailModal/EventDetailModalLeft/EventDetailModalLeft";
 import EventDetailModalRight from "@/components/map/EventDetailModal/EventDetailModalRight/EventDetailModalRight";
-import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { CategoryId, Event } from "@/types/common";
+import { useEventsData } from "@/hooks/queries/useEventsData";
+import { CategoryId } from "@/types/common";
 import { CATEGORY_NAME_MAP } from "@/lib/constants";
 
-type Props = {
-  event: Event | null;
+type EventDetailModalProps = {
+  eventId: string | null;
   open: boolean;
   onClose: () => void;
 };
 
-export default function EventDetailModal({ event, open, onClose }: Props) {
+export default function EventDetailModal({
+  eventId,
+  open,
+  onClose,
+}: EventDetailModalProps) {
+  const { data: eventsData } = useEventsData();
+
+  const event = eventsData?.find((e) => e.id === eventId);
+
   if (!event) return null;
 
   const categoryId = (event.categories?.[0] as CategoryId) || "etc";
