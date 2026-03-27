@@ -1,32 +1,25 @@
-"use client";
+import HomeClient from "@/components/home/HomeClient";
+import {
+  QueryClient,
+  HydrationBoundary,
+  dehydrate,
+} from "@tanstack/react-query";
+import { createClient } from "@/utils/supabase/server";
+import { fetchEvents } from "@/lib/api/events";
+import { QUERY_KEYS } from "@/lib/constants";
 
-import MainBanner from "@/components/home/MainBanner";
-import CategoryMenu from "@/components/home/CategoryMenu";
-import UpcomingEvents from "@/components/home/UpcomingEvents";
-import NearEvents from "@/components/home/NearEvents";
-import EventDetailModal from "@/components/map/EventDetailModal/EventDetailModal";
-import { useState } from "react";
+export default async function Home() {
+  const queryClient = new QueryClient();
+  const supabase = await createClient();
 
-export default function Home() {
-  const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
-
-  const handleEventClick = (id: string) => {
-    setSelectedEventId(id);
-  };
+  await queryClient.prefetchQuery({
+    queryKey: QUERY_KEYS.EVENTS,
+    queryFn: () => fetchEvents(supabase),
+  });
 
   return (
-    <div className="flex flex-col gap-8">
-      <MainBanner />
-      <CategoryMenu />
-      <UpcomingEvents onEventClick={handleEventClick} />
-      <NearEvents onEventClick={handleEventClick} />
-
-      {/* 이벤트 상세 모달 */}
-      <EventDetailModal
-        eventId={selectedEventId}
-        open={!!selectedEventId}
-        onClose={() => setSelectedEventId(null)}
-      />
-    </div>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <HomeClient />
+    </HydrationBoundary>
   );
 }
