@@ -25,7 +25,7 @@ export default function NearEvents({
 }) {
   const router = useRouter();
   const { coords, isInitialized } = useLocationStore();
-  const { data: eventsData, isLoading: isEventsLoading } = useEventsData();
+  const { data: eventsData } = useEventsData();
 
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
@@ -71,7 +71,7 @@ export default function NearEvents({
 
         <div className="md:flex-[0.6]">
           <div className="flex flex-col gap-4 md:h-full md:overflow-y-auto md:pr-2 md:pb-2">
-            {isEventsLoading ? (
+            {!isInitialized ? (
               <>
                 {Array.from({ length: 3 }).map((_, i) => (
                   <EventCardSkeleton key={i} />

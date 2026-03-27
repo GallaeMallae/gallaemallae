@@ -8,7 +8,6 @@ import {
 import PeriodFilterTabs from "@/components/common/PeriodFilterTabs";
 import EventCard from "@/components/common/EventCard";
 import MoreCard from "@/components/common/MoreCard";
-import EventCardSkeleton from "@/components/common/skeleton/EventCardSkeleton";
 import { useState, useMemo } from "react";
 import { useEventsData } from "@/hooks/queries/useEventsData";
 import { filterEventByPeriod } from "@/utils/filter";
@@ -22,7 +21,7 @@ export default function UpcomingEvents({
 }: {
   onEventClick: (id: string) => void;
 }) {
-  const { data: eventsData, isLoading: isEventsLoading } = useEventsData();
+  const { data: eventsData } = useEventsData();
 
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodFilter>("전체");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
@@ -58,15 +57,7 @@ export default function UpcomingEvents({
           align: "center",
         }}
       >
-        {isEventsLoading ? (
-          <CarouselContent className="overflow-visible">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <CarouselItem key={i} className="basis-[80%] md:basis-[30%]">
-                <EventCardSkeleton />
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-        ) : visibleEvents.length === 0 ? (
+        {visibleEvents.length === 0 ? (
           <div className="text-etc py-18 text-center">
             예정된 행사가 없습니다.
           </div>
