@@ -9,7 +9,7 @@ import { motion, AnimatePresence, Variants } from "framer-motion";
 import { MypageDisplayEvent } from "@/types/common";
 import { cn } from "@/lib/utils";
 import { useCallback, useEffect, useRef, useState } from "react";
-import EventCardSkeleton from "@/components/common/skeleton/EventCardSkeleton";
+import MypageEventCardSkeleton from "@/components/common/skeleton/MypageEventCardSkeleton";
 
 const ICON_MAP: Record<string, LucideIcon> = {
   bookmark: Bookmark,
@@ -125,7 +125,7 @@ export default function MypageEventSectionCard({
               {isLoading ? (
                 <div className="flex flex-col gap-1 py-1">
                   {Array.from({ length: 3 }).map((_, i) => (
-                    <EventCardSkeleton key={`skeleton-${i}`} />
+                    <MypageEventCardSkeleton key={`skeleton-${i}`} />
                   ))}
                 </div>
               ) : events.length > 0 ? (
