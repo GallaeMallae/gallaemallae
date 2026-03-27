@@ -1,16 +1,11 @@
 import { Badge } from "@/components/ui/badge";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Trash2Icon } from "lucide-react";
 import { useDeleteEventPlan } from "@/hooks/mutations/useDeleteEventPlan";
 import { CATEGORY_NAME_MAP } from "@/lib/constants";
+import { cn } from "@/lib/utils";
+import { useOpenAlertModal } from "@/stores/alertModalStore";
 import { MypageDisplayEvent } from "@/types/common";
 import { calculateDDay, formatDate } from "@/utils/date";
-import { MoreVertical, Pencil, Trash } from "lucide-react";
 
 interface MypageAgendaCardProps {
   event: MypageDisplayEvent;
@@ -28,6 +23,7 @@ export default function MypageAgendaCard({
 }: MypageAgendaCardProps) {
   const { mutate: deletePlan, isPending: isDeletePlanLoading } =
     useDeleteEventPlan();
+  const openAlert = useOpenAlertModal();
   const formatVisitDate = formatDate(event.display_date);
   const dDay = calculateDDay(event.display_date);
 
@@ -36,6 +32,21 @@ export default function MypageAgendaCard({
       onDetailClick(event.id);
     } else if (onClick) {
       onClick();
+    }
+  };
+
+  const handleDeleteClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (event.plan_id) {
+      const planId = event.plan_id;
+
+      openAlert({
+        title: "일정에서 제거하기",
+        description: `${event.name}를 일정에서 제거하시겠습니까?`,
+        onAction: () => deletePlan(planId),
+      });
     }
   };
 
@@ -63,26 +74,15 @@ export default function MypageAgendaCard({
         </div>
         <div className="flex items-center gap-2">
           <div className="text-desc2 text-symbol-sky font-semibold">{dDay}</div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-              <MoreVertical className="size-4" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuGroup>
-                <DropdownMenuItem>
-                  <Pencil />
-                  일정 수정
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-              <DropdownMenuItem
-                variant="destructive"
-                onSelect={() => event.plan_id && deletePlan(event.plan_id)}
-              >
-                <Trash />
-                일정 삭제
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Trash2Icon
+            size={18}
+            className={cn(
+              "hover:text-destructive cursor-pointer transition-all duration-300",
+              isDeletePlanLoading &&
+                "pointer-events-none cursor-not-allowed opacity-30",
+            )}
+            onClick={handleDeleteClick}
+          ></Trash2Icon>
         </div>
       </div>
       <div>

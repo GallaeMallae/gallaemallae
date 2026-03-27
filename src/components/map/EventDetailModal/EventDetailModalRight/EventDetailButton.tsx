@@ -8,7 +8,6 @@ import { useLikedEventsData } from "@/hooks/queries/useLikedEventsData";
 import { usePlannedEventsData } from "@/hooks/queries/usePlannedEventsData";
 import { useProfileData } from "@/hooks/queries/useProfileData";
 import { cn } from "@/lib/utils";
-
 import { ArrowRight, Heart, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useOpenAlertModal } from "@/stores/alertModalStore";
