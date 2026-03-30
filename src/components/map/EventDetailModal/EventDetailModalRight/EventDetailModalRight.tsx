@@ -1,6 +1,6 @@
 "use client";
 
-import EventDetailOrganization from "@/components/map/EventDetailModal/EventDetailModalRight/EventDetailOrganization";
+import EventDetailInfo from "@/components/map/EventDetailModal/EventDetailModalRight/EventDetailInfo";
 import EventDetailModalButton from "@/components/map/EventDetailModal/EventDetailModalRight/EventDetailButton";
 import { Tally1 } from "lucide-react";
 import { Event } from "@/types/common";
@@ -21,14 +21,14 @@ export default function EventDetailModalRight({ event }: { event: Event }) {
       <div className="flex flex-col gap-2">
         <p className="text-desc1 flex font-medium">
           <Tally1 className="text-symbol-sky" />
-          조직 및 운영
+          조직 및 운영 정보
         </p>
-        <EventDetailOrganization
-          organization={{
-            host: event.host || "-", // 주최기관
-            organizer: event.organizer || "-", // 주관기관
-            sponsor: event.sponsor || "-",
-            provider: event.provider || "-", // 제공기관
+        <EventDetailInfo
+          info={{
+            organization: event.organization || "-",
+            holdingCycle: event.holding_cycle || "-",
+            firstHeldYear: event.first_held_year || "-",
+            visitorCount: event.visitor_count || "-",
           }}
         />
       </div>
@@ -38,7 +38,7 @@ export default function EventDetailModalRight({ event }: { event: Event }) {
           <Tally1 className="text-symbol-sky" />
           관련 정보
         </p>
-        <p className="text-caption text-slate-400">준비 중입니다.</p>
+        <p className="text-caption">{event.related_info}</p>
       </div>
 
       <EventDetailModalButton event={event} />

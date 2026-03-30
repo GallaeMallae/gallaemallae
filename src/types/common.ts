@@ -115,14 +115,12 @@ export interface IntroduceCardConfigItem {
 }
 
 export interface DetailCardItem {
-  description: string;
-  organization: {
-    host: string;
-    organizer: string;
-    sponsor: string;
-    provider: string;
+  info: {
+    organization: string;
+    holdingCycle: string;
+    firstHeldYear: number;
+    visitorCount: number;
   };
-  information: string[];
 }
 
 // ==============================
