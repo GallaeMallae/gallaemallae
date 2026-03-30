@@ -1,5 +1,5 @@
-import { insertEvents } from "@/lib/insertEvents";
+// import { insertEvents } from "@/lib/insertEvents";
 
-(async () => {
-  await insertEvents();
-})();
+// (async () => {
+//   await insertEvents();
+// })();
