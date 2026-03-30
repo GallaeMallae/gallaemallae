@@ -67,8 +67,9 @@ export default function Mypage() {
   };
 
   const handleCalendarSelect = (date: Date | undefined) => {
+    setSelectedDate(date);
+
     if (!date) {
-      setSelectedDate(undefined);
       setIsDrawerOpen(false);
       return;
     }
@@ -80,14 +81,10 @@ export default function Mypage() {
       return isWithinInterval(targetDate, { start: startDate, end: endDate });
     });
 
-    if (!hasEvents) {
-      setIsDrawerOpen(false);
-      return;
-    }
-
-    setSelectedDate(date);
-    if (!isDesktop) {
+    if (!isDesktop && hasEvents) {
       setIsDrawerOpen(true);
+    } else {
+      setIsDrawerOpen(false);
     }
   };
 
