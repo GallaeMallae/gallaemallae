@@ -13,6 +13,10 @@ import {
   useDayPicker,
   getDefaultClassNames,
   type DayButtonProps,
+  MonthCaptionProps,
+  RootProps,
+  ChevronProps,
+  WeekNumberProps,
 } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
@@ -42,11 +46,18 @@ const getCategoryStyle = (categories?: string[] | null) => {
   return CALENDAR_CATEGORY_STYLES[kor] || CALENDAR_CATEGORY_STYLES["기타"];
 };
 
+const CalendarContext = React.createContext<{
+  activePopoverDate: Date | null;
+  onActivePopoverDate: (date: Date | null) => void;
+  plannedEvents: MypageDisplayEvent[];
+  isDesktop: boolean;
+  onDetailClick: (eventId: string) => void;
+} | null>(null);
+
 function Calendar({
   className,
   classNames,
   showOutsideDays = true,
-  components,
   plannedEvents = [],
   nickname,
   activePopoverDate,
@@ -65,173 +76,158 @@ function Calendar({
 }) {
   const defaultClassNames = getDefaultClassNames();
 
-  return (
-    <DayPicker
-      hideNavigation
-      showOutsideDays={showOutsideDays}
-      className={cn(
-        "group/calendar bg-background p-3 [--cell-size:--spacing(8)] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent",
-        String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,
-        String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`,
-        className,
-      )}
-      captionLayout="label"
-      classNames={{
-        // w-fit -> w-full
-        root: cn("w-full", defaultClassNames.root),
-        months: cn(
-          // w-full 추가
-          "relative flex flex-col gap-4 md:flex-row w-full",
-          defaultClassNames.months,
-        ),
-        month: cn("flex w-full flex-col gap-4", defaultClassNames.month),
-        // react-day-picker에서는 table 대신 month_grid로 변경됐음. 그래서 table-fixed가 적용 안 되고 있던 것
-        month_grid: "w-full border-collapse table-fixed",
-        weekdays: cn("flex", defaultClassNames.weekdays),
-        weekday: cn(
-          "flex-1 rounded-md text-[0.8rem] font-normal text-muted-foreground select-none",
-          defaultClassNames.weekday,
-        ),
-        week: cn("mt-2 flex w-full", defaultClassNames.week),
-        week_number_header: cn(
-          "w-(--cell-size) select-none",
-          defaultClassNames.week_number_header,
-        ),
-        week_number: cn(
-          "text-[0.8rem] text-muted-foreground select-none",
-          defaultClassNames.week_number,
-        ),
-        // day: cn(
-        //   "group/day relative aspect-square h-full w-full p-0 text-center select-none [&:last-child[data-selected=true]_button]:rounded-r-md min-w-0",
-        //   props.showWeekNumber
-        //     ? "[&:nth-child(2)[data-selected=true]_button]:rounded-l-md"
-        //     : "[&:first-child[data-selected=true]_button]:rounded-l-md",
-        //   defaultClassNames.day,
-        // ),
-        day: cn(
-          "group/day relative h-full w-full p-0 text-center select-none min-w-0 overflow-hidden",
-          "xs:aspect-square min-h-10 xs:min-h-0",
-          "data-[selected=true]:bg-symbol-sky-sub data-[selected=true]:hover:bg-muted",
-          "data-[selected=true]:rounded-md",
-          "@container", // 너비 좁아지면 이벤트 뱃지 글자 숨기기 위해 추가
-
-          props.showWeekNumber
-            ? "[&:nth-child(2)[data-selected=true]_button]:rounded-l-md"
-            : "[&:first-child[data-selected=true]_button]:rounded-l-md",
-          defaultClassNames.day,
-        ),
-        range_start: cn(
-          "rounded-l-md bg-accent",
-          defaultClassNames.range_start,
-        ),
-        range_middle: cn("rounded-none", defaultClassNames.range_middle),
-        range_end: cn("rounded-r-md bg-accent", defaultClassNames.range_end),
-        today: cn(
-          // "rounded-md bg-accent text-accent-foreground data-[selected=true]:rounded-none",
-          "rounded-md bg-accent text-accent-foreground",
-          defaultClassNames.today,
-        ),
-        outside: cn(
-          "text-muted-foreground aria-selected:text-muted-foreground",
-          defaultClassNames.outside,
-        ),
-        disabled: cn(
-          "text-muted-foreground opacity-50",
-          defaultClassNames.disabled,
-        ),
-        hidden: cn("invisible", defaultClassNames.hidden),
-        ...classNames,
-      }}
-      components={{
-        MonthCaption: (captionProps) => (
-          <CustomMonthCaption
-            {...captionProps}
-            nickname={nickname}
-            onActivePopoverDate={onActivePopoverDate}
-          />
-        ),
-        Root: ({ className, rootRef, ...props }) => {
-          return (
-            <div
-              data-slot="calendar"
-              ref={rootRef}
-              className={cn(className)}
-              {...props}
-            />
-          );
-        },
-        Chevron: ({ className, orientation, ...props }) => {
-          if (orientation === "left") {
-            return (
-              <ChevronLeftIcon className={cn("size-4", className)} {...props} />
-            );
-          }
-
-          if (orientation === "right") {
-            return (
-              <ChevronRightIcon
-                className={cn("size-4", className)}
-                {...props}
-              />
-            );
-          }
-
-          return (
-            <ChevronDownIcon className={cn("size-4", className)} {...props} />
-          );
-        },
-        // DayButton: CalendarDayButton,
-        DayButton: (dayButtonProps) => (
-          <CalendarDayButton
-            {...dayButtonProps}
-            plannedEvents={plannedEvents}
-            isDesktop={isDesktop}
-            onDetailClick={onDetailClick}
-            activePopoverDate={activePopoverDate}
-            onActivePopoverDate={onActivePopoverDate}
-          />
-        ),
-        WeekNumber: ({ children, ...props }) => {
-          return (
-            <td {...props}>
-              <div className="flex size-(--cell-size) items-center justify-center text-center">
-                {children}
-              </div>
-            </td>
-          );
-        },
-        ...components,
-      }}
-      {...props}
-    />
+  // 팝오버가 닫힐 때 달력 자체가 리마운트되어 팝오버 닫히는 애니메이션 없이 툭 꺼짐
+  // Context 이용해 참조 고정하여 상태 변화시 달력 자체가 리렌더링되는 현상 방지
+  const memoizedComponents = React.useMemo(
+    () => ({
+      MonthCaption: (captionProps: MonthCaptionProps) => (
+        <CustomMonthCaption {...captionProps} nickname={nickname} />
+      ),
+      Root: ({ className, rootRef, ...props }: RootProps) => (
+        <div
+          data-slot="calendar"
+          ref={rootRef}
+          className={cn(className)}
+          {...props}
+        />
+      ),
+      Chevron: ({ className, orientation, ...props }: ChevronProps) => {
+        const Icon =
+          orientation === "left"
+            ? ChevronLeftIcon
+            : orientation === "right"
+              ? ChevronRightIcon
+              : ChevronDownIcon;
+        return <Icon className={cn("size-4", className)} {...props} />;
+      },
+      DayButton: CalendarDayButton,
+      WeekNumber: ({ children, ...props }: WeekNumberProps) => (
+        <td {...props}>
+          <div className="flex size-(--cell-size) items-center justify-center text-center">
+            {children}
+          </div>
+        </td>
+      ),
+    }),
+    [nickname],
   );
-}
 
-interface CalendarDayButtonProps extends DayButtonProps {
-  plannedEvents: MypageDisplayEvent[];
-  isDesktop: boolean;
-  activePopoverDate?: Date | null;
-  onActivePopoverDate?: (date: Date | null) => void;
-  onDetailClick: (eventId: string) => void;
+  return (
+    <CalendarContext.Provider
+      value={{
+        activePopoverDate: activePopoverDate ?? null,
+        onActivePopoverDate: onActivePopoverDate!,
+        plannedEvents,
+        isDesktop,
+        onDetailClick,
+      }}
+    >
+      <DayPicker
+        hideNavigation
+        showOutsideDays={showOutsideDays}
+        className={cn(
+          "group/calendar bg-background p-3 [--cell-size:--spacing(8)] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent",
+          String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,
+          String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`,
+          className,
+        )}
+        captionLayout="label"
+        classNames={{
+          // w-fit -> w-full
+          root: cn("w-full", defaultClassNames.root),
+          months: cn(
+            // w-full 추가
+            "relative flex flex-col gap-4 md:flex-row w-full",
+            defaultClassNames.months,
+          ),
+          month: cn("flex w-full flex-col gap-4", defaultClassNames.month),
+          // react-day-picker에서는 table 대신 month_grid로 변경됐음. 그래서 table-fixed가 적용 안 되고 있던 것
+          month_grid: "w-full border-collapse table-fixed",
+          weekdays: cn("flex", defaultClassNames.weekdays),
+          weekday: cn(
+            "flex-1 rounded-md text-[0.8rem] font-normal text-muted-foreground select-none",
+            defaultClassNames.weekday,
+          ),
+          week: cn("mt-2 flex w-full", defaultClassNames.week),
+          week_number_header: cn(
+            "w-(--cell-size) select-none",
+            defaultClassNames.week_number_header,
+          ),
+          week_number: cn(
+            "text-[0.8rem] text-muted-foreground select-none",
+            defaultClassNames.week_number,
+          ),
+          // day: cn(
+          //   "group/day relative aspect-square h-full w-full p-0 text-center select-none [&:last-child[data-selected=true]_button]:rounded-r-md min-w-0",
+          //   props.showWeekNumber
+          //     ? "[&:nth-child(2)[data-selected=true]_button]:rounded-l-md"
+          //     : "[&:first-child[data-selected=true]_button]:rounded-l-md",
+          //   defaultClassNames.day,
+          // ),
+          day: cn(
+            "group/day relative h-full w-full p-0 text-center select-none min-w-0 overflow-hidden",
+            "xs:aspect-square min-h-10 xs:min-h-0",
+            "data-[selected=true]:bg-symbol-sky-sub data-[selected=true]:hover:bg-muted",
+            "data-[selected=true]:rounded-md",
+            "@container", // 너비 좁아지면 이벤트 뱃지 글자 숨기기 위해 추가
+
+            props.showWeekNumber
+              ? "[&:nth-child(2)[data-selected=true]_button]:rounded-l-md"
+              : "[&:first-child[data-selected=true]_button]:rounded-l-md",
+            defaultClassNames.day,
+          ),
+          range_start: cn(
+            "rounded-l-md bg-accent",
+            defaultClassNames.range_start,
+          ),
+          range_middle: cn("rounded-none", defaultClassNames.range_middle),
+          range_end: cn("rounded-r-md bg-accent", defaultClassNames.range_end),
+          today: cn(
+            // "rounded-md bg-accent text-accent-foreground data-[selected=true]:rounded-none",
+            "rounded-md bg-accent text-accent-foreground",
+            defaultClassNames.today,
+          ),
+          outside: cn(
+            "text-muted-foreground aria-selected:text-muted-foreground",
+            defaultClassNames.outside,
+          ),
+          disabled: cn(
+            "text-muted-foreground opacity-50",
+            defaultClassNames.disabled,
+          ),
+          hidden: cn("invisible", defaultClassNames.hidden),
+          ...classNames,
+        }}
+        components={memoizedComponents}
+        {...props}
+      />
+    </CalendarContext.Provider>
+  );
 }
 
 function CalendarDayButton({
   className,
   day,
   modifiers,
-  plannedEvents,
-  isDesktop,
-  onDetailClick,
-  activePopoverDate,
-  onActivePopoverDate,
 
   ...props
-}: CalendarDayButtonProps) {
+}: DayButtonProps) {
   const ref = React.useRef<HTMLButtonElement>(null);
 
   React.useEffect(() => {
     if (modifiers.focused) ref.current?.focus();
   }, [modifiers.focused]);
+
+  const context = React.useContext(CalendarContext);
+  if (!context) return <></>;
+
+  const {
+    activePopoverDate,
+    onActivePopoverDate,
+    plannedEvents,
+    isDesktop,
+    onDetailClick,
+  } = context;
 
   const targetDate = startOfDay(day.date);
   const isSunday = day.date.getDay() === 0;
