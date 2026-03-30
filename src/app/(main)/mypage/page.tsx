@@ -280,7 +280,7 @@ export default function Mypage() {
 
       {selectedEventId && (
         <EventDetailModal
-          event={selectedEvent ?? null}
+          eventId={selectedEventId ?? null}
           open={!!selectedEventId}
           onClose={() => setSelectedEventId(null)}
         />

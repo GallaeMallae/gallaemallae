@@ -1,6 +1,8 @@
 import { SupabaseClient } from "@supabase/supabase-js";
-import { Database } from "@/types/supabase";
+import { Database, Tables } from "@/types/supabase";
 import { format } from "date-fns";
+import { EventPlanWithEvent } from "@/hooks/queries/usePlannedEventsData";
+import { Event } from "@/types/common";
 
 export interface AddEventPlanParams {
   userId: string;
@@ -8,10 +10,15 @@ export interface AddEventPlanParams {
   // visitDate: string; 추후 날짜 선택 기능 추가될때 받기
 }
 
+const transformEvent = (dbRow: Tables<"events">): Event => ({
+  ...dbRow,
+  categories: (dbRow.categories as string[]) || [],
+});
+
 export async function fetchPlannedEvents(
   supabase: SupabaseClient<Database>,
   userId: string,
-) {
+): Promise<EventPlanWithEvent[]> {
   const today = format(new Date(), "yyyy-MM-dd");
   const { data, error } = await supabase
     .from("event_plans")
@@ -27,7 +34,10 @@ export async function fetchPlannedEvents(
     .order("event(start_date)", { ascending: true });
 
   if (error) throw new Error(error.message);
-  return data;
+  return (data || []).map((plan) => ({
+    ...plan,
+    event: transformEvent(plan.event as Tables<"events">),
+  })) as EventPlanWithEvent[];
 }
 
 export async function addEventPlan(
