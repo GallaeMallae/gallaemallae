@@ -25,7 +25,6 @@ export default function Area({
 }: {
   radius: number | null;
   category: CategoryId[];
-
   period: PeriodFilter;
   search: string;
 }) {
