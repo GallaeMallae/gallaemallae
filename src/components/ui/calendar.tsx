@@ -81,7 +81,11 @@ function Calendar({
   const memoizedComponents = React.useMemo(
     () => ({
       MonthCaption: (captionProps: MonthCaptionProps) => (
-        <CustomMonthCaption {...captionProps} nickname={nickname} />
+        <CustomMonthCaption
+          {...captionProps}
+          nickname={nickname}
+          onActivePopoverDate={onActivePopoverDate}
+        />
       ),
       Root: ({ className, rootRef, ...props }: RootProps) => (
         <div
