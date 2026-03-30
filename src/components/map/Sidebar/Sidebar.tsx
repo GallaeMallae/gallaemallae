@@ -64,9 +64,9 @@ export default function Sidebar({
             초기화
           </Button>
         </div>
-        <div>
-          <p className="text-desc1 text-etc font-bold">카테고리</p>
 
+        <div className="flex flex-col gap-4">
+          <p className="text-desc1 text-etc font-bold">카테고리</p>
           <div className="flex w-full flex-col gap-2">
             {CATEGORY_MENU.map((item) => {
               const Icon = item.Icon;
@@ -77,7 +77,7 @@ export default function Sidebar({
                   key={item.id}
                   onClick={() => toggleCategory(item.id as CategoryId)}
                   className={cn(
-                    "flex items-center justify-start gap-4 rounded-lg px-4 py-4 transition-all",
+                    "flex cursor-pointer items-center justify-start gap-4 rounded-lg px-4 py-4 transition-all",
                     isActive
                       ? "bg-symbol-sky-sub text-symbol-sky"
                       : "hover:bg-etc/10 text-etc",
@@ -121,7 +121,7 @@ export default function Sidebar({
                   key={item.id}
                   onClick={() => toggleCategory(item.id as CategoryId)}
                   className={cn(
-                    "text-caption flex-1 rounded-lg py-2 text-center transition-all",
+                    "text-caption flex-1 cursor-pointer rounded-lg py-2 text-center transition-all",
                     isActive
                       ? "bg-symbol-sky text-white"
                       : "text-etc hover:bg-muted",
