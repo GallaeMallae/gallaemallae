@@ -1,5 +1,6 @@
 import { CATEGORY_NAME_MAP } from "@/lib/constants";
 import { Event } from "@/types/common";
+import { Tables } from "@/types/supabase";
 import { getKstNow } from "@/utils/date";
 import { createClient } from "@/utils/supabase/server";
 import { PostgrestError } from "@supabase/supabase-js";
@@ -7,11 +8,22 @@ import { addDays, format } from "date-fns";
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
 
+interface RawJoinedEvent {
+  id: string;
+  name: string;
+  categories: import("@/types/supabase").Json;
+}
+
 interface FlattenedEvent {
   id: string;
   name: string;
   categories: string[];
 }
+
+const transformEvent = (dbRow: Tables<"events">): Event => ({
+  ...dbRow,
+  categories: (dbRow.categories as string[]) || [],
+});
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
@@ -42,13 +54,21 @@ export async function POST(request: Request) {
     if (plansError) throw plansError;
 
     // 조인 때문에 events 계층 추가된 것을 평탄화
-    const likedEvents: FlattenedEvent[] = rawLikes
+    const likedEvents: FlattenedEvent[] = (rawLikes || []) // null 대비 빈 배열 처리
       .map((item) => item.events)
-      .filter(Boolean) as FlattenedEvent[];
+      .filter(Boolean)
+      .map((e: RawJoinedEvent) => ({
+        ...e,
+        categories: (e.categories as string[]) || [],
+      }));
 
-    const plannedEvents: FlattenedEvent[] = rawPlans
+    const plannedEvents: FlattenedEvent[] = (rawPlans || []) // null 대비 빈 배열 처리
       .map((item) => item.events)
-      .filter(Boolean) as FlattenedEvent[];
+      .filter(Boolean)
+      .map((e: RawJoinedEvent) => ({
+        ...e,
+        categories: (e.categories as string[]) || [],
+      }));
 
     const formatUserEventData = (events: FlattenedEvent[]) => {
       return events
@@ -129,7 +149,7 @@ export async function POST(request: Request) {
 
       // 데이터가 있으면 루프 탈출, 없으면 30일 더 늘려서 다시 시도
       if (data && data.length > 0) {
-        candidates = data;
+        candidates = data.map(transformEvent);
         break;
       }
 
@@ -158,11 +178,12 @@ export async function POST(request: Request) {
           )
           .join(",");
 
-        const address =
-          event.road_address || event.lot_address || "지역 정보 없음";
-        const shortAddress = address.split(" ").slice(0, 2).join(" "); // 울산광역시 남구, 경기도 하남시 ...
+        const fullAddress =
+          [event.sido, event.sigungu, event.eupmyeondong]
+            .filter(Boolean) // null, undefined, 빈 문자열 제거
+            .join(" ") || "지역 정보 없음";
 
-        return `${i} | ${event.name} | ${koreanCategories} | ${event.start_date} | 장소: ${shortAddress} | 설명: ${event.description}`;
+        return `${i} | ${event.name} | ${koreanCategories} | ${event.start_date} | 장소: ${fullAddress} | 설명: ${event.description}`;
       })
       .join("\n");
 
