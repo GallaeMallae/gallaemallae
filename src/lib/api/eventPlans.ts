@@ -1,5 +1,6 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { Database } from "@/types/supabase";
+import { format } from "date-fns";
 
 export interface AddEventPlanParams {
   userId: string;
@@ -11,6 +12,7 @@ export async function fetchPlannedEvents(
   supabase: SupabaseClient<Database>,
   userId: string,
 ) {
+  const today = format(new Date(), "yyyy-MM-dd");
   const { data, error } = await supabase
     .from("event_plans")
     .select(
@@ -19,7 +21,10 @@ export async function fetchPlannedEvents(
       event:events(*) 
     `,
     )
-    .eq("user_id", userId);
+    .eq("user_id", userId)
+    .order("event(start_date)", { ascending: true })
+    .gte("event.end_date", today)
+    .order("event(start_date)", { ascending: true });
 
   if (error) throw new Error(error.message);
   return data;

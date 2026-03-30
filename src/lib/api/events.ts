@@ -1,8 +1,11 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { Database } from "@/types/supabase";
 import { Category } from "@/types/common";
+import { format } from "date-fns";
 
 export type EventCategory = Exclude<Category, "전체">;
+
+const today = format(new Date(), "yyyy-MM-dd");
 
 export async function fetchEventById(
   supabase: SupabaseClient<Database>,
@@ -23,7 +26,8 @@ export async function fetchEvents(supabase: SupabaseClient<Database>) {
   const { data, error } = await supabase
     .from("events")
     .select("*")
-    .order("created_at", { ascending: false });
+    .gte("end_date", today)
+    .order("start_date", { ascending: true });
 
   if (error) throw new Error(error.message);
   return data;
@@ -53,7 +57,9 @@ export async function fetchLikedEvents(
       events (*)
     `,
     )
-    .eq("user_id", userId);
+    .eq("user_id", userId)
+    .gte("event.end_date", today)
+    .order("events(start_date)", { ascending: true });
 
   if (error) throw new Error(error.message);
 
