@@ -98,7 +98,7 @@ export function mapEventCard(events: Event[]): EventCardItem[] {
     return {
       id: event.id,
       title: event.name ?? "행사 제목 없음",
-      location: event.venue ?? fullRegionAddress ?? "장소 정보 없음",
+      location: event.venue || fullRegionAddress || "장소 정보 없음",
       startDate: event.start_date,
       endDate: event.end_date ?? event.start_date,
       category: CATEGORY_NAME_MAP[categoryId] ?? "기타",
