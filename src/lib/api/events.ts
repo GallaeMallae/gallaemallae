@@ -5,7 +5,7 @@ import { format as formatDate } from "date-fns";
 
 export type EventCategory = Exclude<Category, "전체">;
 
-const today = formatDate(new Date(), "yyyy-MM-dd");
+const getToday = () => formatDate(new Date(), "yyyy-MM-dd");
 
 const transformEvent = (dbRow: Tables<"events">): Event => ({
   ...dbRow,
@@ -20,7 +20,7 @@ export async function fetchEventById(
     .from("events")
     .select("*")
     .eq("id", eventId)
-    .single();
+    .maybeSingle();
 
   if (error) throw new Error(error.message);
   if (!data) return null;
@@ -34,7 +34,7 @@ export async function fetchEvents(
   const { data, error } = await supabase
     .from("events")
     .select("*")
-    .gte("end_date", today)
+    .gte("end_date", getToday())
     .order("start_date", { ascending: true });
 
   if (error) throw new Error(error.message);
@@ -54,7 +54,7 @@ export async function fetchLikedEvents(
     `,
     )
     .eq("user_id", userId)
-    .gte("events.end_date", today)
+    .gte("events.end_date", getToday())
     .order("events(start_date)", { ascending: true });
 
   if (error) throw new Error(error.message);
