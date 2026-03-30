@@ -42,9 +42,9 @@ export default function Mypage() {
   const { data: airPollutionData } = useAirPollutionData(coords, isInitialized);
   const { data: recommendEventData, isLoading: isRecommendEventCardLoading } =
     useMypageRecommendEventData(locationNameData);
-  const { data: likedEvents = [], isLoading: isLikedEventLoading } =
+  const { data: likedEvents, isLoading: isLikedEventLoading } =
     useLikedEventsData();
-  const { data: plannedEvents = [], isLoading: isPlannedEventLoading } =
+  const { data: plannedEvents, isLoading: isPlannedEventLoading } =
     usePlannedEventsData();
 
   const isDesktop = useIsDesktop();
@@ -129,23 +129,16 @@ export default function Mypage() {
   };
 
   // 관심 목록 데이터 가공
-  const formattedLikedEvents = likedEvents.map((event) => ({
+  const formattedLikedEvents = (likedEvents ?? []).map((event) => ({
     ...event,
     display_date: event.start_date,
   }));
   // 일정 목록 데이터 가공
-  const formattedPlannedEvents = plannedEvents.map((plan) => ({
+  const formattedPlannedEvents = (plannedEvents ?? []).map((plan) => ({
     ...plan.event,
     display_date: plan.visit_date || plan.event.start_date,
     plan_id: plan.id,
   }));
-
-  // 행사 상세보기 데이터를 위해 행사 id값 기준 find
-  const selectedEvent = [
-    recommendEventData,
-    ...formattedLikedEvents,
-    ...formattedPlannedEvents,
-  ].find((event) => event?.id === selectedEventId);
 
   // 추천받은 행사를 일정에 추가했을 경우 planId를 props로 보내주기 위함
   const matchedPlan = formattedPlannedEvents.find(
@@ -165,10 +158,10 @@ export default function Mypage() {
   });
 
   // 행사 추천 카드 관심/일정 체크용
-  const isLiked = likedEvents.some(
+  const isLiked = (likedEvents ?? []).some(
     (event) => event.id === recommendEventData?.id,
   );
-  const isPlanned = plannedEvents.some(
+  const isPlanned = (plannedEvents ?? []).some(
     (plan) => plan.event.id === recommendEventData?.id,
   );
 

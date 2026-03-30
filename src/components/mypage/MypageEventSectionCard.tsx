@@ -16,6 +16,8 @@ const ICON_MAP: Record<string, LucideIcon> = {
   heart: Heart,
 };
 
+const LIST_NUMBER = 4;
+
 const EVENT_CARD_COMPONENTS = {
   bookmark: MypageAgendaCard,
   heart: MypageLikedCard,
@@ -40,7 +42,7 @@ export default function MypageEventSectionCard({
   events,
   onEventClick,
 }: MypageEventSectionCardProps) {
-  const [visibleCount, setVisibleCount] = useState(4);
+  const [visibleCount, setVisibleCount] = useState(LIST_NUMBER);
   const observerRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
@@ -53,7 +55,7 @@ export default function MypageEventSectionCard({
 
   const handleLoadMore = useCallback(() => {
     if (hasMore) {
-      setVisibleCount((prev) => prev + 4);
+      setVisibleCount((prev) => prev + LIST_NUMBER);
     }
   }, [hasMore]);
 
@@ -116,20 +118,20 @@ export default function MypageEventSectionCard({
       <CardContent className="flex min-h-0 flex-1 flex-col p-0">
         <ScrollArea ref={scrollAreaRef} className="min-h-0 w-full flex-1 px-4">
           <div className="flex w-full flex-col gap-1">
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              className="flex w-full flex-col gap-1 pb-4"
-            >
-              {isLoading ? (
-                <div className="flex flex-col gap-1 py-1">
-                  {Array.from({ length: 3 }).map((_, i) => (
-                    <MypageEventCardSkeleton key={`skeleton-${i}`} />
-                  ))}
-                </div>
-              ) : events.length > 0 ? (
-                <>
+            {isLoading ? (
+              <div className="flex flex-col gap-1 py-1">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <MypageEventCardSkeleton key={`skeleton-${i}`} />
+                ))}
+              </div>
+            ) : (
+              <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                className="flex w-full flex-col gap-1 pb-4"
+              >
+                {events.length > 0 ? (
                   <AnimatePresence mode="popLayout">
                     {slicedEvents.map((event) => (
                       <motion.div
@@ -138,43 +140,41 @@ export default function MypageEventSectionCard({
                         layout
                       >
                         <SelectedCard
-                          key={event.plan_id || event.id}
                           event={event}
                           onClick={() => onEventClick(event.display_date)}
                         />
                       </motion.div>
                     ))}
                   </AnimatePresence>
-
-                  <div ref={observerRef} className="w-full">
-                    {hasMore && !isDesktop && (
-                      <motion.div variants={itemVariants} className="pt-2">
-                        <button
-                          type="button"
-                          className="w-full pt-2"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleLoadMore();
-                          }}
-                        >
-                          <Card className="hover:bg-accent/50 cursor-pointer rounded-2xl border-2 border-dashed transition-colors">
-                            <CardContent className="flex items-center justify-center py-3">
-                              <span className="text-caption text-symbol-sky font-bold">
-                                더보기
-                              </span>
-                            </CardContent>
-                          </Card>
-                        </button>
-                      </motion.div>
-                    )}
+                ) : (
+                  <div className="text-etc text-desc2 py-4 text-center">
+                    행사를 추가해 보아요
                   </div>
-                </>
-              ) : (
-                <div className="text-etc text-desc2 py-4 text-center">
-                  행사를 추가해 보아요
+                )}
+                <div ref={observerRef} className="w-full">
+                  {hasMore && !isDesktop && (
+                    <motion.div variants={itemVariants} className="pt-2">
+                      <button
+                        type="button"
+                        className="w-full pt-2"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleLoadMore();
+                        }}
+                      >
+                        <Card className="hover:bg-accent/50 cursor-pointer rounded-2xl border-2 border-dashed transition-colors">
+                          <CardContent className="flex items-center justify-center py-3">
+                            <span className="text-caption text-symbol-sky font-bold">
+                              더보기
+                            </span>
+                          </CardContent>
+                        </Card>
+                      </button>
+                    </motion.div>
+                  )}
                 </div>
-              )}
-            </motion.div>
+              </motion.div>
+            )}
           </div>
         </ScrollArea>
       </CardContent>
