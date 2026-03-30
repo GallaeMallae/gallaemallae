@@ -2,7 +2,6 @@ import { SupabaseClient } from "@supabase/supabase-js";
 import { Database, Tables } from "@/types/supabase";
 import { Category, Event } from "@/types/common";
 import { format as formatDate } from "date-fns";
-import { Category } from "@/types/common";
 
 export type EventCategory = Exclude<Category, "전체">;
 
