@@ -1,4 +1,5 @@
 import { SupabaseClient } from "@supabase/supabase-js";
+import { format } from "date-fns";
 import { Database } from "@/types/supabase";
 import { Category } from "@/types/common";
 
@@ -20,10 +21,13 @@ export async function fetchEventById(
 }
 
 export async function fetchEvents(supabase: SupabaseClient<Database>) {
+  const today = format(new Date(), "yyyy-MM-dd");
+
   const { data, error } = await supabase
     .from("events")
     .select("*")
-    .order("created_at", { ascending: false });
+    .gte("end_date", today)
+    .order("start_date", { ascending: true });
 
   if (error) throw new Error(error.message);
   return data;
