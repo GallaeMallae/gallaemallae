@@ -6,22 +6,38 @@ import RecommendCardSkeleton from "@/components/common/skeleton/RecommendCardSke
 import { Map, MapPin } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { WeatherCardItem, RecommendType, MapMode } from "@/types/common";
+import { useLocationStore } from "@/stores/locationStore";
+import { useWeatherData } from "@/hooks/queries/useWeatherData";
+import { useLocationNameData } from "@/hooks/queries/useLocationNameData";
+import { useAirPollutionData } from "@/hooks/queries/useAirPollutionData";
+import { useRecommendTypeData } from "@/hooks/queries/useRecommendTypeData";
+import { mapWeatherCard } from "@/utils/mapper";
+import { MapMode } from "@/types/common";
 
-interface MainBannerProps {
-  weather: WeatherCardItem | null;
-  recommendType: RecommendType | null;
-  isWeatherCardLoading: boolean;
-  isRecommendCardLoading: boolean;
-}
-
-export default function MainBanner({
-  weather,
-  recommendType,
-  isWeatherCardLoading,
-  isRecommendCardLoading,
-}: MainBannerProps) {
+export default function MainBanner() {
   const router = useRouter();
+  const { coords, isInitialized, isDefaultLocation } = useLocationStore();
+
+  const { data: locationNameData } = useLocationNameData(coords, isInitialized);
+  const { data: weatherData } = useWeatherData(coords, isInitialized);
+  const { data: airPollutionData } = useAirPollutionData(coords, isInitialized);
+  const { data: recommendTypeData, isLoading: isRecommendTypeLoading } =
+    useRecommendTypeData(weatherData, airPollutionData);
+
+  const isWeatherReady =
+    !!locationNameData && !!weatherData && !!airPollutionData;
+  const isWeatherLoading = !isWeatherReady;
+
+  const weather = isWeatherReady
+    ? mapWeatherCard(
+        locationNameData,
+        weatherData,
+        airPollutionData,
+        isDefaultLocation,
+      )
+    : null;
+
+  const recommendType = recommendTypeData?.recommendType ?? null;
 
   const handleMapClick = (mode: MapMode) => {
     router.push(`/map?mode=${mode}`);
@@ -78,12 +94,12 @@ export default function MainBanner({
         </div>
 
         <div className="flex flex-col gap-4 md:w-90 md:gap-2">
-          {isWeatherCardLoading || !weather ? (
+          {isWeatherLoading || !weather ? (
             <WeatherCardSkeleton />
           ) : (
             <WeatherCard {...weather} />
           )}
-          {isRecommendCardLoading || !recommendType ? (
+          {isRecommendTypeLoading || !recommendType ? (
             <RecommendCardSkeleton />
           ) : (
             <RecommendCard recommendType={recommendType} />
