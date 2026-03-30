@@ -127,7 +127,7 @@ export default function Area({
       />
       {selectedModal && selectedModalData && (
         <EventDetailModal
-          event={selectedModalData}
+          eventId={selectedModalData.id}
           open={!!selectedModal}
           onClose={() => setSelectedModal(null)}
         />
