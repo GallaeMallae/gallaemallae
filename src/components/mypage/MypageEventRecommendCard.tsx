@@ -11,6 +11,7 @@ import { useEventPlan } from "@/hooks/mutations/useEventPlan";
 import { useProfileData } from "@/hooks/queries/useProfileData";
 import { toast } from "sonner";
 import { useDeleteEventPlan } from "@/hooks/mutations/useDeleteEventPlan";
+import { useOpenAlertModal } from "@/stores/alertModalStore";
 
 interface MypageEventRecommendCardProps {
   event: Event;
@@ -34,25 +35,37 @@ export default function MypageEventRecommendCard({
   const { mutate: deletePlan, isPending: isDeletePlanLoading } =
     useDeleteEventPlan();
 
+  const openAlert = useOpenAlertModal();
+
   const handleLikeClick = () => {
     toggleLike(isLiked);
   };
 
   const handleAddPlanClick = () => {
-    if (!profile?.id) return toast.error("로그인이 필요합니다.");
+    if (!profile?.id) return toast.error("프로필 정보가 없습니다.");
 
-    addPlan({
-      userId: profile.id,
-      eventId: event.id,
-      visitDate: event.start_date, // 현재 단계에서는 기본값으로 행사 시작일 설정
+    openAlert({
+      title: "나의 일정에 추가하기",
+      description: `${event.name}를 일정에 추가하시겠습니까?`,
+      onAction: () => {
+        addPlan({
+          userId: profile.id,
+          eventId: event.id,
+          visitDate: event.start_date,
+        });
+      },
     });
   };
 
   const handleDeletePlanClick = () => {
-    if (!profile?.id) return toast.error("로그인이 필요합니다.");
+    if (!profile?.id) return toast.error("프로필 정보가 없습니다.");
     if (!planId) return;
 
-    deletePlan(planId);
+    openAlert({
+      title: "일정에서 제거하기",
+      description: `${event.name}를 일정에서 제거하시겠습니까?`,
+      onAction: () => deletePlan(planId), // 한 줄로 깔끔하게 정리
+    });
   };
 
   return (
