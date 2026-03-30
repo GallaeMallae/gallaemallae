@@ -11,22 +11,20 @@ export default function EventIntroduce({ type, value }: Props) {
   const config = INTRODUCE_CARD_CONFIG[type];
   const Icon = config.icon;
 
-  const renderValue = () => {
-    if (!value) return "-";
-
+  const URL = () => {
     if (type === "homepage") {
-      const url = value.startsWith("http") ? value : `https://${value}`;
+      if (!value || !value.startsWith("http")) {
+        return <span>-</span>;
+      }
       return (
-        <a
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="break-all text-blue-500 underline"
-        >
+        <a href={value} className="break-all text-blue-500 underline">
           {value}
         </a>
       );
-    }
+    } else if (type === "tel")
+      if (value !== "-") {
+        return <a href={`tel${value}`}>{value}</a>;
+      }
     return value;
   };
 
@@ -42,7 +40,7 @@ export default function EventIntroduce({ type, value }: Props) {
         <div>
           <p className="text-caption text-etc">{config.title}</p>
 
-          <p className="text-caption font-semibold">{renderValue()}</p>
+          <p className="text-caption font-semibold">{URL()}</p>
         </div>
       </CardContent>
     </Card>
