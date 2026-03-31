@@ -18,6 +18,27 @@ export interface FetchWeatherResponse {
   };
 }
 
+// OpenWeather Forecast API Res
+export interface FetchForecastResponse {
+  list: {
+    dt_txt: string; // "2026-01-01 12:00:00"
+
+    weather: {
+      id: number;
+      main: string; // 날씨 타입
+    }[];
+
+    main: {
+      temp: number; // 기온
+      humidity: number; // 습도
+    };
+
+    wind: {
+      speed: number; // 풍속
+    };
+  }[];
+}
+
 // OpenWeather Air Pollution API Res
 export interface FetchAirPollutionResponse {
   list: {

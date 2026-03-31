@@ -1,18 +1,15 @@
 import { WeatherInfoType } from "@/types/common";
 import { WEATHER_INFO_CARD_CONFIG } from "@/lib/constants";
 
-const MOCK_WEATHER: Record<WeatherInfoType, string> = {
-  temp: "24도",
-  fineDust: "보통 (53)",
-  wind: "1m/s",
-  wet: "37%",
-};
+interface EventWeatherInfoCardProps {
+  type: WeatherInfoType;
+  value: string;
+}
 
 export default function EventWeatherInfoCard({
   type,
-}: {
-  type: WeatherInfoType;
-}) {
+  value,
+}: EventWeatherInfoCardProps) {
   const config = WEATHER_INFO_CARD_CONFIG[type];
   const Icon = config.icon;
 
@@ -26,7 +23,7 @@ export default function EventWeatherInfoCard({
       />
       <div>
         <p className="text-etc text-caption font-bold">{config.title}</p>
-        <p className="text-desc2 font-bold">{MOCK_WEATHER[type]}</p>
+        <p className="text-desc2 font-bold">{value}</p>
       </div>
     </div>
   );

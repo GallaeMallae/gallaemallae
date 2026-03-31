@@ -245,6 +245,12 @@ export const QUERY_KEYS = {
     userId ? ["event_plans", userId] : ["event_plans"],
   LOCATION_NAME: (lat: number, lng: number) => ["locationName", lat, lng],
   WEATHER: (lat: number, lng: number) => ["weather", lat, lng],
+  EVENT_WEATHER: (lat: number | null, lng: number | null, date: string) => [
+    "eventWeather",
+    lat,
+    lng,
+    date,
+  ],
   AIR_POLLUTION: (lat: number, lng: number) => ["airPollution", lat, lng],
   RECOMMEND_TYPE: (
     weatherType?: string,
