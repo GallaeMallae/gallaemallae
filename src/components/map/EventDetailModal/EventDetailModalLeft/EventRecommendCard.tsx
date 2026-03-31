@@ -7,7 +7,7 @@ export default function EventRecommendCard({ type }: { type: RecommendType }) {
 
   return (
     <div
-      className={`${config.bgColor} ${config.textColor} flex items-center justify-center gap-1 rounded p-2 shadow`}
+      className={`${config.bgColor} ${config.textColor} flex items-center justify-center gap-1 rounded-full p-2`}
     >
       <Image src={config.emojiSrc} alt={config.status} width={16} height={16} />
       <p className="text-caption font-bold">{config.status}</p>

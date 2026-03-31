@@ -1,4 +1,3 @@
-import { Card, CardContent } from "@/components/ui/card";
 import { INTRODUCE_CARD_CONFIG } from "@/lib/constants";
 import { IntroduceType } from "@/types/common";
 
@@ -21,7 +20,8 @@ export default function EventIntroduce({ type, value }: Props) {
           href={url}
           target="_blank"
           rel="noopener noreferrer"
-          className="break-all text-blue-500 underline"
+          className="block w-full truncate text-blue-500"
+          title={value}
         >
           {value}
         </a>
@@ -31,20 +31,21 @@ export default function EventIntroduce({ type, value }: Props) {
   };
 
   return (
-    <Card className="rounded-2xl border border-slate-200 bg-white">
-      <CardContent className="flex h-2 items-center gap-4 px-4">
-        <div
-          className={`flex h-8 w-8 items-center justify-center rounded-full ${config.bg}`}
-        >
-          <Icon size={16} className={config.color} stroke="currentColor" />
-        </div>
+    <div className="flex w-full items-center gap-4 py-1">
+      <div
+        className={`flex size-8 shrink-0 items-center justify-center rounded-full ${config.bg}`}
+      >
+        <Icon size={16} className={config.color} stroke="currentColor" />
+      </div>
 
-        <div>
-          <p className="text-caption text-etc">{config.title}</p>
-
-          <p className="text-caption font-semibold">{renderValue()}</p>
+      <div className="w-40 flex-1">
+        <p className="text-caption leading-tight font-medium text-slate-400">
+          {config.title}
+        </p>
+        <div className="text-desc2 font-semibold text-slate-800">
+          {renderValue()}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
