@@ -91,14 +91,14 @@ export function mapEventCard(events: Event[]): EventCardItem[] {
   return events.map((event) => {
     const categoryId = (event.categories?.[0] as CategoryId) ?? "etc";
 
+    const fullRegionAddress = [event.sido, event.sigungu, event.eupmyeondong]
+      .filter(Boolean)
+      .join(" ");
+
     return {
       id: event.id,
       title: event.name ?? "행사 제목 없음",
-      location:
-        event.venue ??
-        event.road_address ??
-        event.lot_address ??
-        "장소 정보 없음",
+      location: event.venue || fullRegionAddress || "장소 정보 없음",
       startDate: event.start_date,
       endDate: event.end_date ?? event.start_date,
       category: CATEGORY_NAME_MAP[categoryId] ?? "기타",

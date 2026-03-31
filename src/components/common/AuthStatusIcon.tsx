@@ -10,39 +10,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { toast } from "sonner";
 import { LogOutIcon, User } from "lucide-react";
 import { useProfileData } from "@/hooks/queries/useProfileData";
-import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import { createClient } from "@/utils/supabase/client";
-import { useRouter } from "next/navigation";
 import { useUserData } from "@/hooks/queries/useUserData";
-import { QUERY_KEYS } from "@/lib/constants";
+import { useLogout } from "@/hooks/useLogout";
 
 export default function AuthStatusIcon() {
-  const router = useRouter();
-  const queryClient = useQueryClient();
-  const supabase = createClient();
-
   const { data: profile, isLoading: isProfileLoading } = useProfileData();
   const { data: user, isLoading: isUserLoading } = useUserData();
-
-  const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
-
-    if (error) {
-      toast.error("로그아웃에 실패했습니다.");
-      return;
-    }
-
-    queryClient.removeQueries({ queryKey: QUERY_KEYS.PROFILE() });
-    queryClient.removeQueries({ queryKey: QUERY_KEYS.USER });
-
-    router.replace("/");
-    // refresh 해야 바뀐 쿠키 상태를 반영할 수 있음
-    router.refresh();
-  };
+  const { logout } = useLogout();
 
   if (isUserLoading || isProfileLoading) {
     return <Skeleton className="h-10 w-10 rounded-full" />;
@@ -80,7 +57,7 @@ export default function AuthStatusIcon() {
               </Link>
             </DropdownMenuItem>
           </DropdownMenuGroup>
-          <DropdownMenuItem variant="destructive" onSelect={handleLogout}>
+          <DropdownMenuItem variant="destructive" onSelect={logout}>
             <LogOutIcon />
             로그아웃
           </DropdownMenuItem>

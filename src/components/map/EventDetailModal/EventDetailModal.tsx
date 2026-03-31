@@ -27,7 +27,7 @@ export default function EventDetailModal({
 
   if (!event) return null;
 
-  const categoryId = (event.categories?.[0] as CategoryId) || "etc";
+  const categoryId = ((event.categories as string[])[0] as CategoryId) || "etc";
   const category = CATEGORY_NAME_MAP[categoryId] ?? "기타";
 
   return (
