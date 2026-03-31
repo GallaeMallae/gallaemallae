@@ -15,7 +15,6 @@ export default function MypageProfileCard() {
   const { logout } = useLogout();
 
   const handleLogoutClick = () => {
-    console.log("클릭");
     openAlert({
       title: "로그아웃 하시겠습니까?",
       description: "메인 페이지로 이동됩니다.",
