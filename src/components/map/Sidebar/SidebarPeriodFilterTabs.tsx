@@ -5,7 +5,7 @@ import { PERIOD_FILTER_TABS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { PeriodFilter } from "@/types/common";
 
-interface PeriodFilterTabsProps {
+interface SidebarPeriodFilterTabsProps {
   value: PeriodFilter;
   onChange: (value: PeriodFilter) => void;
 }
@@ -13,7 +13,7 @@ interface PeriodFilterTabsProps {
 export default function SidebarPeriodFilterTabs({
   value,
   onChange,
-}: PeriodFilterTabsProps) {
+}: SidebarPeriodFilterTabsProps) {
   return (
     <Tabs
       value={value}

@@ -4,12 +4,24 @@ import Sidebar from "@/components/map/Sidebar/Sidebar";
 import Area from "@/components/map/Area/Area";
 import { useState } from "react";
 import { CategoryId, PeriodFilter } from "@/types/common";
+import { useSearchParams } from "next/navigation";
 
 export default function MapPage() {
-  const [radius, setRadius] = useState<number | null>(null);
-  const [category, setCategory] = useState<CategoryId[]>(["all"]);
   const [period, setPeriod] = useState<PeriodFilter>("전체");
   const [search, setSearch] = useState("");
+
+  const searchParams = useSearchParams();
+  const mode = searchParams.get("mode");
+  const categoryParams = searchParams.get("category");
+
+  const [radius, setRadius] = useState<number | null>(() => {
+    return mode === "near" ? 5000 : null;
+  });
+
+  const [category, setCategory] = useState<CategoryId[]>(() => {
+    if (!categoryParams) return ["all"];
+    return [categoryParams as CategoryId];
+  });
 
   return (
     <div className="relative w-full overflow-hidden md:flex">

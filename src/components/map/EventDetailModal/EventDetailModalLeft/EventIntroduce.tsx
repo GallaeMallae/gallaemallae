@@ -11,21 +11,25 @@ export default function EventIntroduce({ type, value }: EventIntroduceProps) {
   const Icon = config.icon;
 
   const renderValue = () => {
-    if (!value) return "-";
-
     if (type === "homepage") {
-      const url = value.startsWith("http") ? value : `https://${value}`;
+      if (!value || !value.startsWith("http")) {
+        return <span>-</span>;
+      }
       return (
         <a
-          href={url}
+          href={value}
           target="_blank"
           rel="noopener noreferrer"
           className="block w-full truncate text-blue-500"
           title={value}
-        >
-          {value}
-        </a>
+        />
       );
+    }
+    if (type === "tel") {
+      if (!value || value === "-") {
+        return <span>-</span>;
+      }
+      return <a href={`tel:${value}`}>{value}</a>;
     }
     return value;
   };

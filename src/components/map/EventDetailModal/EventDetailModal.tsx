@@ -11,11 +11,11 @@ import { CategoryId } from "@/types/common";
 import { CATEGORY_NAME_MAP } from "@/lib/constants";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-type EventDetailModalProps = {
+interface EventDetailModalProps {
   eventId: string | null;
   open: boolean;
   onClose: () => void;
-};
+}
 
 export default function EventDetailModal({
   eventId,
