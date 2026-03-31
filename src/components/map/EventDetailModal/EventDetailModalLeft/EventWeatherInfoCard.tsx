@@ -1,5 +1,5 @@
-import { WEATHER_INFO_CARD_CONFIG } from "@/lib/constants";
 import { WeatherInfoType } from "@/types/common";
+import { WEATHER_INFO_CARD_CONFIG } from "@/lib/constants";
 
 const MOCK_WEATHER: Record<WeatherInfoType, string> = {
   temp: "24도",
@@ -25,8 +25,8 @@ export default function EventWeatherInfoCard({
         fill="currentColor"
       />
       <div>
-        <p className="text-etc text-[9px] font-bold">{config.title}</p>
-        <p className="text-caption font-bold">{MOCK_WEATHER[type]}</p>
+        <p className="text-etc text-caption font-bold">{config.title}</p>
+        <p className="text-desc2 font-bold">{MOCK_WEATHER[type]}</p>
       </div>
     </div>
   );
