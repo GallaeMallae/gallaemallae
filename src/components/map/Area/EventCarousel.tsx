@@ -10,12 +10,14 @@ import { EventCardItem } from "@/types/common";
 
 interface EventCarouselProps {
   events: EventCardItem[];
+  selectedId: string | null;
   onCarouselClick: (id: string) => void;
   onSelectCarousel: (id: string) => void;
 }
 
 export default function EventCarousel({
   events,
+  selectedId,
   onCarouselClick,
   onSelectCarousel,
 }: EventCarouselProps) {
@@ -36,6 +38,15 @@ export default function EventCarousel({
       api.off("select", handleSelect);
     };
   }, [api, events, onSelectCarousel]);
+
+  useEffect(() => {
+    if (!api || !selectedId) return;
+
+    const index = events.findIndex((e) => e.id === selectedId);
+    if (index === -1) return;
+
+    api.scrollTo(index);
+  }, [api, selectedId, events]);
 
   return (
     <div className="absolute right-0 bottom-6 left-0 z-5 px-4">

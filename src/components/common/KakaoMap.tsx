@@ -2,12 +2,12 @@
 
 import { Map } from "react-kakao-maps-sdk";
 
-type KakaoMapProps = {
+interface KakaoMapProps {
   center: { lat: number; lng: number };
   level?: number;
   children?: React.ReactNode;
   onCreate?: (map: kakao.maps.Map) => void;
-};
+}
 
 export default function KakaoMap({
   center,

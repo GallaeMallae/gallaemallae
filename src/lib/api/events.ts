@@ -1,16 +1,12 @@
 import { SupabaseClient } from "@supabase/supabase-js";
-import { Database, Tables } from "@/types/supabase";
+import { Database } from "@/types/supabase";
 import { Category, Event } from "@/types/common";
 import { format as formatDate } from "date-fns";
+import { transformEvent } from "@/utils/transform";
 
 export type EventCategory = Exclude<Category, "전체">;
 
 const getToday = () => formatDate(new Date(), "yyyy-MM-dd");
-
-const transformEvent = (dbRow: Tables<"events">): Event => ({
-  ...dbRow,
-  categories: (dbRow.categories as string[]) || [],
-});
 
 export async function fetchEventById(
   supabase: SupabaseClient<Database>,

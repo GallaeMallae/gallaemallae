@@ -17,18 +17,14 @@ import {
 import { mapEventCard } from "@/utils/mapper";
 import { CategoryId, PeriodFilter } from "@/types/common";
 
-export default function Area({
-  radius,
-  category,
-  period,
-  search,
-}: {
+interface AreaProps {
   radius: number | null;
   category: CategoryId[];
-
   period: PeriodFilter;
   search: string;
-}) {
+}
+
+export default function Area({ radius, category, period, search }: AreaProps) {
   const { position, moveCurrentLocation } = useCurrentLocation();
   const { data: events = [], isLoading, error: queryError } = useEventsData();
 
@@ -109,7 +105,10 @@ export default function Area({
         radius={radius}
         markers={markers}
         setLocate={setLocate}
-        onMarkerClick={(id) => setSelectedModal(id)}
+        onMarkerClick={(id) => {
+          setSelectedModal(id);
+          setSelectedCarousel(id);
+        }}
         locate={locate}
         onSelectCarousel={
           selectedCarouselData
@@ -141,6 +140,7 @@ export default function Area({
 
       <EventCarousel
         events={carouselEvents}
+        selectedId={selectedCarousel}
         onCarouselClick={(id) => setSelectedModal(id)}
         onSelectCarousel={setSelectedCarousel}
       />

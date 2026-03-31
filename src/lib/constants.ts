@@ -164,13 +164,13 @@ export const INTRODUCE_CARD_CONFIG: Record<
     icon: Calendar,
     color: "text-blue-500",
     bg: "bg-blue-50",
-    title: "축제기간",
+    title: "행사 기간",
   },
   place: {
     icon: MapPin,
     color: "text-green-500",
     bg: "bg-green-50",
-    title: "개최장소",
+    title: "개최 장소",
   },
   tel: {
     icon: Phone,

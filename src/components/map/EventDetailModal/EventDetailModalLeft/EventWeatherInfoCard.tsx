@@ -14,16 +14,17 @@ export default function EventWeatherInfoCard({
   const Icon = config.icon;
 
   return (
-    <div className="flex flex-row items-center gap-2 rounded bg-white px-2 py-4 shadow-sm">
-      <Icon
-        size={16}
-        className={config.color}
-        color="currentColor"
-        fill="currentColor"
-      />
-      <div>
-        <p className="text-etc text-caption font-bold">{config.title}</p>
-        <p className="text-desc2 font-bold">{value}</p>
+    <div className="flex items-center gap-2 py-2">
+      <div
+        className={`flex size-8 shrink-0 items-center justify-center rounded-full bg-white`}
+      >
+        <Icon size={16} className={config.color} fill="currentColor" />
+      </div>
+      <div className="min-w-0">
+        <p className="text-caption mb-1 leading-none font-medium text-slate-400">
+          {config.title}
+        </p>
+        <p className="text-sm leading-none font-bold text-slate-800">{value}</p>
       </div>
     </div>
   );
