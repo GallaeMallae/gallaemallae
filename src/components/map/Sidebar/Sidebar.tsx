@@ -8,6 +8,17 @@ import { CATEGORY_MENU } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { CategoryId, PeriodFilter } from "@/types/common";
 
+interface SidebarProps {
+  radius: number | null;
+  setRadius: (r: number | null) => void;
+  category: CategoryId[];
+  setCategory: (c: CategoryId[]) => void;
+  period: PeriodFilter;
+  setPeriod: (p: PeriodFilter) => void;
+  search: string;
+  setSearch: (s: string) => void;
+}
+
 export default function Sidebar({
   radius,
   setRadius,
@@ -17,16 +28,7 @@ export default function Sidebar({
   setPeriod,
   search,
   setSearch,
-}: {
-  radius: number | null;
-  setRadius: (r: number | null) => void;
-  category: CategoryId[];
-  setCategory: (c: CategoryId[]) => void;
-  period: PeriodFilter;
-  setPeriod: (p: PeriodFilter) => void;
-  search: string;
-  setSearch: (s: string) => void;
-}) {
+}: SidebarProps) {
   const toggleCategory = (id: CategoryId) => {
     if (id === "all") {
       setCategory(["all"]);
@@ -64,28 +66,29 @@ export default function Sidebar({
             초기화
           </Button>
         </div>
-        <div>
-          <p className="text-desc1 text-etc font-bold">카테고리</p>
 
+        <div className="flex flex-col gap-4">
+          <p className="text-desc1 text-etc font-bold">카테고리</p>
           <div className="flex w-full flex-col gap-2">
             {CATEGORY_MENU.map((item) => {
               const Icon = item.Icon;
               const isActive = category.includes(item.id as CategoryId);
 
               return (
-                <button
+                <Button
                   key={item.id}
+                  variant="ghost"
                   onClick={() => toggleCategory(item.id as CategoryId)}
                   className={cn(
-                    "flex items-center justify-start gap-4 rounded-lg px-4 py-4 transition-all",
+                    "w-full justify-start gap-4 rounded-lg px-8 py-8",
                     isActive
-                      ? "bg-symbol-sky-sub text-symbol-sky"
-                      : "hover:bg-etc/10 text-etc",
+                      ? "bg-symbol-sky-sub text-symbol-sky hover:bg-symbol-sky-sub"
+                      : "text-etc hover:bg-etc/10",
                   )}
                 >
                   <Icon className="size-6" />
                   <span className="text-desc1">{item.name}</span>
-                </button>
+                </Button>
               );
             })}
           </div>
@@ -117,18 +120,19 @@ export default function Sidebar({
               const isActive = category.includes(item.id as CategoryId);
 
               return (
-                <button
+                <Button
                   key={item.id}
+                  variant="ghost"
                   onClick={() => toggleCategory(item.id as CategoryId)}
                   className={cn(
-                    "text-caption flex-1 rounded-lg py-2 text-center transition-all",
+                    "text-caption flex-1 rounded-lg py-2 text-center",
                     isActive
-                      ? "bg-symbol-sky text-white"
+                      ? "bg-symbol-sky hover:bg-symbol-sky text-white"
                       : "text-etc hover:bg-muted",
                   )}
                 >
                   {item.name}
-                </button>
+                </Button>
               );
             })}
           </div>

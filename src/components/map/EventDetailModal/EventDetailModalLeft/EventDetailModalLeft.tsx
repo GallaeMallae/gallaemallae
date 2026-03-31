@@ -6,11 +6,13 @@ import EventIntroduce from "@/components/map/EventDetailModal/EventDetailModalLe
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Event } from "@/types/common";
 
-type Props = {
+type EventDetailModalLeftProps = {
   event: Event;
 };
 
-export default function EventDetailModalLeft({ event }: Props) {
+export default function EventDetailModalLeft({
+  event,
+}: EventDetailModalLeftProps) {
   const date =
     event.start_date && event.end_date
       ? event.start_date === event.end_date
@@ -39,8 +41,8 @@ export default function EventDetailModalLeft({ event }: Props) {
       <div className="flex flex-col gap-2">
         <EventIntroduce type="date" value={date} />
         <EventIntroduce type="place" value={event.venue || "-"} />
-        <EventIntroduce type="tel" value={event.phone || "-"} />
-        <EventIntroduce type="homepage" value={event.homepage_url || "-"} />
+        <EventIntroduce type="tel" value={event.phone} />
+        <EventIntroduce type="homepage" value={event.homepage_url} />
       </div>
     </div>
   );

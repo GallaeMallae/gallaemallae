@@ -2,30 +2,31 @@ import { Card, CardContent } from "@/components/ui/card";
 import { INTRODUCE_CARD_CONFIG } from "@/lib/constants";
 import { IntroduceType } from "@/types/common";
 
-type Props = {
+interface EventIntroduceProps {
   type: IntroduceType;
   value?: string | null;
-};
+}
 
-export default function EventIntroduce({ type, value }: Props) {
+export default function EventIntroduce({ type, value }: EventIntroduceProps) {
   const config = INTRODUCE_CARD_CONFIG[type];
   const Icon = config.icon;
 
   const renderValue = () => {
-    if (!value) return "-";
-
     if (type === "homepage") {
-      const url = value.startsWith("http") ? value : `https://${value}`;
+      if (!value || !value.startsWith("http")) {
+        return <span>-</span>;
+      }
       return (
-        <a
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="break-all text-blue-500 underline"
-        >
+        <a href={value} className="break-all text-blue-500 underline">
           {value}
         </a>
       );
+    }
+    if (type === "tel") {
+      if (!value || value === "-") {
+        return <span>-</span>;
+      }
+      return <a href={`tel:${value}`}>{value}</a>;
     }
     return value;
   };
