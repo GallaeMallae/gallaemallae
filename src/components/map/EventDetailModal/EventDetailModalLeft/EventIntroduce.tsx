@@ -11,7 +11,7 @@ export default function EventIntroduce({ type, value }: Props) {
   const config = INTRODUCE_CARD_CONFIG[type];
   const Icon = config.icon;
 
-  const URL = () => {
+  const renderValue = () => {
     if (type === "homepage") {
       if (!value || !value.startsWith("http")) {
         return <span>-</span>;
@@ -28,6 +28,7 @@ export default function EventIntroduce({ type, value }: Props) {
       }
       return <a href={`tel:${value}`}>{value}</a>;
     }
+    return value;
   };
 
   return (
@@ -42,7 +43,7 @@ export default function EventIntroduce({ type, value }: Props) {
         <div>
           <p className="text-caption text-etc">{config.title}</p>
 
-          <p className="text-caption font-semibold">{URL()}</p>
+          <p className="text-caption font-semibold">{renderValue()}</p>
         </div>
       </CardContent>
     </Card>
