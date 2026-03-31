@@ -22,7 +22,9 @@ export default function EventIntroduce({ type, value }: EventIntroduceProps) {
           rel="noopener noreferrer"
           className="block w-full truncate text-blue-500"
           title={value}
-        />
+        >
+          {value}
+        </a>
       );
     }
     if (type === "tel") {
