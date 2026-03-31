@@ -21,11 +21,13 @@ export default function EventIntroduce({ type, value }: Props) {
           {value}
         </a>
       );
-    } else if (type === "tel")
-      if (value !== "-") {
-        return <a href={`tel${value}`}>{value}</a>;
+    }
+    if (type === "tel") {
+      if (!value || value === "-") {
+        return <span>-</span>;
       }
-    return value;
+      return <a href={`tel:${value}`}>{value}</a>;
+    }
   };
 
   return (
