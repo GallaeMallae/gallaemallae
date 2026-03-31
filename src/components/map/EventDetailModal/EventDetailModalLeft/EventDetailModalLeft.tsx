@@ -1,16 +1,12 @@
 "use client";
 
 import EventRecommendCard from "@/components/map/EventDetailModal/EventDetailModalLeft/EventRecommendCard";
-import EventRecommendWeather from "@/components/map/EventDetailModal/EventDetailModalLeft/EventWeatherInfoCard";
+import EventWeatherInfoCard from "@/components/map/EventDetailModal/EventDetailModalLeft/EventWeatherInfoCard";
 import EventIntroduce from "@/components/map/EventDetailModal/EventDetailModalLeft/EventIntroduce";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Event } from "@/types/common";
 
-type Props = {
-  event: Event;
-};
-
-export default function EventDetailModalLeft({ event }: Props) {
+export default function EventDetailModalLeft({ event }: { event: Event }) {
   const date =
     event.start_date && event.end_date
       ? event.start_date === event.end_date
@@ -29,10 +25,10 @@ export default function EventDetailModalLeft({ event }: Props) {
           </div>
         </CardHeader>
         <CardContent className="grid grid-cols-2 gap-2 pt-0">
-          <EventRecommendWeather type="temp" />
-          <EventRecommendWeather type="fineDust" />
-          <EventRecommendWeather type="wind" />
-          <EventRecommendWeather type="wet" />
+          <EventWeatherInfoCard type="temp" />
+          <EventWeatherInfoCard type="fineDust" />
+          <EventWeatherInfoCard type="wind" />
+          <EventWeatherInfoCard type="wet" />
         </CardContent>
       </Card>
 
