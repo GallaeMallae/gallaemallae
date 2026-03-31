@@ -20,7 +20,7 @@ export default function EventDetailModalRight({ event }: { event: Event }) {
     <div className="flex h-full flex-col gap-6 md:justify-between">
       <div className="flex flex-col gap-2">
         <div className="text-title2 flex flex-row font-semibold">
-          <SectionTitle>축제 소개</SectionTitle>
+          <SectionTitle>행사 소개</SectionTitle>
         </div>
         <div className="text-desc2 font-medium">
           {event.description || "상세 정보가 등록되지 않았습니다."}

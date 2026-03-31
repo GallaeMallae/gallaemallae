@@ -164,7 +164,7 @@ export const INTRODUCE_CARD_CONFIG: Record<
     icon: Calendar,
     color: "text-blue-500",
     bg: "bg-blue-50",
-    title: "축제 기간",
+    title: "행사 기간",
   },
   place: {
     icon: MapPin,
