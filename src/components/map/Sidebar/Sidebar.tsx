@@ -8,6 +8,17 @@ import { CATEGORY_MENU } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { CategoryId, PeriodFilter } from "@/types/common";
 
+interface SidebarProps {
+  radius: number | null;
+  setRadius: (r: number | null) => void;
+  category: CategoryId[];
+  setCategory: (c: CategoryId[]) => void;
+  period: PeriodFilter;
+  setPeriod: (p: PeriodFilter) => void;
+  search: string;
+  setSearch: (s: string) => void;
+}
+
 export default function Sidebar({
   radius,
   setRadius,
@@ -17,16 +28,7 @@ export default function Sidebar({
   setPeriod,
   search,
   setSearch,
-}: {
-  radius: number | null;
-  setRadius: (r: number | null) => void;
-  category: CategoryId[];
-  setCategory: (c: CategoryId[]) => void;
-  period: PeriodFilter;
-  setPeriod: (p: PeriodFilter) => void;
-  search: string;
-  setSearch: (s: string) => void;
-}) {
+}: SidebarProps) {
   const toggleCategory = (id: CategoryId) => {
     if (id === "all") {
       setCategory(["all"]);

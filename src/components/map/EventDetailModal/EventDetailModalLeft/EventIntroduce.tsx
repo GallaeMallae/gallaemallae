@@ -2,12 +2,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { INTRODUCE_CARD_CONFIG } from "@/lib/constants";
 import { IntroduceType } from "@/types/common";
 
-type Props = {
+interface EventIntroduceProps {
   type: IntroduceType;
   value?: string | null;
-};
+}
 
-export default function EventIntroduce({ type, value }: Props) {
+export default function EventIntroduce({ type, value }: EventIntroduceProps) {
   const config = INTRODUCE_CARD_CONFIG[type];
   const Icon = config.icon;
 

@@ -3,13 +3,15 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 
+interface SidebarDistanceProps {
+  radius: number | null;
+  setRadius: (r: number | null) => void;
+}
+
 export default function SidebarDistance({
   radius,
   setRadius,
-}: {
-  radius: number | null;
-  setRadius: (r: number | null) => void;
-}) {
+}: SidebarDistanceProps) {
   const distances = [
     { label: "전체", value: "all" },
     { label: "5km", value: "5000" },

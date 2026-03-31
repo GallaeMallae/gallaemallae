@@ -17,17 +17,14 @@ import {
 import { mapEventCard } from "@/utils/mapper";
 import { CategoryId, PeriodFilter } from "@/types/common";
 
-export default function Area({
-  radius,
-  category,
-  period,
-  search,
-}: {
+interface AreaProps {
   radius: number | null;
   category: CategoryId[];
   period: PeriodFilter;
   search: string;
-}) {
+}
+
+export default function Area({ radius, category, period, search }: AreaProps) {
   const { position, moveCurrentLocation } = useCurrentLocation();
   const { data: events = [], isLoading, error: queryError } = useEventsData();
 

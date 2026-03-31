@@ -10,11 +10,11 @@ import { useEventsData } from "@/hooks/queries/useEventsData";
 import { CategoryId } from "@/types/common";
 import { CATEGORY_NAME_MAP } from "@/lib/constants";
 
-type EventDetailModalProps = {
+interface EventDetailModalProps {
   eventId: string | null;
   open: boolean;
   onClose: () => void;
-};
+}
 
 export default function EventDetailModal({
   eventId,

@@ -6,11 +6,13 @@ import EventIntroduce from "@/components/map/EventDetailModal/EventDetailModalLe
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Event } from "@/types/common";
 
-type Props = {
+type EventDetailModalLeftProps = {
   event: Event;
 };
 
-export default function EventDetailModalLeft({ event }: Props) {
+export default function EventDetailModalLeft({
+  event,
+}: EventDetailModalLeftProps) {
   const date =
     event.start_date && event.end_date
       ? event.start_date === event.end_date
