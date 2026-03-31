@@ -40,7 +40,7 @@ export default function EventDetailModal({
           <div className="flex w-full flex-col gap-6">
             <div className="flex items-start justify-between">
               <div className="flex flex-col gap-2">
-                <div className="flex justify-between gap-2">
+                <div className="flex gap-2">
                   {categories.map((category) => {
                     const categoryKo = CATEGORY_NAME_MAP[category];
 
