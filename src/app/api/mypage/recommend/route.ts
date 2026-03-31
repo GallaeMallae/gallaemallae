@@ -3,6 +3,7 @@ import { Event } from "@/types/common";
 import { Tables } from "@/types/supabase";
 import { getKstNow } from "@/utils/date";
 import { createClient } from "@/utils/supabase/server";
+import { transformEvent } from "@/utils/transform";
 import { PostgrestError } from "@supabase/supabase-js";
 import { addDays, format } from "date-fns";
 import { NextResponse } from "next/server";
@@ -19,11 +20,6 @@ interface FlattenedEvent {
   name: string;
   categories: string[];
 }
-
-const transformEvent = (dbRow: Tables<"events">): Event => ({
-  ...dbRow,
-  categories: (dbRow.categories as string[]) || [],
-});
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
