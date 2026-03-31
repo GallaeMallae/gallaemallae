@@ -97,10 +97,10 @@ export default function EventDetailModalButton({
   };
 
   return (
-    <div className="flex gap-4">
+    <div className="flex items-center gap-4">
       {isPlanned ? (
         <Button
-          className="bg-destructive hover:bg-destructive/80 flex h-12 flex-1 font-bold"
+          className="bg-destructive hover:bg-destructive/80 flex h-10 flex-1 font-bold"
           onClick={handleDeletePlan}
           disabled={isDeletePlanLoading}
         >
@@ -109,7 +109,7 @@ export default function EventDetailModalButton({
         </Button>
       ) : (
         <Button
-          className="bg-symbol-sky hover:bg-symbol-sky/80 flex h-12 flex-1 font-bold text-white"
+          className="bg-symbol-sky hover:bg-symbol-sky/80 flex h-10 flex-1 font-bold text-white"
           onClick={handleAddPlan}
           disabled={isPlanLoading}
         >
@@ -123,7 +123,7 @@ export default function EventDetailModalButton({
         size="icon"
         aria-label="좋아요"
         aria-pressed={isLiked}
-        className="h-12 w-12 p-0"
+        className="size-8 p-0"
         onClick={handleLikeClick}
       >
         <Heart

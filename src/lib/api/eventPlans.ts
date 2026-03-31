@@ -2,18 +2,13 @@ import { SupabaseClient } from "@supabase/supabase-js";
 import { Database, Tables } from "@/types/supabase";
 import { format } from "date-fns";
 import { EventPlanWithEvent } from "@/hooks/queries/usePlannedEventsData";
-import { Event } from "@/types/common";
+import { transformEvent } from "@/utils/transform";
 
 export interface AddEventPlanParams {
   userId: string;
   eventId: string;
   // visitDate: string; 추후 날짜 선택 기능 추가될때 받기
 }
-
-const transformEvent = (dbRow: Tables<"events">): Event => ({
-  ...dbRow,
-  categories: (dbRow.categories as string[]) || [],
-});
 
 export async function fetchPlannedEvents(
   supabase: SupabaseClient<Database>,
