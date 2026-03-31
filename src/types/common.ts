@@ -46,7 +46,11 @@ export interface RecommendCardConfigItem {
 // ==============================
 // 행사 카드 관련 타입
 // ==============================
-export type Event = Tables<"events">;
+export type Event = Omit<Tables<"events">, "categories"> & {
+  // 테이블에서 jsonb 사용하게 되면서 [0]처럼 인덱스 접근 불가
+  // type Event를 만들때 categories의 타입을 string[]으로 변경하여 사용
+  categories: string[];
+};
 
 export interface EventCardItem {
   id: string;
@@ -111,14 +115,12 @@ export interface IntroduceCardConfigItem {
 }
 
 export interface DetailCardItem {
-  description: string;
-  organization: {
-    host: string;
-    organizer: string;
-    sponsor: string;
-    provider: string;
+  info: {
+    organization: string;
+    holdingCycle: string;
+    firstHeldYear: number;
+    visitorCount: number;
   };
-  information: string[];
 }
 
 // ==============================
