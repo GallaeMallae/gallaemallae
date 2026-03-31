@@ -9,13 +9,13 @@ import { useUserData } from "@/hooks/queries/useUserData";
 import { useOpenAlertModal } from "@/stores/alertModalStore";
 import React from "react";
 
-type Menu = {
+interface Menu {
   href: string;
   name: string;
   icon: LucideIcon;
   mode?: string;
   requireAuth?: boolean;
-};
+}
 
 const MENUS: Menu[] = [
   { href: "/", name: "홈", icon: House },
