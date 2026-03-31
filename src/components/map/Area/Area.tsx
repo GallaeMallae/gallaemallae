@@ -108,7 +108,10 @@ export default function Area({
         radius={radius}
         markers={markers}
         setLocate={setLocate}
-        onMarkerClick={(id) => setSelectedModal(id)}
+        onMarkerClick={(id) => {
+          setSelectedModal(id);
+          setSelectedCarousel(id);
+        }}
         locate={locate}
         onSelectCarousel={
           selectedCarouselData
@@ -140,6 +143,7 @@ export default function Area({
 
       <EventCarousel
         events={carouselEvents}
+        selectedId={selectedCarousel}
         onCarouselClick={(id) => setSelectedModal(id)}
         onSelectCarousel={setSelectedCarousel}
       />
