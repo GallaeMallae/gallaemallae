@@ -73,19 +73,20 @@ export default function Sidebar({
               const isActive = category.includes(item.id as CategoryId);
 
               return (
-                <button
+                <Button
                   key={item.id}
+                  variant="ghost"
                   onClick={() => toggleCategory(item.id as CategoryId)}
                   className={cn(
-                    "flex cursor-pointer items-center justify-start gap-4 rounded-lg px-4 py-4 transition-all",
+                    "w-full justify-start gap-4 rounded-lg px-8 py-8",
                     isActive
-                      ? "bg-symbol-sky-sub text-symbol-sky"
-                      : "hover:bg-etc/10 text-etc",
+                      ? "bg-symbol-sky-sub text-symbol-sky hover:bg-symbol-sky-sub"
+                      : "text-etc hover:bg-etc/10",
                   )}
                 >
                   <Icon className="size-6" />
                   <span className="text-desc1">{item.name}</span>
-                </button>
+                </Button>
               );
             })}
           </div>
@@ -117,18 +118,19 @@ export default function Sidebar({
               const isActive = category.includes(item.id as CategoryId);
 
               return (
-                <button
+                <Button
                   key={item.id}
+                  variant="ghost"
                   onClick={() => toggleCategory(item.id as CategoryId)}
                   className={cn(
-                    "text-caption flex-1 cursor-pointer rounded-lg py-2 text-center transition-all",
+                    "text-caption flex-1 rounded-lg py-2 text-center",
                     isActive
-                      ? "bg-symbol-sky text-white"
+                      ? "bg-symbol-sky hover:bg-symbol-sky text-white"
                       : "text-etc hover:bg-muted",
                   )}
                 >
                   {item.name}
-                </button>
+                </Button>
               );
             })}
           </div>
