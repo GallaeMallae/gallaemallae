@@ -23,7 +23,7 @@ export default function EventDetailModalLeft({ event }: Props) {
       <Card className="flex gap-2 border-none p-0 shadow-none">
         <CardHeader className="p-0">
           <div className="flex items-center justify-between">
-            <p className="text-title2 font-bold">갈래말래</p>
+            <p className="text-title2 font-bold">갈래말래?</p>
             <EventRecommendCard type="veryPositive" />
           </div>
         </CardHeader>
