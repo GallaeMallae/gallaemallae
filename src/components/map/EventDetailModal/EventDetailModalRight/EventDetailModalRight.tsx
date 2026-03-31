@@ -5,10 +5,10 @@ import EventDetailModalButton from "@/components/map/EventDetailModal/EventDetai
 import { Event } from "@/types/common";
 
 const SectionTitle = ({ children }: { children: React.ReactNode }) => (
-  <p className="flex items-center gap-2">
+  <div className="flex items-center gap-2">
     <span className="bg-symbol-sky h-5 w-1" />
     {children}
-  </p>
+  </div>
 );
 
 export default function EventDetailModalRight({ event }: { event: Event }) {
@@ -22,15 +22,15 @@ export default function EventDetailModalRight({ event }: { event: Event }) {
         <div className="text-title2 flex flex-row font-semibold">
           <SectionTitle>축제 소개</SectionTitle>
         </div>
-        <p className="text-desc2 font-medium">
+        <div className="text-desc2 font-medium">
           {event.description || "상세 정보가 등록되지 않았습니다."}
-        </p>
+        </div>
       </div>
 
       <div className="flex flex-col gap-2">
-        <p className="text-title2 flex font-semibold">
+        <div className="text-title2 flex font-semibold">
           <SectionTitle>조직 및 운영 정보</SectionTitle>
-        </p>
+        </div>
         <div className="flex flex-col gap-2">
           <EventDetailInfo
             info={{
@@ -48,7 +48,7 @@ export default function EventDetailModalRight({ event }: { event: Event }) {
         <div className="text-title2 flex flex-row font-semibold">
           <SectionTitle>행사 관련 정보</SectionTitle>
         </div>
-        <p className="text-desc2 font-medium">{event.related_info}</p>
+        <div className="text-desc2 font-medium">{event.related_info}</div>
       </div>
 
       <EventDetailModalButton event={event} />
