@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { fetchForecast, fetchAirPollution } from "@/lib/api/weather";
-import { mapPm10Level } from "@/utils/mapper";
+import { mapWeatherType, mapPm10Level } from "@/utils/mapper";
 import { QUERY_KEYS } from "@/lib/constants";
 import { isForecastAvailable, getClosestForecast } from "@/utils/forecast";
 
@@ -30,7 +30,7 @@ export function useEventWeatherData(
       const target = getClosestForecast(forecast.list, date);
 
       return {
-        isAvailable: true,
+        weather: mapWeatherType(target.weather[0].main),
         temp: `${Math.round(target.main.temp)}º`,
         wind: `${Math.round(target.wind.speed)}m/s`,
         wet: `${target.main.humidity}%`,

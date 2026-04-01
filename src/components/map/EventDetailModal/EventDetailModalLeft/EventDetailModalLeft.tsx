@@ -43,6 +43,7 @@ export default function EventDetailModalLeft({ event }: { event: Event }) {
                 <EventWeatherInfoCard
                   type="temp"
                   value={eventWeatherData.temp}
+                  weatherType={eventWeatherData.weather}
                 />
                 <EventWeatherInfoCard
                   type="fineDust"

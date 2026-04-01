@@ -3,6 +3,7 @@ import {
   FetchAirPollutionResponse,
 } from "@/types/apiResponse";
 import {
+  WeatherType,
   WeatherCardItem,
   Event,
   EventCardItem,
@@ -14,7 +15,7 @@ import { CATEGORY_NAME_MAP } from "@/lib/constants";
  * @param type - OpenWeather API에서 제공하는 날씨 타입 (ex: Clear, Clouds, Rain, Snow 등)
  * @returns 앱에서 사용하는 날씨 타입 (sunny | cloudy | rainy | snowy)
  */
-export function mapWeatherType(type: string) {
+export function mapWeatherType(type: string): WeatherType {
   switch (type) {
     case "Clear":
       return "sunny";
