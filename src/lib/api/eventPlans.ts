@@ -24,7 +24,6 @@ export async function fetchPlannedEvents(
     `,
     )
     .eq("user_id", userId)
-    .order("event(start_date)", { ascending: true })
     .gte("event.end_date", today)
     .order("event(start_date)", { ascending: true });
 

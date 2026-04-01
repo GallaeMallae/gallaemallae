@@ -6,7 +6,8 @@ import MypageProfileCard from "@/components/mypage/MypageProfileCard";
 import MypageEventSectionCard from "@/components/mypage/MypageEventSectionCard";
 import WeatherCardSkeleton from "@/components/common/skeleton/WeatherCardSkeleton";
 import EventDetailModal from "@/components/map/EventDetailModal/EventDetailModal";
-import { toast } from "sonner";
+import RecommendEventCardSkeleton from "@/components/common/skeleton/RecommendEventCardSkeleton";
+import MypageCalendarSection from "@/components/mypage/MypageCalendarSection";
 import { useState } from "react";
 import { parseSafeDate } from "@/utils/date";
 import { useLocationStore } from "@/stores/locationStore";
@@ -18,9 +19,6 @@ import { useLikedEventsData } from "@/hooks/queries/useLikedEventsData";
 import { usePlannedEventsData } from "@/hooks/queries/usePlannedEventsData";
 import { useProfileData } from "@/hooks/queries/useProfileData";
 import { useMypageRecommendEventData } from "@/hooks/queries/useMypageRecommendEventData";
-import RecommendEventCardSkeleton from "@/components/common/skeleton/RecommendEventCardSkeleton";
-import { useIsDesktop } from "@/hooks/useIsDesktop";
-import MypageCalendarSection from "@/components/mypage/MypageCalendarSection";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 
@@ -39,8 +37,6 @@ export default function Mypage() {
     usePlannedEventsData();
 
   const router = useRouter();
-
-  const isDesktop = useIsDesktop();
 
   const isWeatherReady =
     !!locationNameData && !!weatherData && !!airPollutionData;
@@ -68,22 +64,6 @@ export default function Mypage() {
       });
     }
   };
-  // const handleEventClick = (dateString: string) => {
-  //   const newDate = parseSafeDate(dateString);
-
-  //   if (newDate) {
-  //     setSelectedDate(newDate);
-  //     setMonth(newDate);
-  //     setActivePopoverDate(newDate);
-
-  //     if (!isDesktop) {
-  //       setIsDrawerOpen(true);
-  //     }
-  //   } else {
-  //     console.error("Invalid date string provided:", dateString);
-  //     toast.error("유효하지 않은 날짜 형식입니다.");
-  //   }
-  // };
 
   // 관심 목록 데이터 가공
   const formattedLikedEvents = (likedEvents ?? []).map((event) => ({
@@ -162,7 +142,7 @@ export default function Mypage() {
               iconName="bookmark"
               iconClassName="text-symbol-sky fill-symbol-sky"
               isLoading={isPlannedEventLoading}
-              events={formattedPlannedEvents}
+              events={plannedEvents ?? []}
               onEventClick={handleEventClick}
             />
           </div>
@@ -172,7 +152,7 @@ export default function Mypage() {
               iconName="heart"
               iconClassName="text-red-500 fill-red-500"
               isLoading={isLikedEventLoading}
-              events={formattedLikedEvents}
+              events={likedEvents ?? []}
               onEventClick={handleEventClick}
             />
           </div>

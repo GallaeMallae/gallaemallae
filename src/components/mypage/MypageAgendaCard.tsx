@@ -5,7 +5,7 @@ import { CATEGORY_NAME_MAP } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { useOpenAlertModal } from "@/stores/alertModalStore";
 import { MypageDisplayEvent } from "@/types/common";
-import { calculateDDay, formatDate } from "@/utils/date";
+import { calculateDDay } from "@/utils/date";
 
 interface MypageAgendaCardProps {
   event: MypageDisplayEvent;
@@ -24,8 +24,7 @@ export default function MypageAgendaCard({
   const { mutate: deletePlan, isPending: isDeletePlanLoading } =
     useDeleteEventPlan();
   const openAlert = useOpenAlertModal();
-  const formatVisitDate = formatDate(event.display_date);
-  const dDay = calculateDDay(event.display_date);
+  const dDay = calculateDDay(event.start_date);
 
   const handleCardClick = () => {
     if (onDetailClick) {
@@ -88,7 +87,7 @@ export default function MypageAgendaCard({
       <div>
         <div className="text-desc2 truncate font-semibold">{event.name}</div>
         <div className="text-desc2 text-etc space-x-2 truncate">
-          <span>{formatVisitDate}</span>
+          <span>{event.start_date}</span>
           <span>{event.venue}</span>
         </div>
       </div>

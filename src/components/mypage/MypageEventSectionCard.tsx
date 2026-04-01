@@ -2,15 +2,16 @@
 
 import MypageAgendaCard from "@/components/mypage/MypageAgendaCard";
 import MypageLikedCard from "@/components/mypage/MypageLikedCard";
+import MypageEventCardSkeleton from "@/components/common/skeleton/MypageEventCardSkeleton";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Bookmark, Heart, LucideIcon } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { motion, AnimatePresence, Variants } from "framer-motion";
-import { MypageDisplayEvent } from "@/types/common";
 import { cn } from "@/lib/utils";
 import { useCallback, useEffect, useRef, useState } from "react";
-import MypageEventCardSkeleton from "@/components/common/skeleton/MypageEventCardSkeleton";
 import { useIsDesktop } from "@/hooks/useIsDesktop";
+import { EventPlanWithEvent } from "@/hooks/queries/usePlannedEventsData";
+import { Event, MypageDisplayEvent } from "@/types/common";
 
 const ICON_MAP: Record<string, LucideIcon> = {
   bookmark: Bookmark,
@@ -29,7 +30,7 @@ interface MypageEventSectionCardProps {
   iconName: "bookmark" | "heart";
   iconClassName?: string;
   isLoading: boolean;
-  events: MypageDisplayEvent[];
+  events?: (Event | EventPlanWithEvent)[];
   onEventClick: (date: string) => void;
 }
 
@@ -38,7 +39,7 @@ export default function MypageEventSectionCard({
   iconName,
   iconClassName,
   isLoading,
-  events,
+  events = [],
   onEventClick,
 }: MypageEventSectionCardProps) {
   const [visibleCount, setVisibleCount] = useState(LIST_NUMBER);
@@ -50,9 +51,19 @@ export default function MypageEventSectionCard({
   const Icon = ICON_MAP[iconName];
   const SelectedCard = EVENT_CARD_COMPONENTS[iconName];
 
-  const slicedEvents = events.slice(0, visibleCount);
+  const formattedEvents: MypageDisplayEvent[] = events.map((item) => {
+    if ("event" in item) {
+      return {
+        ...item.event,
+        plan_id: item.id,
+      };
+    }
+    return item;
+  });
 
-  const hasMore = visibleCount < events.length;
+  const slicedEvents = formattedEvents.slice(0, visibleCount);
+
+  const hasMore = visibleCount < formattedEvents.length;
 
   const handleLoadMore = useCallback(() => {
     if (hasMore) {
@@ -142,7 +153,7 @@ export default function MypageEventSectionCard({
                       >
                         <SelectedCard
                           event={event}
-                          onClick={() => onEventClick(event.display_date)}
+                          onClick={() => onEventClick(event.start_date)}
                         />
                       </motion.div>
                     ))}
