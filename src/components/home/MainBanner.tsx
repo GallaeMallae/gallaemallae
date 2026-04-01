@@ -10,7 +10,7 @@ import { useLocationStore } from "@/stores/locationStore";
 import { useWeatherData } from "@/hooks/queries/useWeatherData";
 import { useLocationNameData } from "@/hooks/queries/useLocationNameData";
 import { useAirPollutionData } from "@/hooks/queries/useAirPollutionData";
-import { useRecommendTypeData } from "@/hooks/queries/useRecommendTypeData";
+import { useOutdoorRecommendData } from "@/hooks/queries/useOutdoorRecommendData";
 import { mapWeatherCard } from "@/utils/mapper";
 import { MapMode } from "@/types/common";
 
@@ -22,7 +22,7 @@ export default function MainBanner() {
   const { data: weatherData } = useWeatherData(coords, isInitialized);
   const { data: airPollutionData } = useAirPollutionData(coords, isInitialized);
   const { data: recommendTypeData, isLoading: isRecommendTypeLoading } =
-    useRecommendTypeData(weatherData, airPollutionData);
+    useOutdoorRecommendData(weatherData, airPollutionData);
 
   const isWeatherReady =
     !!locationNameData && !!weatherData && !!airPollutionData;

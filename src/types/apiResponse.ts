@@ -1,7 +1,7 @@
 import { Event, RecommendType } from "./common";
 
 // OpenAI API 갈래말래 추천 Res
-export interface FetchRecommendTypeResponse {
+export interface FetchRecommendResponse {
   recommendType: RecommendType;
   comment: string;
 }
