@@ -10,6 +10,7 @@ import { MypageDisplayEvent } from "@/types/common";
 import { cn } from "@/lib/utils";
 import { useCallback, useEffect, useRef, useState } from "react";
 import MypageEventCardSkeleton from "@/components/common/skeleton/MypageEventCardSkeleton";
+import { useIsDesktop } from "@/hooks/useIsDesktop";
 
 const ICON_MAP: Record<string, LucideIcon> = {
   bookmark: Bookmark,
@@ -27,7 +28,6 @@ interface MypageEventSectionCardProps {
   title: string;
   iconName: "bookmark" | "heart";
   iconClassName?: string;
-  isDesktop: boolean;
   isLoading: boolean;
   events: MypageDisplayEvent[];
   onEventClick: (date: string) => void;
@@ -37,7 +37,6 @@ export default function MypageEventSectionCard({
   title,
   iconName,
   iconClassName,
-  isDesktop,
   isLoading,
   events,
   onEventClick,
@@ -45,6 +44,8 @@ export default function MypageEventSectionCard({
   const [visibleCount, setVisibleCount] = useState(LIST_NUMBER);
   const observerRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+  const isDesktop = useIsDesktop();
 
   const Icon = ICON_MAP[iconName];
   const SelectedCard = EVENT_CARD_COMPONENTS[iconName];

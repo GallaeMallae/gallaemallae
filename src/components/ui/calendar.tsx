@@ -441,7 +441,7 @@ function CustomMonthCaption({
       <div className="flex items-center gap-2">
         <CalendarIcon className="text-symbol-sky size-4 md:size-6" />
         <span className="text-desc1 md:text-title2 font-bold">
-          {nickname ? `${nickname}님의 일정` : "나의 일정"}
+          {nickname?.trim() ? `${nickname}님의 일정` : "나의 일정"}
         </span>
       </div>
       <div className="flex items-center gap-0 md:gap-2">
