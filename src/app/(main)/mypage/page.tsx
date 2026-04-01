@@ -4,7 +4,7 @@ import MypageProfileCard from "@/components/mypage/MypageProfileCard";
 import MypageEventSectionCard from "@/components/mypage/MypageEventSectionCard";
 import EventDetailModal from "@/components/map/EventDetailModal/EventDetailModal";
 import MypageCalendarSection from "@/components/mypage/MypageCalendarSection";
-import MypageWeatherCard from "@/components/mypage/MypageWeatherCard";
+import MypageWeatherSection from "@/components/mypage/MypageWeatherSection";
 import MypageRecommendSection from "@/components/mypage/MypageRecommendSection";
 import { useState } from "react";
 import { parseSafeDate } from "@/utils/date";
@@ -20,8 +20,12 @@ import { useLocationStore } from "@/stores/locationStore";
 export default function Mypage() {
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const { data: profile } = useProfileData();
-  const { coords, isInitialized } = useLocationStore();
-  const { data: locationNameData } = useLocationNameData(coords, isInitialized);
+  const { coords, isInitialized, isDefaultLocation } = useLocationStore();
+  const {
+    data: locationNameData,
+    isError: isLocationError,
+    isLoading: isLocationLoading,
+  } = useLocationNameData(coords, isInitialized);
   const { data: recommendEventData, isLoading: isRecommendEventCardLoading } =
     useMypageRecommendEventData(locationNameData);
   const { data: likedEvents, isLoading: isLikedEventLoading } =
@@ -31,12 +35,12 @@ export default function Mypage() {
 
   const router = useRouter();
 
-  const isPreparing = !locationNameData || !profile?.id;
-
+  // 행사 상세보기 모달 여는 핸들러 함수
   const handleDetailClick = (eventId: string) => {
     setSelectedEventId(eventId);
   };
 
+  // 일정, 관심 목록에서 행사 클릭시 달력에서 해당 날짜 선택하는 함수
   const handleEventClick = (dateString: string) => {
     const newDate = parseSafeDate(dateString);
     if (newDate) {
@@ -55,16 +59,23 @@ export default function Mypage() {
         </div>
 
         <div className="grid grid-cols-1 gap-6 md:col-span-3 md:grid-cols-2">
-          <MypageWeatherCard />
-          <div className="flex h-full flex-col">
-            <MypageRecommendSection
-              recommendEventData={recommendEventData}
-              isLoading={isPreparing || isRecommendEventCardLoading}
-              likedEvents={likedEvents}
-              plannedEvents={plannedEvents}
-              onDetailClick={handleDetailClick}
-            />
-          </div>
+          <MypageWeatherSection
+            coords={coords}
+            isInitialized={isInitialized}
+            locationNameData={locationNameData}
+            isLocationError={isLocationError}
+            isLoading={isLocationLoading}
+            isDefaultLocation={isDefaultLocation}
+          />
+          <MypageRecommendSection
+            recommendEventData={recommendEventData}
+            isLoading={
+              !profile?.id || !locationNameData || isRecommendEventCardLoading
+            }
+            likedEvents={likedEvents}
+            plannedEvents={plannedEvents}
+            onDetailClick={handleDetailClick}
+          />
         </div>
       </div>
 

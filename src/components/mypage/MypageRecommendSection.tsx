@@ -40,11 +40,11 @@ export default function MypageRecommendSection({
   const isPlanned = !!matchedPlan;
   const matchedPlanId = matchedPlan?.id;
 
-  if (isLoading) {
+  if (isLoading || recommendEventData === undefined) {
     return <RecommendEventCardSkeleton />;
   }
 
-  if (!recommendEventData) {
+  if (recommendEventData === null) {
     return (
       <EmptyStateCard
         icon={TicketX}
@@ -55,12 +55,14 @@ export default function MypageRecommendSection({
   }
 
   return (
-    <MypageEventRecommendCard
-      event={recommendEventData}
-      isLiked={isLiked}
-      isPlanned={isPlanned}
-      planId={matchedPlanId}
-      onDetailClick={onDetailClick}
-    />
+    <div className="flex h-full flex-col">
+      <MypageEventRecommendCard
+        event={recommendEventData}
+        isLiked={isLiked}
+        isPlanned={isPlanned}
+        planId={matchedPlanId}
+        onDetailClick={onDetailClick}
+      />
+    </div>
   );
 }

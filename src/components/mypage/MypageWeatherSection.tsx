@@ -4,17 +4,28 @@ import { EmptyStateCard } from "@/components/common/EmptyStateCard";
 import WeatherCardSkeleton from "@/components/common/skeleton/WeatherCardSkeleton";
 import WeatherCard from "@/components/common/WeatherCard";
 import { useAirPollutionData } from "@/hooks/queries/useAirPollutionData";
-import { useLocationNameData } from "@/hooks/queries/useLocationNameData";
 import { useWeatherData } from "@/hooks/queries/useWeatherData";
-import { useLocationStore } from "@/stores/locationStore";
 import { mapWeatherCard } from "@/utils/mapper";
 import { CloudOff } from "lucide-react";
 import { useMemo } from "react";
 
-export default function MypageWeatherCard() {
-  const { coords, isInitialized, isDefaultLocation } = useLocationStore();
-  const { data: locationNameData, isError: isLocationError } =
-    useLocationNameData(coords, isInitialized);
+interface MypageWeatherSectionProps {
+  coords: { lat: number; lng: number };
+  isInitialized: boolean;
+  locationNameData: string | undefined;
+  isLocationError: boolean;
+  isLoading: boolean;
+  isDefaultLocation: boolean;
+}
+
+export default function MypageWeatherSection({
+  coords,
+  isInitialized,
+  locationNameData,
+  isLocationError,
+  isLoading,
+  isDefaultLocation,
+}: MypageWeatherSectionProps) {
   const { data: weatherData, isError: isWeatherError } = useWeatherData(
     coords,
     isInitialized,
@@ -54,7 +65,7 @@ export default function MypageWeatherCard() {
     );
   }
 
-  if (!weather) return <WeatherCardSkeleton />;
+  if (isLoading || !weather) return <WeatherCardSkeleton />;
 
   return <WeatherCard {...weather} />;
 }
