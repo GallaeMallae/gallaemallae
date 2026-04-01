@@ -1,34 +1,29 @@
 "use client";
 
-import WeatherCard from "@/components/common/WeatherCard";
 import MypageEventRecommendCard from "@/components/mypage/MypageEventRecommendCard";
 import MypageProfileCard from "@/components/mypage/MypageProfileCard";
 import MypageEventSectionCard from "@/components/mypage/MypageEventSectionCard";
-import WeatherCardSkeleton from "@/components/common/skeleton/WeatherCardSkeleton";
 import EventDetailModal from "@/components/map/EventDetailModal/EventDetailModal";
 import RecommendEventCardSkeleton from "@/components/common/skeleton/RecommendEventCardSkeleton";
 import MypageCalendarSection from "@/components/mypage/MypageCalendarSection";
 import { useState } from "react";
 import { parseSafeDate } from "@/utils/date";
-import { useLocationStore } from "@/stores/locationStore";
-import { useLocationNameData } from "@/hooks/queries/useLocationNameData";
-import { useWeatherData } from "@/hooks/queries/useWeatherData";
-import { useAirPollutionData } from "@/hooks/queries/useAirPollutionData";
-import { mapWeatherCard } from "@/utils/mapper";
 import { useLikedEventsData } from "@/hooks/queries/useLikedEventsData";
 import { usePlannedEventsData } from "@/hooks/queries/usePlannedEventsData";
 import { useProfileData } from "@/hooks/queries/useProfileData";
 import { useMypageRecommendEventData } from "@/hooks/queries/useMypageRecommendEventData";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
+import MypageWeatherCard from "@/components/mypage/MypageWeatherCard";
+import { useLocationNameData } from "@/hooks/queries/useLocationNameData";
+import { useLocationStore } from "@/stores/locationStore";
 
 export default function Mypage() {
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const { data: profile } = useProfileData();
   const { coords, isInitialized, isDefaultLocation } = useLocationStore();
   const { data: locationNameData } = useLocationNameData(coords, isInitialized);
-  const { data: weatherData } = useWeatherData(coords, isInitialized);
-  const { data: airPollutionData } = useAirPollutionData(coords, isInitialized);
+
   const { data: recommendEventData, isLoading: isRecommendEventCardLoading } =
     useMypageRecommendEventData(locationNameData);
   const { data: likedEvents, isLoading: isLikedEventLoading } =
@@ -37,19 +32,6 @@ export default function Mypage() {
     usePlannedEventsData();
 
   const router = useRouter();
-
-  const isWeatherReady =
-    !!locationNameData && !!weatherData && !!airPollutionData;
-  const isWeatherLoading = !isWeatherReady;
-
-  const weather = isWeatherReady
-    ? mapWeatherCard(
-        locationNameData,
-        weatherData,
-        airPollutionData,
-        isDefaultLocation,
-      )
-    : null;
 
   const handleDetailClick = (eventId: string) => {
     setSelectedEventId(eventId);
@@ -65,11 +47,6 @@ export default function Mypage() {
     }
   };
 
-  // 관심 목록 데이터 가공
-  const formattedLikedEvents = (likedEvents ?? []).map((event) => ({
-    ...event,
-    display_date: event.start_date,
-  }));
   // 일정 목록 데이터 가공
   const formattedPlannedEvents = (plannedEvents ?? []).map((plan) => ({
     ...plan.event,
@@ -103,11 +80,7 @@ export default function Mypage() {
         </div>
 
         <div className="grid grid-cols-1 gap-6 md:col-span-3 md:grid-cols-2">
-          {isWeatherLoading || !weather ? (
-            <WeatherCardSkeleton />
-          ) : (
-            <WeatherCard {...weather} />
-          )}
+          <MypageWeatherCard />
           <div className="flex h-full flex-col">
             {showRecommendEventCardSkeleton ? (
               <RecommendEventCardSkeleton />
