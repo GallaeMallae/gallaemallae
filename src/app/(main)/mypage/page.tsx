@@ -1,11 +1,11 @@
 "use client";
 
-import MypageEventRecommendCard from "@/components/mypage/MypageEventRecommendCard";
 import MypageProfileCard from "@/components/mypage/MypageProfileCard";
 import MypageEventSectionCard from "@/components/mypage/MypageEventSectionCard";
 import EventDetailModal from "@/components/map/EventDetailModal/EventDetailModal";
-import RecommendEventCardSkeleton from "@/components/common/skeleton/RecommendEventCardSkeleton";
 import MypageCalendarSection from "@/components/mypage/MypageCalendarSection";
+import MypageWeatherCard from "@/components/mypage/MypageWeatherCard";
+import MypageRecommendSection from "@/components/mypage/MypageRecommendSection";
 import { useState } from "react";
 import { parseSafeDate } from "@/utils/date";
 import { useLikedEventsData } from "@/hooks/queries/useLikedEventsData";
@@ -14,18 +14,14 @@ import { useProfileData } from "@/hooks/queries/useProfileData";
 import { useMypageRecommendEventData } from "@/hooks/queries/useMypageRecommendEventData";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
-import MypageWeatherCard from "@/components/mypage/MypageWeatherCard";
 import { useLocationNameData } from "@/hooks/queries/useLocationNameData";
 import { useLocationStore } from "@/stores/locationStore";
-import { TicketX } from "lucide-react";
-import { EmptyStateCard } from "@/components/common/EmptyStateCard";
 
 export default function Mypage() {
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const { data: profile } = useProfileData();
-  const { coords, isInitialized, isDefaultLocation } = useLocationStore();
+  const { coords, isInitialized } = useLocationStore();
   const { data: locationNameData } = useLocationNameData(coords, isInitialized);
-
   const { data: recommendEventData, isLoading: isRecommendEventCardLoading } =
     useMypageRecommendEventData(locationNameData);
   const { data: likedEvents, isLoading: isLikedEventLoading } =
@@ -34,6 +30,8 @@ export default function Mypage() {
     usePlannedEventsData();
 
   const router = useRouter();
+
+  const isPreparing = !locationNameData || !profile?.id;
 
   const handleDetailClick = (eventId: string) => {
     setSelectedEventId(eventId);
@@ -49,31 +47,6 @@ export default function Mypage() {
     }
   };
 
-  // 일정 목록 데이터 가공
-  const formattedPlannedEvents = (plannedEvents ?? []).map((plan) => ({
-    ...plan.event,
-    display_date: plan.visit_date || plan.event.start_date,
-    plan_id: plan.id,
-  }));
-
-  // 추천받은 행사를 일정에 추가했을 경우 planId를 props로 보내주기 위함
-  const matchedPlan = formattedPlannedEvents.find(
-    (plan) => plan.id === recommendEventData?.id,
-  );
-  const matchedPlanId = matchedPlan?.plan_id;
-
-  // 행사 추천 카드 관심/일정 체크용
-  const isLiked = (likedEvents ?? []).some(
-    (event) => event.id === recommendEventData?.id,
-  );
-  const isPlanned = (plannedEvents ?? []).some(
-    (plan) => plan.event.id === recommendEventData?.id,
-  );
-
-  const isPreparing = !locationNameData || !profile?.id;
-  const showRecommendEventCardSkeleton =
-    isPreparing || isRecommendEventCardLoading;
-
   return (
     <div className="flex flex-col gap-6">
       <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
@@ -84,24 +57,13 @@ export default function Mypage() {
         <div className="grid grid-cols-1 gap-6 md:col-span-3 md:grid-cols-2">
           <MypageWeatherCard />
           <div className="flex h-full flex-col">
-            {showRecommendEventCardSkeleton ? (
-              <RecommendEventCardSkeleton />
-            ) : recommendEventData ? (
-              <MypageEventRecommendCard
-                event={recommendEventData}
-                isLiked={isLiked}
-                isPlanned={isPlanned}
-                planId={matchedPlanId}
-                onDetailClick={handleDetailClick}
-              />
-            ) : (
-              // 정말로 180일치 다 뒤졌는데 결과가 null일 때만 이게 나옴
-              <EmptyStateCard
-                icon={TicketX}
-                title="새로운 추천 행사가 없습니다."
-                description="모든 행사를 확인하셨거나 조건에 맞는 행사가 없어요."
-              />
-            )}
+            <MypageRecommendSection
+              recommendEventData={recommendEventData}
+              isLoading={isPreparing || isRecommendEventCardLoading}
+              likedEvents={likedEvents}
+              plannedEvents={plannedEvents}
+              onDetailClick={handleDetailClick}
+            />
           </div>
         </div>
       </div>
