@@ -1,5 +1,6 @@
 "use client";
 
+import { EmptyStateCard } from "@/components/common/EmptyStateCard";
 import WeatherCardSkeleton from "@/components/common/skeleton/WeatherCardSkeleton";
 import WeatherCard from "@/components/common/WeatherCard";
 import { useAirPollutionData } from "@/hooks/queries/useAirPollutionData";
@@ -45,15 +46,11 @@ export default function MypageWeatherCard() {
 
   if (hasError) {
     return (
-      <div className="flex h-full min-h-40 flex-col items-center justify-center rounded-2xl border bg-white p-6 shadow-sm">
-        <CloudOff className="text-etc/50 mb-2 size-8" />
-        <p className="text-desc1 text-etc font-bold">
-          날씨 정보를 불러올 수 없습니다.
-        </p>
-        <p className="text-caption text-etc/80 mt-1">
-          위치 권한이나 네트워크 상태를 확인해 주세요.
-        </p>
-      </div>
+      <EmptyStateCard
+        icon={CloudOff}
+        title={"날씨 정보를 불러올 수 없습니다."}
+        description={"위치 권한이나 네트워크 상태를 확인해 주세요."}
+      />
     );
   }
 

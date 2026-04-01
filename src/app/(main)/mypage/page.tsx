@@ -17,6 +17,8 @@ import { format } from "date-fns";
 import MypageWeatherCard from "@/components/mypage/MypageWeatherCard";
 import { useLocationNameData } from "@/hooks/queries/useLocationNameData";
 import { useLocationStore } from "@/stores/locationStore";
+import { TicketX } from "lucide-react";
+import { EmptyStateCard } from "@/components/common/EmptyStateCard";
 
 export default function Mypage() {
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
@@ -94,14 +96,11 @@ export default function Mypage() {
               />
             ) : (
               // 정말로 180일치 다 뒤졌는데 결과가 null일 때만 이게 나옴
-              <div className="flex h-full flex-col items-center justify-center rounded-2xl border bg-white p-6 shadow-sm">
-                <p className="text-title1 text-etc font-bold">
-                  새로운 추천 행사가 없습니다.
-                </p>
-                <p className="text-desc2 text-etc mt-1">
-                  모든 행사를 확인하셨거나 조건에 맞는 행사가 없어요.
-                </p>
-              </div>
+              <EmptyStateCard
+                icon={TicketX}
+                title="새로운 추천 행사가 없습니다."
+                description="모든 행사를 확인하셨거나 조건에 맞는 행사가 없어요."
+              />
             )}
           </div>
         </div>
