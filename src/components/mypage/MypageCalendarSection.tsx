@@ -2,8 +2,8 @@
 
 import MypageSelectedDateEventsCard from "@/components/mypage/MypageSelectedDateEventsCard";
 import { Calendar } from "@/components/ui/calendar";
-import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
 import { EventPlanWithEvent } from "@/hooks/queries/usePlannedEventsData";
 import { useIsDesktop } from "@/hooks/useIsDesktop";
 import { Profile } from "@/types/common";

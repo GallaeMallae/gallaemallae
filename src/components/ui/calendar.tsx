@@ -13,7 +13,6 @@ import {
   useDayPicker,
   getDefaultClassNames,
   type DayButtonProps,
-  MonthCaptionProps,
   RootProps,
   ChevronProps,
   WeekNumberProps,
@@ -51,7 +50,9 @@ const CalendarContext = React.createContext<{
   onActivePopoverDate: (date: Date | null) => void;
   plannedEvents: MypageDisplayEvent[];
   isDesktop: boolean;
+  onMonthChange?: (newMonth: Date) => void;
   onDetailClick: (eventId: string) => void;
+  nickname?: string;
 } | null>(null);
 
 function Calendar({
@@ -61,18 +62,19 @@ function Calendar({
   plannedEvents = [],
   nickname,
   activePopoverDate,
+  isDesktop,
+  onMonthChange,
   onActivePopoverDate,
   onDetailClick,
-  isDesktop,
   ...props
 }: React.ComponentProps<typeof DayPicker> & {
   buttonVariant?: React.ComponentProps<typeof Button>["variant"];
   plannedEvents?: MypageDisplayEvent[];
   nickname?: string;
   activePopoverDate?: Date | null;
+  isDesktop: boolean;
   onActivePopoverDate?: (date: Date | null) => void;
   onDetailClick: (eventId: string) => void;
-  isDesktop: boolean;
 }) {
   const defaultClassNames = getDefaultClassNames();
 
@@ -80,13 +82,7 @@ function Calendar({
   // Context 이용해 참조 고정하여 상태 변화시 달력 자체가 리렌더링되는 현상 방지
   const memoizedComponents = React.useMemo(
     () => ({
-      MonthCaption: (captionProps: MonthCaptionProps) => (
-        <CustomMonthCaption
-          {...captionProps}
-          nickname={nickname}
-          onActivePopoverDate={onActivePopoverDate}
-        />
-      ),
+      MonthCaption: CustomMonthCaption,
       Root: ({ className, rootRef, ...props }: RootProps) => (
         <div
           data-slot="calendar"
@@ -113,17 +109,19 @@ function Calendar({
         </td>
       ),
     }),
-    [nickname],
+    [],
   );
 
   return (
     <CalendarContext.Provider
       value={{
         activePopoverDate: activePopoverDate ?? null,
-        onActivePopoverDate: onActivePopoverDate!,
         plannedEvents,
         isDesktop,
+        nickname,
+        onMonthChange,
         onDetailClick,
+        onActivePopoverDate: onActivePopoverDate!,
       }}
     >
       <DayPicker
@@ -161,13 +159,6 @@ function Calendar({
             "text-[0.8rem] text-muted-foreground select-none",
             defaultClassNames.week_number,
           ),
-          // day: cn(
-          //   "group/day relative aspect-square h-full w-full p-0 text-center select-none [&:last-child[data-selected=true]_button]:rounded-r-md min-w-0",
-          //   props.showWeekNumber
-          //     ? "[&:nth-child(2)[data-selected=true]_button]:rounded-l-md"
-          //     : "[&:first-child[data-selected=true]_button]:rounded-l-md",
-          //   defaultClassNames.day,
-          // ),
           day: cn(
             "group/day relative h-full w-full p-0 text-center select-none min-w-0 overflow-hidden",
             "xs:aspect-square min-h-10 xs:min-h-0",
@@ -202,6 +193,7 @@ function Calendar({
           hidden: cn("invisible", defaultClassNames.hidden),
           ...classNames,
         }}
+        onMonthChange={onMonthChange}
         components={memoizedComponents}
         {...props}
       />
@@ -227,10 +219,10 @@ function CalendarDayButton({
 
   const {
     activePopoverDate,
-    onActivePopoverDate,
     plannedEvents,
     isDesktop,
     onDetailClick,
+    onActivePopoverDate,
   } = context;
 
   const targetDate = startOfDay(day.date);
@@ -277,8 +269,6 @@ function CalendarDayButton({
           ref={ref}
           variant="ghost"
           onClick={handleDayClick}
-          // size="icon"
-          // data-day={day.date.toLocaleDateString()}
           data-day={format(day.date, "yyyy-MM-dd")}
           data-selected-single={
             modifiers.selected &&
@@ -289,11 +279,6 @@ function CalendarDayButton({
           data-range-start={modifiers.range_start}
           data-range-end={modifiers.range_end}
           data-range-middle={modifiers.range_middle}
-          // className={cn(
-          //   "group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-ring/50 data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground dark:hover:text-accent-foreground flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-1 leading-none font-normal group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:ring-[3px] data-[range-end=true]:rounded-md data-[range-end=true]:rounded-r-md data-[range-middle=true]:rounded-none data-[range-start=true]:rounded-md data-[range-start=true]:rounded-l-md [&>span]:text-xs [&>span]:opacity-70",
-          //   defaultClassNames.day,
-          //   className,
-          // )}
           className={cn(
             "hover:bg-accent/50 flex h-full w-full max-w-full min-w-0 flex-col items-center justify-start gap-1 px-0 py-1 font-normal transition-colors md:items-start md:py-2",
             modifiers.today && !modifiers.selected && "bg-muted",
@@ -406,15 +391,16 @@ function CalendarDayButton({
 
 function CustomMonthCaption({
   calendarMonth,
-  nickname,
-  onActivePopoverDate,
 }: {
   calendarMonth: { date: Date };
-  nickname?: string;
-  onActivePopoverDate?: (date: Date | null) => void;
 }) {
-  const { goToMonth, nextMonth, previousMonth, isSelected, dayPickerProps } =
+  const { nextMonth, previousMonth, isSelected, dayPickerProps } =
     useDayPicker();
+
+  const context = React.useContext(CalendarContext);
+  if (!context) return <></>;
+  const { nickname, onMonthChange, onActivePopoverDate } = context;
+
   const date = calendarMonth.date;
   const y = date.getFullYear();
   const m = String(date.getMonth() + 1).padStart(2, "0");
@@ -427,11 +413,17 @@ function CustomMonthCaption({
   const isTodaySelected = isSelected?.(today);
   const isDisableToday = isTodayMonth && isTodaySelected;
 
+  const handleMoveMonth = (targetMonth: Date | undefined) => {
+    if (targetMonth && onMonthChange) {
+      onMonthChange(targetMonth);
+    }
+  };
+
   const handleTodayClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    goToMonth(today);
+    handleMoveMonth(today);
     if (dayPickerProps.mode === "single" && dayPickerProps.onSelect) {
-      dayPickerProps.onSelect(today, today, {}, e); // 선택될날짜, 현재날짜, modifiers, 이벤트
+      dayPickerProps.onSelect(today, today, {}, e);
     }
     onActivePopoverDate?.(today);
   };
@@ -457,7 +449,7 @@ function CustomMonthCaption({
         <button
           type="button"
           aria-label="이전 달"
-          onClick={() => previousMonth && goToMonth(previousMonth)}
+          onClick={() => handleMoveMonth(previousMonth)}
           className="hover:bg-accent flex size-6 items-center justify-center rounded"
         >
           <ChevronLeftIcon className="size-4" />
@@ -468,7 +460,7 @@ function CustomMonthCaption({
         <button
           type="button"
           aria-label="다음 달"
-          onClick={() => nextMonth && goToMonth(nextMonth)}
+          onClick={() => handleMoveMonth(nextMonth)}
           className="hover:bg-accent flex size-6 items-center justify-center rounded"
         >
           <ChevronRightIcon className="size-4" />
