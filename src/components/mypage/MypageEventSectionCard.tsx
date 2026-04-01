@@ -12,6 +12,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useIsDesktop } from "@/hooks/useIsDesktop";
 import { EventPlanWithEvent } from "@/hooks/queries/usePlannedEventsData";
 import { Event, MypageDisplayEvent } from "@/types/common";
+import { parseSafeDate } from "@/utils/date";
+import { format } from "date-fns";
+import { useRouter } from "next/navigation";
 
 const ICON_MAP: Record<string, LucideIcon> = {
   bookmark: Bookmark,
@@ -31,7 +34,6 @@ interface MypageEventSectionCardProps {
   iconClassName?: string;
   isLoading: boolean;
   events?: (Event | EventPlanWithEvent)[];
-  onEventClick: (date: string) => void;
 }
 
 export default function MypageEventSectionCard({
@@ -40,12 +42,12 @@ export default function MypageEventSectionCard({
   iconClassName,
   isLoading,
   events = [],
-  onEventClick,
 }: MypageEventSectionCardProps) {
   const [visibleCount, setVisibleCount] = useState(LIST_NUMBER);
   const observerRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
+  const router = useRouter();
   const isDesktop = useIsDesktop();
 
   const Icon = ICON_MAP[iconName];
@@ -70,6 +72,17 @@ export default function MypageEventSectionCard({
       setVisibleCount((prev) => prev + LIST_NUMBER);
     }
   }, [hasMore]);
+
+  // 일정, 관심 목록에서 행사 클릭시 달력에서 해당 날짜 선택하는 함수
+  const handleEventClick = (dateString: string) => {
+    const newDate = parseSafeDate(dateString);
+    if (newDate) {
+      const monthString = format(newDate, "yyyy-MM");
+      router.push(`?date=${dateString}&month=${monthString}`, {
+        scroll: false,
+      });
+    }
+  };
 
   useEffect(() => {
     if (!isDesktop || !hasMore) return;
@@ -153,7 +166,7 @@ export default function MypageEventSectionCard({
                       >
                         <SelectedCard
                           event={event}
-                          onClick={() => onEventClick(event.start_date)}
+                          onClick={() => handleEventClick(event.start_date)}
                         />
                       </motion.div>
                     ))}

@@ -7,7 +7,7 @@ import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
 import { EventPlanWithEvent } from "@/hooks/queries/usePlannedEventsData";
 import { useIsDesktop } from "@/hooks/useIsDesktop";
 import { Profile } from "@/types/common";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   format,
   isWithinInterval,
@@ -30,94 +30,82 @@ export default function MypageCalendarSection({
   profile,
   onDetailClick,
 }: MypageCalendarSectionProps) {
+  const router = useRouter();
   const searchParams = useSearchParams();
+  const isDesktop = useIsDesktop();
   const dateParam = searchParams.get("date");
   const monthParam = searchParams.get("month");
-  const parsedDate = dateParam ? parseSafeDate(dateParam) : undefined;
-  const selectedDate = parsedDate ?? undefined;
 
-  const [prevDateParam, setPrevDateParam] = useState<string | null>(dateParam);
-  const [activePopoverDate, setActivePopoverDate] = useState<Date | null>(
-    dateParam ? parseSafeDate(dateParam) : null,
+  const selectedDate = useMemo(
+    () => (dateParam ? (parseSafeDate(dateParam) ?? undefined) : undefined),
+    [dateParam],
   );
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const currentMonth = useMemo(
+    () =>
+      monthParam
+        ? parse(monthParam, "yyyy-MM", new Date())
+        : startOfMonth(selectedDate ?? new Date()),
+    [monthParam, selectedDate],
+  );
 
-  const router = useRouter();
-  const isDesktop = useIsDesktop();
+  const formattedPlannedEvents = useMemo(
+    () =>
+      (plannedEvents ?? []).map((plan) => ({
+        ...plan.event,
+        display_date: plan.visit_date || plan.event.start_date,
+        plan_id: plan.id,
+      })),
+    [plannedEvents],
+  );
 
-  const currentMonth = monthParam
-    ? parse(monthParam, "yyyy-MM", new Date())
-    : startOfMonth(selectedDate ?? new Date());
-
-  const formattedPlannedEvents = (plannedEvents ?? []).map((plan) => ({
-    ...plan.event,
-    display_date: plan.visit_date || plan.event.start_date,
-    plan_id: plan.id,
-  }));
-
-  const dailyEvents = formattedPlannedEvents.filter((event) => {
-    if (!selectedDate) return false;
+  const dailyEvents = useMemo(() => {
+    if (!selectedDate) return [];
     const targetDate = startOfDay(selectedDate);
-    return isWithinInterval(targetDate, {
-      start: parseISO(event.start_date),
-      end: parseISO(event.end_date),
-    });
-  });
+    return formattedPlannedEvents.filter((event) =>
+      isWithinInterval(targetDate, {
+        start: parseISO(event.start_date),
+        end: parseISO(event.end_date),
+      }),
+    );
+  }, [selectedDate, formattedPlannedEvents]);
 
-  const handleMonthChange = (newMonth: Date) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("month", format(newMonth, "yyyy-MM"));
-    router.push(`?${params.toString()}`, { scroll: false });
-  };
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [prevDateParam, setPrevDateParam] = useState<string | null>(dateParam);
 
   if (dateParam !== prevDateParam) {
-    const newDate = parseSafeDate(dateParam);
-    if (newDate) {
-      const hasEvents = formattedPlannedEvents.some((event) => {
-        const targetDate = startOfDay(newDate);
-        return isWithinInterval(targetDate, {
-          start: parseISO(event.start_date),
-          end: parseISO(event.end_date),
-        });
-      });
-
-      if (!isDesktop && hasEvents) {
-        setIsDrawerOpen(true);
-      }
-    } else {
-      setActivePopoverDate(null);
-    }
     setPrevDateParam(dateParam);
+
+    const hasEvents = dailyEvents.length > 0;
+
+    if (!isDesktop && dateParam && hasEvents) {
+      setIsDrawerOpen(true);
+    } else if (!dateParam) {
+      setIsDrawerOpen(false);
+    }
   }
 
-  const handleCalendarSelect = (date: Date | undefined) => {
+  const updateURL = (date?: Date, month?: Date) => {
     const params = new URLSearchParams(searchParams.toString());
+
     if (date) {
       params.set("date", format(date, "yyyy-MM-dd"));
       params.set("month", format(date, "yyyy-MM"));
     } else {
       params.delete("date");
     }
+
+    if (month && !date) params.set("month", format(month, "yyyy-MM"));
     router.push(`?${params.toString()}`, { scroll: false });
   };
 
+  const handleCalendarSelect = (date: Date | undefined) => updateURL(date);
+  const handleMonthChange = (newMonth: Date) => updateURL(undefined, newMonth);
   const handlePopoverChange = (date: Date | null) => {
-    if (date === null) {
-      const params = new URLSearchParams(searchParams.toString());
-      params.delete("date");
-      router.push(`?${params.toString()}`, { scroll: false });
-    }
-    setActivePopoverDate(date);
+    updateURL(date ?? undefined);
   };
-
   const handleDrawerChange = (open: boolean) => {
     setIsDrawerOpen(open);
-    if (!open) {
-      const params = new URLSearchParams(searchParams.toString());
-      params.delete("date");
-      router.push(`?${params.toString()}`, { scroll: false });
-      setActivePopoverDate(null);
-    }
+    if (!open) updateURL(undefined);
   };
 
   return (
@@ -126,12 +114,12 @@ export default function MypageCalendarSection({
         <Calendar
           mode="single"
           plannedEvents={formattedPlannedEvents}
-          selected={selectedDate}
+          selected={selectedDate} //
           month={currentMonth}
           onSelect={handleCalendarSelect}
           onMonthChange={handleMonthChange}
           nickname={profile?.nickname ?? undefined}
-          activePopoverDate={activePopoverDate}
+          activePopoverDate={selectedDate ?? null}
           onActivePopoverDate={handlePopoverChange}
           onDetailClick={onDetailClick}
           isDesktop={isDesktop}

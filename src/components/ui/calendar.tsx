@@ -116,12 +116,12 @@ function Calendar({
     <CalendarContext.Provider
       value={{
         activePopoverDate: activePopoverDate ?? null,
+        onActivePopoverDate: onActivePopoverDate!,
         plannedEvents,
         isDesktop,
+        onDetailClick,
         nickname,
         onMonthChange,
-        onDetailClick,
-        onActivePopoverDate: onActivePopoverDate!,
       }}
     >
       <DayPicker
@@ -219,10 +219,10 @@ function CalendarDayButton({
 
   const {
     activePopoverDate,
+    onActivePopoverDate,
     plannedEvents,
     isDesktop,
     onDetailClick,
-    onActivePopoverDate,
   } = context;
 
   const targetDate = startOfDay(day.date);
