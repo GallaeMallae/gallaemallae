@@ -54,7 +54,11 @@ export default function Mypage() {
           <MypageRecommendSection
             recommendEventData={recommendEventData}
             isLoading={
-              !profile?.id || !locationNameData || isRecommendEventCardLoading
+              !profile?.id ||
+              !locationNameData ||
+              isRecommendEventCardLoading ||
+              isLikedEventLoading ||
+              isPlannedEventLoading
             }
             likedEvents={likedEvents}
             plannedEvents={plannedEvents}

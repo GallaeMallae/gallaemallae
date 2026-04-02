@@ -509,11 +509,11 @@ function CustomMonthCaption({
             : `${nickname}님의 관심 목록`}
         </span>
       </div>
-      <div className="flex items-center gap-2 md:gap-2">
+      <div className="flex items-center gap-2">
         <Button
           variant="outline"
           size="sm"
-          className="md:text-desc2 text-caption h-7 bg-white px-2 font-bold md:mr-2 md:h-8 md:px-3"
+          className="md:text-desc2 text-caption h-7 bg-white px-2 font-bold md:h-8 md:px-3"
           onClick={() =>
             onViewModeChange(viewMode === "plan" ? "like" : "plan")
           }

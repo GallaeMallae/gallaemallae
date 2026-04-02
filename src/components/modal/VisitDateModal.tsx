@@ -70,7 +70,7 @@ export default function VisitDateModal() {
         <DialogHeader>
           <DialogTitle>방문 날짜 선택</DialogTitle>
           <DialogDescription>
-            <strong>{store.event.name}</strong>에 언제 방문하시나요?
+            <span>{store.event.name}에 언제 방문하시나요?</span>
           </DialogDescription>
         </DialogHeader>
 

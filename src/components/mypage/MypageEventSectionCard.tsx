@@ -13,7 +13,7 @@ import { useIsDesktop } from "@/hooks/useIsDesktop";
 import { Event, EventPlanWithEvent, MypageDisplayEvent } from "@/types/common";
 import { parseSafeDate } from "@/utils/date";
 import { format } from "date-fns";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const ICON_MAP: Record<string, LucideIcon> = {
   bookmark: Bookmark,
@@ -43,6 +43,7 @@ export default function MypageEventSectionCard({
   const [visibleCount, setVisibleCount] = useState(LIST_NUMBER);
   const observerRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const searchParams = useSearchParams();
 
   const router = useRouter();
   const isDesktop = useIsDesktop();
@@ -75,10 +76,12 @@ export default function MypageEventSectionCard({
   const handleEventClick = (dateString: string) => {
     const newDate = parseSafeDate(dateString);
     if (newDate) {
-      const monthString = format(newDate, "yyyy-MM");
-      router.push(`?date=${dateString}&month=${monthString}`, {
-        scroll: false,
-      });
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("date", dateString);
+      params.set("month", format(newDate, "yyyy-MM"));
+      params.set("mode", iconName === "bookmark" ? "plan" : "like");
+
+      router.push(`?${params.toString()}`, { scroll: false });
     }
   };
 

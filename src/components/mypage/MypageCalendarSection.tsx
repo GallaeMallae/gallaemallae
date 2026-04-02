@@ -33,13 +33,12 @@ export default function MypageCalendarSection({
   profile,
   onDetailClick,
 }: MypageCalendarSectionProps) {
-  const [viewMode, setViewMode] = useState<CalendarMode>("plan");
-
   const router = useRouter();
   const searchParams = useSearchParams();
   const isDesktop = useIsDesktop();
   const dateParam = searchParams.get("date");
   const monthParam = searchParams.get("month");
+  const viewMode = (searchParams.get("mode") as CalendarMode) || "plan";
 
   const selectedDate = useMemo(
     () => (dateParam ? (parseSafeDate(dateParam) ?? undefined) : undefined),
@@ -95,21 +94,27 @@ export default function MypageCalendarSection({
     }
   }
 
-  const updateURL = (date?: Date, month?: Date) => {
+  const updateURL = (date?: Date, month?: Date, mode?: CalendarMode) => {
     const params = new URLSearchParams(searchParams.toString());
 
     if (date) {
       params.set("date", format(date, "yyyy-MM-dd"));
       params.set("month", format(date, "yyyy-MM"));
-    } else {
+    } else if (date === undefined && !month && !mode) {
       params.delete("date");
     }
 
     if (month && !date) params.set("month", format(month, "yyyy-MM"));
+
+    if (mode) params.set("mode", mode);
+
     router.push(`?${params.toString()}`, { scroll: false });
   };
 
   const handleCalendarSelect = (date: Date | undefined) => updateURL(date);
+  const handleViewModeChange = (newMode: CalendarMode) => {
+    updateURL(undefined, undefined, newMode);
+  };
   const handleMonthChange = (newMonth: Date) => updateURL(undefined, newMonth);
   const handlePopoverChange = (date: Date | null) => {
     updateURL(date ?? undefined);
@@ -124,7 +129,7 @@ export default function MypageCalendarSection({
       <div className="xs:p-6 flex-1 rounded-2xl border bg-white p-4 shadow-sm">
         <MypageCalendar
           viewMode={viewMode}
-          onViewModeChange={setViewMode}
+          onViewModeChange={handleViewModeChange}
           calendarDisplayEvents={calendarDisplayEvents}
           mode="single"
           selected={selectedDate} //
