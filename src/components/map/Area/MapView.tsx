@@ -80,7 +80,27 @@ export default function MapView({
           strokeColor="#0da3e4"
         />
       )}
-      <MarkerClusterer averageCenter={true} minLevel={6}>
+      <MarkerClusterer
+        averageCenter={true}
+        minLevel={6}
+        styles={[
+          {
+            width: "36px",
+            height: "36px",
+            background: "var(--color-symbol-sky)",
+            borderRadius: "50%",
+            color: "#fff",
+            textAlign: "center",
+            lineHeight: "36px",
+            fontSize: "14px",
+            fontWeight: "600",
+            boxShadow: `
+              0 0 0 4px #ffffff,   
+              0 0 0 7px var(--color-symbol-sky) 
+              `,
+          },
+        ]}
+      >
         {filteredMarkers.map((m) => {
           const markerCategory = m.category === "all" ? "etc" : m.category;
 
