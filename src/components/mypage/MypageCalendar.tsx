@@ -427,7 +427,7 @@ function CalendarDayButton({
               })}
             </div>
             <div className="text-etc text-desc2">
-              총 {dayEvents.length}개의 일정이 있습니다.
+              총 {dayEvents.length}개의 행사가 있습니다.
             </div>
           </div>
           {/* ScrollArea 내부 뷰포트에 높이 지정해야 스크롤바 작동함  */}
