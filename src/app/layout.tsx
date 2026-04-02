@@ -2,6 +2,7 @@ import "@/app/globals.css";
 import { pretendard } from "@/app/fonts/fonts";
 import { Toaster } from "@/components/ui/sonner";
 import AlertModal from "@/components/modal/AlertModal";
+import VisitDateModal from "@/components/modal/VisitDateModal";
 import type { Metadata } from "next";
 import ReactQueryProvider from "@/components/providers/ReactQueryProvider";
 import AuthProvider from "@/components/providers/AuthProvider";
@@ -50,6 +51,7 @@ export default async function RootLayout({
               <KakaoMapProvider>
                 {children}
                 <AlertModal />
+                <VisitDateModal />
                 <Toaster />
               </KakaoMapProvider>
             </AuthProvider>
