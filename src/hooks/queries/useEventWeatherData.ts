@@ -2,7 +2,6 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { fetchForecast, fetchAirPollution } from "@/lib/api/weather";
-import { mapWeatherType, mapPm10Level } from "@/utils/mapper";
 import { QUERY_KEYS } from "@/lib/constants";
 import { isForecastAvailable, getClosestForecast } from "@/utils/forecast";
 
@@ -21,7 +20,7 @@ export function useEventWeatherData(
         throw new Error("[OpenWeather API] : 유효하지 않은 파라미터");
       }
 
-      const [forecast, air] = await Promise.all([
+      const [forecast, airPollution] = await Promise.all([
         fetchForecast(lat, lng),
         fetchAirPollution(lat, lng),
       ]);
@@ -30,11 +29,8 @@ export function useEventWeatherData(
       const target = getClosestForecast(forecast.list, date);
 
       return {
-        weather: mapWeatherType(target.weather[0].main),
-        temp: `${Math.round(target.main.temp)}º`,
-        wind: `${Math.round(target.wind.speed)}m/s`,
-        wet: `${target.main.humidity}%`,
-        fineDust: mapPm10Level(air.list[0].components.pm10),
+        forecast: target,
+        airPollution: airPollution.list[0],
       };
     },
     enabled: !!lat && !!lng && !!date && canFetch,

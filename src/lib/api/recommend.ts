@@ -22,7 +22,30 @@ export async function fetchOutdoorRecommend(
     }),
   });
 
-  if (!res.ok) throw new Error("[OpenAI API] : 추천 조회 실패");
+  if (!res.ok) throw new Error("[OpenAI API] : 외출 추천 조회 실패");
+
+  return res.json();
+}
+
+export async function fetchEventVisitRecommend(
+  weather: string,
+  temp: number,
+  pm10: number,
+  wind: number,
+  wet: number,
+) {
+  const res = await fetch("/api/recommend/event_visit", {
+    method: "POST",
+    body: JSON.stringify({
+      weather,
+      temp,
+      pm10,
+      wind,
+      wet,
+    }),
+  });
+
+  if (!res.ok) throw new Error("[OpenAI API] : 행사 방문 추천 조회 실패");
 
   return res.json();
 }

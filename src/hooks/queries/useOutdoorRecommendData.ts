@@ -24,7 +24,7 @@ export function useOutdoorRecommendData(
     pm25 !== undefined;
 
   return useQuery({
-    queryKey: QUERY_KEYS.RECOMMEND_TYPE(weatherType, temp, pm10, pm25),
+    queryKey: QUERY_KEYS.OUTDOOR_RECOMMEND(weatherType, temp, pm10, pm25),
     queryFn: () => {
       if (!weatherType || temp == null || pm10 == null || pm25 == null) {
         throw new Error("[OpenAI API] : 유효하지 않은 파라미터");
