@@ -1,7 +1,7 @@
 import { Event, RecommendType } from "./common";
 
 // OpenAI API 갈래말래 추천 Res
-export interface FetchRecommendTypeResponse {
+export interface FetchRecommendResponse {
   recommendType: RecommendType;
   comment: string;
 }
@@ -16,6 +16,27 @@ export interface FetchWeatherResponse {
   main: {
     temp: number; // 기온
   };
+}
+
+// OpenWeather Forecast API Res
+export interface FetchForecastResponse {
+  list: {
+    dt_txt: string; // "2026-01-01 12:00:00"
+
+    weather: {
+      id: number;
+      main: string; // 날씨 타입
+    }[];
+
+    main: {
+      temp: number; // 기온
+      humidity: number; // 습도
+    };
+
+    wind: {
+      speed: number; // 풍속
+    };
+  }[];
 }
 
 // OpenWeather Air Pollution API Res

@@ -1,14 +1,14 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { fetchRecommendType } from "@/lib/api/recommend";
+import { fetchOutdoorRecommend } from "@/lib/api/recommend";
 import {
   FetchWeatherResponse,
   FetchAirPollutionResponse,
 } from "@/types/apiResponse";
 import { QUERY_KEYS } from "@/lib/constants";
 
-export function useRecommendTypeData(
+export function useOutdoorRecommendData(
   weatherData?: FetchWeatherResponse,
   airPollutionData?: FetchAirPollutionResponse,
 ) {
@@ -24,13 +24,13 @@ export function useRecommendTypeData(
     pm25 !== undefined;
 
   return useQuery({
-    queryKey: QUERY_KEYS.RECOMMEND_TYPE(weatherType, temp, pm10, pm25),
+    queryKey: QUERY_KEYS.OUTDOOR_RECOMMEND(weatherType, temp, pm10, pm25),
     queryFn: () => {
       if (!weatherType || temp == null || pm10 == null || pm25 == null) {
         throw new Error("[OpenAI API] : 유효하지 않은 파라미터");
       }
 
-      return fetchRecommendType(weatherType, temp, pm10, pm25);
+      return fetchOutdoorRecommend(weatherType, temp, pm10, pm25);
     },
     enabled,
     staleTime: 1000 * 60 * 30,
