@@ -149,6 +149,7 @@ export default function MypageCalendarSection({
                 <MypageSelectedDateEventsCard
                   selectedDate={selectedDate}
                   events={dailyEvents}
+                  viewMode={viewMode}
                   onDetailClick={onDetailClick}
                 />
               </ScrollArea>

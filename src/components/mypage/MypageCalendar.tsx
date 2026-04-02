@@ -239,10 +239,11 @@ function CalendarDayButton({
 
   const {
     activePopoverDate,
-    onActivePopoverDate,
     calendarDisplayEvents,
     isDesktop,
+    viewMode,
     onDetailClick,
+    onActivePopoverDate,
   } = context;
 
   const targetDate = startOfDay(day.date);
@@ -436,6 +437,7 @@ function CalendarDayButton({
                 <MypageSelectedDateEventsCard
                   selectedDate={activePopoverDate ?? null}
                   events={dayEvents}
+                  viewMode={viewMode}
                   onDetailClick={onDetailClick}
                 />
               )}

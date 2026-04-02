@@ -164,7 +164,11 @@ export default function MypageEventSectionCard({
                       >
                         <SelectedCard
                           event={event}
-                          onClick={() => handleEventClick(event.start_date)}
+                          onClick={() =>
+                            handleEventClick(
+                              event.visit_date || event.start_date,
+                            )
+                          }
                         />
                       </motion.div>
                     ))}
