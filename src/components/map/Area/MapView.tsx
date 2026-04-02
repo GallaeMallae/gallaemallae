@@ -1,6 +1,6 @@
 "use client";
 
-import { MapMarker, Circle } from "react-kakao-maps-sdk";
+import { MapMarker, Circle, MarkerClusterer } from "react-kakao-maps-sdk";
 import { useEffect, useRef } from "react";
 import KakaoMap from "@/components/common/KakaoMap";
 import { MARKER_ICONS } from "@/lib/constants";
@@ -80,24 +80,25 @@ export default function MapView({
           strokeColor="#0da3e4"
         />
       )}
+      <MarkerClusterer averageCenter={true} minLevel={6}>
+        {filteredMarkers.map((m) => {
+          const markerCategory = m.category === "all" ? "etc" : m.category;
 
-      {filteredMarkers.map((m) => {
-        const markerCategory = m.category === "all" ? "etc" : m.category;
-
-        return (
-          <MapMarker
-            key={`marker-${m.id}`}
-            position={{ lat: m.lat, lng: m.lng }}
-            image={{
-              src: MARKER_ICONS[markerCategory],
-              size: { width: 40, height: 40 },
-            }}
-            onClick={() => {
-              onMarkerClick(String(m.id));
-            }}
-          />
-        );
-      })}
+          return (
+            <MapMarker
+              key={`marker-${m.id}`}
+              position={{ lat: m.lat, lng: m.lng }}
+              image={{
+                src: MARKER_ICONS[markerCategory],
+                size: { width: 40, height: 40 },
+              }}
+              onClick={() => {
+                onMarkerClick(String(m.id));
+              }}
+            />
+          );
+        })}
+      </MarkerClusterer>
     </KakaoMap>
   );
 }
