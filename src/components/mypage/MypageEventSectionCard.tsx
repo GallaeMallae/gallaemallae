@@ -10,8 +10,7 @@ import { motion, AnimatePresence, Variants } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useIsDesktop } from "@/hooks/useIsDesktop";
-import { EventPlanWithEvent } from "@/hooks/queries/usePlannedEventsData";
-import { Event, MypageDisplayEvent } from "@/types/common";
+import { Event, EventPlanWithEvent, MypageDisplayEvent } from "@/types/common";
 import { parseSafeDate } from "@/utils/date";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
@@ -20,9 +19,7 @@ const ICON_MAP: Record<string, LucideIcon> = {
   bookmark: Bookmark,
   heart: Heart,
 };
-
 const LIST_NUMBER = 4;
-
 const EVENT_CARD_COMPONENTS = {
   bookmark: MypageAgendaCard,
   heart: MypageLikedCard,
@@ -58,9 +55,10 @@ export default function MypageEventSectionCard({
       return {
         ...item.event,
         plan_id: item.id,
+        visit_date: item.visit_date ?? undefined,
       };
     }
-    return item;
+    return item as MypageDisplayEvent;
   });
 
   const slicedEvents = formattedEvents.slice(0, visibleCount);

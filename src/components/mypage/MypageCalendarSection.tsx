@@ -4,9 +4,8 @@ import MypageSelectedDateEventsCard from "@/components/mypage/MypageSelectedDate
 import { MypageCalendar } from "@/components/mypage/MypageCalendar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
-import { EventPlanWithEvent } from "@/hooks/queries/usePlannedEventsData";
 import { useIsDesktop } from "@/hooks/useIsDesktop";
-import { Profile } from "@/types/common";
+import { EventPlanWithEvent, Profile } from "@/types/common";
 import { useMemo, useState } from "react";
 import {
   format,

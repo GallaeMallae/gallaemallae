@@ -73,9 +73,9 @@ export default function MypageLikedCard({
       </div>
       <div>
         <div className="text-desc2 truncate font-semibold">{event.name}</div>
-        <div className="text-desc2 text-etc flex items-center gap-2">
-          <Calendar className="h-4 w-4 shrink-0" />
-          <span className="truncate leading-none">
+        <div className="text-desc2 text-etc flex items-center gap-2 truncate">
+          <Calendar className="size-4 shrink-0 -translate-y-px" />
+          <span className="truncate">
             {formatDateRange(event.start_date, event.end_date)}
           </span>
         </div>

@@ -4,13 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { createClient } from "@/utils/supabase/client";
 import { fetchPlannedEvents } from "@/lib/api/eventPlans";
 import { QUERY_KEYS } from "@/lib/constants";
-import { Tables } from "@/types/supabase";
-import { Event } from "@/types/common";
+import { EventPlanWithEvent } from "@/types/common";
 import { useUserData } from "@/hooks/queries/useUserData";
-
-export interface EventPlanWithEvent extends Tables<"event_plans"> {
-  event: Event;
-}
 
 export function usePlannedEventsData() {
   const { data: user } = useUserData();

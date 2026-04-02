@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { Trash2Icon } from "lucide-react";
+import { CalendarCheck, CalendarClock, Trash2Icon } from "lucide-react";
 import { useDeleteEventPlan } from "@/hooks/mutations/useDeleteEventPlan";
 import { CATEGORY_NAME_MAP } from "@/lib/constants";
 import { cn } from "@/lib/utils";
@@ -24,7 +24,7 @@ export default function MypageAgendaCard({
   const { mutate: deletePlan, isPending: isDeletePlanLoading } =
     useDeleteEventPlan();
   const openAlert = useOpenAlertModal();
-  const dDay = calculateDDay(event.start_date);
+  const dDay = calculateDDay(event.visit_date || event.start_date);
 
   const handleCardClick = () => {
     if (onDetailClick) {
@@ -86,9 +86,12 @@ export default function MypageAgendaCard({
       </div>
       <div>
         <div className="text-desc2 truncate font-semibold">{event.name}</div>
-        <div className="text-desc2 text-etc space-x-2 truncate">
-          <span>{event.start_date}</span>
-          <span>{event.venue}</span>
+        <div className="text-desc2 text-etc flex items-center gap-2 truncate">
+          <CalendarCheck className="size-4 shrink-0 -translate-y-px" />
+          <span className="truncate">
+            {event.visit_date ? event.visit_date : event.start_date} /{" "}
+            {event.venue}
+          </span>
         </div>
       </div>
     </div>

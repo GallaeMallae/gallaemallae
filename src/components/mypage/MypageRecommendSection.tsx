@@ -3,8 +3,7 @@
 import { EmptyStateCard } from "@/components/common/EmptyStateCard";
 import RecommendEventCardSkeleton from "@/components/common/skeleton/RecommendEventCardSkeleton";
 import MypageEventRecommendCard from "@/components/mypage/MypageEventRecommendCard";
-import { EventPlanWithEvent } from "@/hooks/queries/usePlannedEventsData";
-import { Event } from "@/types/common";
+import { Event, EventPlanWithEvent } from "@/types/common";
 import { TicketX } from "lucide-react";
 import { useMemo } from "react";
 

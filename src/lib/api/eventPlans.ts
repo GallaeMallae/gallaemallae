@@ -1,8 +1,8 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { Database, Tables } from "@/types/supabase";
 import { format } from "date-fns";
-import { EventPlanWithEvent } from "@/hooks/queries/usePlannedEventsData";
 import { transformEvent } from "@/utils/transform";
+import { EventPlanWithEvent } from "@/types/common";
 
 export interface AddEventPlanParams {
   userId: string;
@@ -24,8 +24,8 @@ export async function fetchPlannedEvents(
     `,
     )
     .eq("user_id", userId)
-    .gte("event.end_date", today)
-    .order("event(start_date)", { ascending: true });
+    .gte("visit_date", today)
+    .order("visit_date", { ascending: true });
 
   if (error) throw new Error(error.message);
   return (data || []).map((plan) => ({

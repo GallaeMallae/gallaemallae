@@ -67,6 +67,11 @@ export interface EventCardItem {
 
 export type MypageDisplayEvent = Event & {
   plan_id?: string; // 일정 고유 ID
+  visit_date?: string; // 방문일
+};
+
+export type EventPlanWithEvent = Tables<"event_plans"> & {
+  event: Event;
 };
 
 // ==============================
