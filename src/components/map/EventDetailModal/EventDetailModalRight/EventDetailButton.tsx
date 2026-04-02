@@ -77,17 +77,6 @@ export default function EventDetailModalButton({
     openVisitDateModal({
       event: event,
     });
-
-    // openAlert({
-    //   title: "나의 일정에 추가하기",
-    //   description: `${event.name}를 일정에 추가하시겠습니까?`,
-    //   onAction: () =>
-    //     addPlan({
-    //       userId: userId,
-    //       eventId: event.id,
-    //       visitDate: startDate,
-    //     }),
-    // });
   };
 
   const handleDeletePlan = () => {

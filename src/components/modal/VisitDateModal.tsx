@@ -20,10 +20,12 @@ import {
 import { useEventPlan } from "@/hooks/mutations/useEventPlan";
 import { useProfileData } from "@/hooks/queries/useProfileData";
 import { useState } from "react";
+import { useOpenAlertModal } from "@/stores/alertModalStore";
 
 export default function VisitDateModal() {
   const store = useVisitDateModal();
   const close = useCloseVisitDateModal();
+  const openAlert = useOpenAlertModal();
 
   const { mutate: addPlan, isPending } = useEventPlan();
   const { data: profile } = useProfileData();
@@ -43,20 +45,24 @@ export default function VisitDateModal() {
   const handleConfirm = () => {
     if (!profile?.id || !date) return;
 
-    addPlan(
-      {
-        userId: profile.id,
-        eventId: store.event.id,
-        visitDate: format(date, "yyyy-MM-dd"),
-      },
-      {
-        onSuccess: () => {
-          if (store.onAction) store.onAction(date);
-          toast.success("일정에 추가되었습니다.");
-          close();
-        },
-      },
-    );
+    openAlert({
+      title: "나의 일정에 추가하기",
+      description: `${store.event.name}를 일정에 추가하시겠습니까?`,
+      onAction: () =>
+        addPlan(
+          {
+            userId: profile.id,
+            eventId: store.event.id,
+            visitDate: format(date, "yyyy-MM-dd"),
+          },
+          {
+            onSuccess: () => {
+              if (store.onAction) store.onAction(date);
+              close();
+            },
+          },
+        ),
+    });
   };
 
   return (

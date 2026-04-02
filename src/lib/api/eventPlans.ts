@@ -7,7 +7,7 @@ import { transformEvent } from "@/utils/transform";
 export interface AddEventPlanParams {
   userId: string;
   eventId: string;
-  // visitDate: string; 추후 날짜 선택 기능 추가될때 받기
+  visitDate: string;
 }
 
 export async function fetchPlannedEvents(
@@ -36,7 +36,7 @@ export async function fetchPlannedEvents(
 
 export async function addEventPlan(
   supabase: SupabaseClient<Database>,
-  { userId, eventId }: AddEventPlanParams,
+  { userId, eventId, visitDate }: AddEventPlanParams,
 ) {
   const { data, error } = await supabase
     .from("event_plans")
@@ -44,7 +44,7 @@ export async function addEventPlan(
       {
         user_id: userId,
         event_id: eventId,
-        // visit_date: visitDate, 추후 날짜 선택 기능 추가될때 받기
+        visit_date: visitDate,
       },
     ])
     .select()
