@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/popover";
 import MypageSelectedDateEventsCard from "@/components/mypage/MypageSelectedDateEventsCard";
 import {
+  differenceInCalendarDays,
   format,
   isSameDay,
   isWithinInterval,
@@ -40,8 +41,18 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 type CategoryKey = keyof typeof CATEGORY_NAME_MAP;
 
 const getCategoryStyle = (categories?: string[] | null) => {
-  const eng = (categories?.[0] || "etc") as CategoryKey;
+  if (!categories || categories.length === 0)
+    return CALENDAR_CATEGORY_STYLES["기타"];
+
+  const specificCategory = categories.find(
+    (category) => category !== "festival",
+  );
+
+  const targetCategory = specificCategory || categories[0];
+
+  const eng = targetCategory as CategoryKey;
   const kor = CATEGORY_NAME_MAP[eng] || "기타";
+
   return CALENDAR_CATEGORY_STYLES[kor] || CALENDAR_CATEGORY_STYLES["기타"];
 };
 
@@ -228,11 +239,49 @@ function CalendarDayButton({
   const targetDate = startOfDay(day.date);
   const isSunday = day.date.getDay() === 0;
 
-  const dayEvents = plannedEvents.filter((event) => {
-    const startDate = parseISO(event.start_date);
-    const endDate = parseISO(event.end_date);
-    return isWithinInterval(targetDate, { start: startDate, end: endDate });
-  });
+  const dayEvents = plannedEvents
+    .filter((event) => {
+      const startDate = parseISO(event.start_date);
+      const endDate = parseISO(event.end_date);
+      return isWithinInterval(targetDate, { start: startDate, end: endDate });
+    })
+    .sort((a, b) => {
+      // 1순위: 오늘이 시작일인 행사를 앞으로 (isStart 우선순위)
+      const isStartA = isSameDay(targetDate, parseISO(a.start_date));
+      const isStartB = isSameDay(targetDate, parseISO(b.start_date));
+
+      if (isStartA !== isStartB) {
+        return isStartA ? -1 : 1;
+      }
+
+      // 2순위: 행사 기간이 짧은 순서
+      const durationA = differenceInCalendarDays(
+        parseISO(a.end_date),
+        parseISO(a.start_date),
+      );
+      const durationB = differenceInCalendarDays(
+        parseISO(b.end_date),
+        parseISO(b.start_date),
+      );
+
+      if (durationA !== durationB) {
+        return durationA - durationB;
+      }
+
+      // 3순위: 시작 시간이 더 빠른 순서
+      const timeA = parseISO(a.start_date).getTime();
+      const timeB = parseISO(b.start_date).getTime();
+
+      if (timeA !== timeB) {
+        return timeA - timeB;
+      }
+
+      // 💡 4순위: 고정 ID (Stable Slotting을 위한 최종 보루)
+      // 모든 조건이 같더라도 ID 순으로 정렬하면 기간 내내 같은 줄에 위치하게 됩니다.
+      const idA = String(a.plan_id || a.id);
+      const idB = String(b.plan_id || b.id);
+      return idA.localeCompare(idB);
+    });
 
   const MAX_EVENTS = 2;
   const visibleEvents = dayEvents.slice(0, MAX_EVENTS);
