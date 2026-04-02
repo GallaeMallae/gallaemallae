@@ -65,6 +65,14 @@ export interface EventCardItem {
   onClick?: () => void;
 }
 
+export interface EventWeatherInfoCardItem {
+  weather: WeatherType;
+  temp: string;
+  wind: string;
+  wet: string;
+  fineDust: string;
+}
+
 export type MypageDisplayEvent = Event & {
   plan_id?: string; // 일정 고유 ID
   visit_date?: string; // 방문일

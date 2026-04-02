@@ -1,11 +1,14 @@
 import {
   FetchWeatherResponse,
   FetchAirPollutionResponse,
+  FetchForecastResponse,
 } from "@/types/apiResponse";
 import {
+  WeatherType,
   WeatherCardItem,
   Event,
   EventCardItem,
+  EventWeatherInfoCardItem,
   CategoryId,
 } from "@/types/common";
 import { CATEGORY_NAME_MAP } from "@/lib/constants";
@@ -14,7 +17,7 @@ import { CATEGORY_NAME_MAP } from "@/lib/constants";
  * @param type - OpenWeather API에서 제공하는 날씨 타입 (ex: Clear, Clouds, Rain, Snow 등)
  * @returns 앱에서 사용하는 날씨 타입 (sunny | cloudy | rainy | snowy)
  */
-export function mapWeatherType(type: string) {
+export function mapWeatherType(type: string): WeatherType {
   switch (type) {
     case "Clear":
       return "sunny";
@@ -105,4 +108,22 @@ export function mapEventCard(events: Event[]): EventCardItem[] {
       isLiked: false,
     };
   });
+}
+
+/**
+ * @param forecastData - OpenWeather API에서 받은 예보 데이터
+ * @param airPollutionData - OpenWeather API에서 받은 대기질 데이터
+ * @returns EventWeatherInfoCard 컴포넌트에서 사용할 데이터 객체
+ */
+export function mapEventWeatherInfoCard(
+  forecastData: FetchForecastResponse["list"][number],
+  airPollutionData: FetchAirPollutionResponse["list"][number],
+): EventWeatherInfoCardItem {
+  return {
+    weather: mapWeatherType(forecastData.weather[0].main),
+    temp: `${Math.round(forecastData.main.temp)}º`,
+    wind: `${Math.round(forecastData.wind.speed)}m/s`,
+    wet: `${forecastData.main.humidity}%`,
+    fineDust: mapPm10Level(airPollutionData.components.pm10),
+  };
 }
