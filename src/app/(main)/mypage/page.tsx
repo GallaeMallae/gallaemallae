@@ -86,6 +86,7 @@ export default function Mypage() {
         </div>
         <MypageCalendarSection
           plannedEvents={plannedEvents ?? []}
+          likedEvents={likedEvents ?? []}
           profile={profile ?? undefined}
           onDetailClick={handleDetailClick}
         />

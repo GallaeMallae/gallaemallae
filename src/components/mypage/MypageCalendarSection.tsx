@@ -5,7 +5,7 @@ import { MypageCalendar } from "@/components/mypage/MypageCalendar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
 import { useIsDesktop } from "@/hooks/useIsDesktop";
-import { EventPlanWithEvent, Profile } from "@/types/common";
+import { Event, EventPlanWithEvent, Profile } from "@/types/common";
 import { useMemo, useState } from "react";
 import {
   format,
@@ -18,17 +18,23 @@ import {
 import { useRouter, useSearchParams } from "next/navigation";
 import { parseSafeDate } from "@/utils/date";
 
+type CalendarMode = "plan" | "like";
+
 interface MypageCalendarSectionProps {
   plannedEvents?: EventPlanWithEvent[];
+  likedEvents?: Event[];
   profile?: Profile;
   onDetailClick: (id: string) => void;
 }
 
 export default function MypageCalendarSection({
-  plannedEvents,
+  plannedEvents = [],
+  likedEvents = [],
   profile,
   onDetailClick,
 }: MypageCalendarSectionProps) {
+  const [viewMode, setViewMode] = useState<CalendarMode>("plan");
+
   const router = useRouter();
   const searchParams = useSearchParams();
   const isDesktop = useIsDesktop();
@@ -47,26 +53,32 @@ export default function MypageCalendarSection({
     [monthParam, selectedDate],
   );
 
-  const formattedPlannedEvents = useMemo(
-    () =>
-      (plannedEvents ?? []).map((plan) => ({
+  const calendarDisplayEvents = useMemo(() => {
+    if (viewMode === "plan") {
+      return plannedEvents.map((plan) => ({
         ...plan.event,
-        display_date: plan.visit_date || plan.event.start_date,
+        start_date: plan.visit_date || plan.event.start_date,
+        end_date: plan.visit_date || plan.event.start_date,
         plan_id: plan.id,
-      })),
-    [plannedEvents],
-  );
+      }));
+    }
+
+    return likedEvents.map((event) => ({
+      ...event,
+    }));
+  }, [plannedEvents, likedEvents, viewMode]);
 
   const dailyEvents = useMemo(() => {
     if (!selectedDate) return [];
     const targetDate = startOfDay(selectedDate);
-    return formattedPlannedEvents.filter((event) =>
-      isWithinInterval(targetDate, {
-        start: parseISO(event.start_date),
-        end: parseISO(event.end_date),
-      }),
-    );
-  }, [selectedDate, formattedPlannedEvents]);
+
+    return calendarDisplayEvents.filter((event) => {
+      const start = startOfDay(parseISO(event.start_date));
+      const end = startOfDay(parseISO(event.end_date));
+
+      return isWithinInterval(targetDate, { start, end });
+    });
+  }, [selectedDate, calendarDisplayEvents]);
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [prevDateParam, setPrevDateParam] = useState<string | null>(dateParam);
@@ -111,8 +123,10 @@ export default function MypageCalendarSection({
     <div className="order-1 flex flex-col gap-6 md:order-2 md:col-span-3">
       <div className="xs:p-6 flex-1 rounded-2xl border bg-white p-4 shadow-sm">
         <MypageCalendar
+          viewMode={viewMode}
+          onViewModeChange={setViewMode}
+          calendarDisplayEvents={calendarDisplayEvents}
           mode="single"
-          plannedEvents={formattedPlannedEvents}
           selected={selectedDate} //
           month={currentMonth}
           onSelect={handleCalendarSelect}

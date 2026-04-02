@@ -2,10 +2,11 @@
 
 import * as React from "react";
 import {
-  CalendarIcon,
+  Bookmark,
   ChevronDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  Heart,
   MoreHorizontal,
 } from "lucide-react";
 import {
@@ -59,33 +60,39 @@ const getCategoryStyle = (categories?: string[] | null) => {
 const CalendarContext = React.createContext<{
   activePopoverDate: Date | null;
   onActivePopoverDate: (date: Date | null) => void;
-  plannedEvents: MypageDisplayEvent[];
+  calendarDisplayEvents: MypageDisplayEvent[];
   isDesktop: boolean;
   onMonthChange?: (newMonth: Date) => void;
   onDetailClick: (eventId: string) => void;
   nickname?: string;
+  viewMode: "plan" | "like";
+  onViewModeChange: (viewMode: "plan" | "like") => void;
 } | null>(null);
 
 function MypageCalendar({
+  viewMode,
   className,
   classNames,
   showOutsideDays = true,
-  plannedEvents = [],
+  calendarDisplayEvents = [],
   nickname,
   activePopoverDate,
   isDesktop,
   onMonthChange,
   onActivePopoverDate,
   onDetailClick,
+  onViewModeChange,
   ...props
 }: React.ComponentProps<typeof DayPicker> & {
   buttonVariant?: React.ComponentProps<typeof Button>["variant"];
-  plannedEvents?: MypageDisplayEvent[];
+  calendarDisplayEvents?: MypageDisplayEvent[];
   nickname?: string;
   activePopoverDate?: Date | null;
   isDesktop: boolean;
+  viewMode: "plan" | "like";
   onActivePopoverDate?: (date: Date | null) => void;
   onDetailClick: (eventId: string) => void;
+  onViewModeChange: (viewMode: "plan" | "like") => void;
 }) {
   const defaultClassNames = getDefaultClassNames();
 
@@ -127,12 +134,14 @@ function MypageCalendar({
     <CalendarContext.Provider
       value={{
         activePopoverDate: activePopoverDate ?? null,
-        onActivePopoverDate: onActivePopoverDate!,
-        plannedEvents,
+        calendarDisplayEvents,
         isDesktop,
-        onDetailClick,
         nickname,
+        viewMode,
+        onActivePopoverDate: onActivePopoverDate!,
+        onDetailClick,
         onMonthChange,
+        onViewModeChange,
       }}
     >
       <DayPicker
@@ -231,7 +240,7 @@ function CalendarDayButton({
   const {
     activePopoverDate,
     onActivePopoverDate,
-    plannedEvents,
+    calendarDisplayEvents,
     isDesktop,
     onDetailClick,
   } = context;
@@ -239,7 +248,7 @@ function CalendarDayButton({
   const targetDate = startOfDay(day.date);
   const isSunday = day.date.getDay() === 0;
 
-  const dayEvents = plannedEvents
+  const dayEvents = calendarDisplayEvents
     .filter((event) => {
       const startDate = parseISO(event.start_date);
       const endDate = parseISO(event.end_date);
@@ -448,7 +457,13 @@ function CustomMonthCaption({
 
   const context = React.useContext(CalendarContext);
   if (!context) return <></>;
-  const { nickname, onMonthChange, onActivePopoverDate } = context;
+  const {
+    nickname,
+    onMonthChange,
+    onActivePopoverDate,
+    viewMode,
+    onViewModeChange,
+  } = context;
 
   const date = calendarMonth.date;
   const y = date.getFullYear();
@@ -480,16 +495,37 @@ function CustomMonthCaption({
   return (
     <div className="xs:justify-between xs:items-center xs:flex-row mb-4 flex w-full flex-col items-center justify-center gap-2">
       <div className="flex items-center gap-2">
-        <CalendarIcon className="text-symbol-sky size-4 md:size-6" />
+        {viewMode === "plan" ? (
+          <Bookmark className="text-symbol-sky fill-symbol-sky size-4 md:size-6" />
+        ) : (
+          <Heart className="size-4 fill-red-500 text-red-500 md:size-6" />
+        )}
+
         <span className="text-desc1 md:text-title2 font-bold">
-          {nickname?.trim() ? `${nickname}님의 일정` : "나의 일정"}
+          {viewMode === "plan"
+            ? `${nickname}님의 일정 목록`
+            : `${nickname}님의 관심 목록`}
         </span>
       </div>
-      <div className="flex items-center gap-0 md:gap-2">
+      <div className="flex items-center gap-2 md:gap-2">
         <Button
           variant="outline"
           size="sm"
-          className="mr-1 h-7 px-2 text-xs font-bold md:mr-2 md:h-8 md:px-3 md:text-sm"
+          className="md:text-desc2 text-caption h-7 bg-white px-2 font-bold md:mr-2 md:h-8 md:px-3"
+          onClick={() =>
+            onViewModeChange(viewMode === "plan" ? "like" : "plan")
+          }
+        >
+          {viewMode === "plan" ? (
+            <span>관심 목록 보기</span>
+          ) : (
+            <span>일정 목록 보기</span>
+          )}
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          className="md:text-desc2 text-caption h-7 px-2 font-bold md:mr-2 md:h-8 md:px-3"
           onClick={handleTodayClick}
           disabled={isDisableToday}
         >
