@@ -1,7 +1,7 @@
 "use client";
 
 import MypageSelectedDateEventsCard from "@/components/mypage/MypageSelectedDateEventsCard";
-import { Calendar } from "@/components/ui/calendar";
+import { MypageCalendar } from "@/components/mypage/MypageCalendar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
 import { EventPlanWithEvent } from "@/hooks/queries/usePlannedEventsData";
@@ -111,7 +111,7 @@ export default function MypageCalendarSection({
   return (
     <div className="order-1 flex flex-col gap-6 md:order-2 md:col-span-3">
       <div className="xs:p-6 flex-1 rounded-2xl border bg-white p-4 shadow-sm">
-        <Calendar
+        <MypageCalendar
           mode="single"
           plannedEvents={formattedPlannedEvents}
           selected={selectedDate} //
