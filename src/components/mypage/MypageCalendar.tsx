@@ -29,17 +29,21 @@ import {
 } from "@/components/ui/popover";
 import MypageSelectedDateEventsCard from "@/components/mypage/MypageSelectedDateEventsCard";
 import {
+  addDays,
   differenceInCalendarDays,
+  endOfWeek,
   format,
   isSameDay,
   isWithinInterval,
   parseISO,
   startOfDay,
+  startOfWeek,
 } from "date-fns";
 import { MypageDisplayEvent } from "@/types/common";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 type CategoryKey = keyof typeof CATEGORY_NAME_MAP;
+const MAX_EVENTS = 3;
 
 const getCategoryStyle = (categories?: string[] | null) => {
   if (!categories || categories.length === 0)
@@ -67,7 +71,85 @@ const CalendarContext = React.createContext<{
   nickname?: string;
   viewMode: "plan" | "like";
   onViewModeChange: (viewMode: "plan" | "like") => void;
+  weeklyEventSlots: Record<string, Record<string, number>>;
 } | null>(null);
+
+const getWeeklyEventSlots = (events: MypageDisplayEvent[]) => {
+  if (events.length === 0) return {};
+
+  // 데이터 전처리 및 정렬
+  const processedEvents = events
+    .map((event) => ({
+      ...event,
+      _start: startOfDay(parseISO(event.start_date)),
+      _end: startOfDay(parseISO(event.end_date)),
+      _id: String(event.plan_id || event.id),
+    }))
+    .sort((a, b) => {
+      const diff = a._start.getTime() - b._start.getTime();
+      if (diff !== 0) return diff;
+      // 시작일이 같으면 기간이 긴 순서대로
+      return (
+        b._end.getTime() -
+        b._start.getTime() -
+        (a._end.getTime() - a._start.getTime())
+      );
+    });
+
+  // 주차별로 이벤트 그룹화
+  const weekBuckets: Record<string, typeof processedEvents> = {};
+
+  processedEvents.forEach((event) => {
+    let currentWeekStart = startOfWeek(event._start);
+    const lastWeekStart = startOfWeek(event._end);
+
+    while (currentWeekStart <= lastWeekStart) {
+      const weekKey = format(currentWeekStart, "yyyy-MM-dd");
+      if (!weekBuckets[weekKey]) {
+        weekBuckets[weekKey] = [];
+      }
+      weekBuckets[weekKey].push(event);
+      currentWeekStart = addDays(currentWeekStart, 7);
+    }
+  });
+
+  // 각 주차별로 슬롯 계산
+  const weeklySlots: Record<string, Record<string, number>> = {};
+
+  Object.entries(weekBuckets).forEach(([weekKey, weekEvents]) => {
+    const slots: Record<string, number> = {};
+    const occupation: { start: number; end: number }[][] = [];
+
+    weekEvents.forEach((event) => {
+      const startTs = event._start.getTime();
+      const endTs = event._end.getTime();
+      let assignedSlot = -1;
+
+      // 이미 정렬된 상태이므로 순서대로 슬롯 찾기
+      for (let i = 0; i < occupation.length; i++) {
+        const hasOverlap = occupation[i].some(
+          (occ) => startTs <= occ.end && endTs >= occ.start,
+        );
+        if (!hasOverlap) {
+          assignedSlot = i;
+          break;
+        }
+      }
+
+      if (assignedSlot === -1) {
+        assignedSlot = occupation.length;
+        occupation.push([]);
+      }
+
+      occupation[assignedSlot].push({ start: startTs, end: endTs });
+      slots[event._id] = assignedSlot;
+    });
+
+    weeklySlots[weekKey] = slots;
+  });
+
+  return weeklySlots;
+};
 
 function MypageCalendar({
   viewMode,
@@ -95,7 +177,6 @@ function MypageCalendar({
   onViewModeChange: (viewMode: "plan" | "like") => void;
 }) {
   const defaultClassNames = getDefaultClassNames();
-
   // 팝오버가 닫힐 때 달력 자체가 리마운트되어 팝오버 닫히는 애니메이션 없이 툭 꺼짐
   // Context 이용해 참조 고정하여 상태 변화시 달력 자체가 리렌더링되는 현상 방지
   const memoizedComponents = React.useMemo(
@@ -130,6 +211,11 @@ function MypageCalendar({
     [],
   );
 
+  const weeklyEventSlots = React.useMemo(
+    () => getWeeklyEventSlots(calendarDisplayEvents),
+    [calendarDisplayEvents],
+  );
+
   return (
     <CalendarContext.Provider
       value={{
@@ -138,6 +224,7 @@ function MypageCalendar({
         isDesktop,
         nickname,
         viewMode,
+        weeklyEventSlots,
         onActivePopoverDate: onActivePopoverDate ?? (() => {}),
         onDetailClick,
         onMonthChange,
@@ -180,10 +267,9 @@ function MypageCalendar({
             defaultClassNames.week_number,
           ),
           day: cn(
-            "group/day relative h-full w-full p-0 text-center select-none min-w-0 overflow-hidden",
-            "xs:aspect-square min-h-10 xs:min-h-0",
-            "data-[selected=true]:bg-symbol-sky-sub data-[selected=true]:hover:bg-muted",
-            "data-[selected=true]:rounded-md",
+            "group/day relative h-full w-full p-0 text-center select-none min-w-0",
+            "xs:aspect-square min-h-10 xs:min-h-0 overflow-visible",
+            "data-[selected=true]:bg-symbol-sky-sub data-[selected=true]:hover:bg-muted data-[selected=true]:rounded-md",
             "@container", // 너비 좁아지면 이벤트 뱃지 글자 숨기기 위해 추가
 
             props.showWeekNumber
@@ -198,7 +284,6 @@ function MypageCalendar({
           range_middle: cn("rounded-none", defaultClassNames.range_middle),
           range_end: cn("rounded-r-md bg-accent", defaultClassNames.range_end),
           today: cn(
-            // "rounded-md bg-accent text-accent-foreground data-[selected=true]:rounded-none",
             "rounded-md bg-accent text-accent-foreground",
             defaultClassNames.today,
           ),
@@ -225,7 +310,6 @@ function CalendarDayButton({
   className,
   day,
   modifiers,
-
   ...props
 }: DayButtonProps) {
   const ref = React.useRef<HTMLButtonElement>(null);
@@ -242,59 +326,25 @@ function CalendarDayButton({
     calendarDisplayEvents,
     isDesktop,
     viewMode,
+    weeklyEventSlots,
     onDetailClick,
     onActivePopoverDate,
   } = context;
 
   const targetDate = startOfDay(day.date);
+  const weekKey = format(startOfWeek(targetDate), "yyyy-MM-dd");
+  const currentWeekSlots = weeklyEventSlots[weekKey] || {};
   const isSunday = day.date.getDay() === 0;
+  const isSaturday = day.date.getDay() === 6;
 
-  const dayEvents = calendarDisplayEvents
-    .filter((event) => {
-      const startDate = parseISO(event.start_date);
-      const endDate = parseISO(event.end_date);
-      return isWithinInterval(targetDate, { start: startDate, end: endDate });
-    })
-    .sort((a, b) => {
-      // 1순위: 오늘이 시작일인 행사를 앞으로 (isStart 우선순위)
-      const isStartA = isSameDay(targetDate, parseISO(a.start_date));
-      const isStartB = isSameDay(targetDate, parseISO(b.start_date));
+  const dayEvents = calendarDisplayEvents.filter((event) => {
+    const start = startOfDay(parseISO(event.start_date));
+    const end = startOfDay(parseISO(event.end_date));
+    return isWithinInterval(targetDate, { start, end });
+  });
 
-      if (isStartA !== isStartB) {
-        return isStartA ? -1 : 1;
-      }
-
-      // 2순위: 행사 기간이 짧은 순서
-      const durationA = differenceInCalendarDays(
-        parseISO(a.end_date),
-        parseISO(a.start_date),
-      );
-      const durationB = differenceInCalendarDays(
-        parseISO(b.end_date),
-        parseISO(b.start_date),
-      );
-
-      if (durationA !== durationB) {
-        return durationA - durationB;
-      }
-
-      // 3순위: 시작 시간이 더 빠른 순서
-      const timeA = parseISO(a.start_date).getTime();
-      const timeB = parseISO(b.start_date).getTime();
-
-      if (timeA !== timeB) {
-        return timeA - timeB;
-      }
-
-      // 💡 4순위: 고정 ID (Stable Slotting을 위한 최종 보루)
-      // 모든 조건이 같더라도 ID 순으로 정렬하면 기간 내내 같은 줄에 위치하게 됩니다.
-      const idA = String(a.plan_id || a.id);
-      const idB = String(b.plan_id || b.id);
-      return idA.localeCompare(idB);
-    });
-
-  const MAX_EVENTS = 2;
-  const visibleEvents = dayEvents.slice(0, MAX_EVENTS);
+  const fluidHeight =
+    "@[100px]:h-[clamp(4px,18cqw,36px)] h-[clamp(4px,10cqw,36px)]";
 
   const isPopoverOpen = activePopoverDate
     ? isSameDay(day.date, activePopoverDate)
@@ -357,59 +407,57 @@ function CalendarDayButton({
             >
               <div> {day.date.getDate()}</div>
             </div>
-            {dayEvents.length >= 3 && (
+            {dayEvents.length > MAX_EVENTS && (
               <div className="hidden md:mr-2 md:block">
                 <MoreHorizontal className="text-symbol-sky size-4" />
               </div>
             )}
           </div>
 
-          {/* 이벤트 뱃지 렌더링 */}
-          <div className="mt-1 flex w-full min-w-0 flex-1 flex-col gap-1 overflow-hidden">
-            {/* 데스크탑은 이벤트 배지 출력 */}
-            <div className="hidden w-full flex-1 flex-col gap-1 md:flex">
-              {visibleEvents.map((event, index) => {
-                const style = getCategoryStyle(event.categories);
+          {/* 이벤트 슬롯 컨테이너 */}
+          <div className="mt-1 flex w-full flex-col gap-0.5 overflow-visible">
+            {Array.from({ length: MAX_EVENTS }).map((_, slotIndex) => {
+              const event = dayEvents.find(
+                (event) =>
+                  currentWeekSlots[String(event.plan_id || event.id)] ===
+                  slotIndex,
+              );
 
-                const isStart = isSameDay(day.date, parseISO(event.start_date));
-                const shouldShowTitle = isStart || isSunday;
+              if (!event)
+                return (
+                  <div key={slotIndex} className={cn("w-full", fluidHeight)} />
+                );
+
+              return (
+                <>
+                  {isDesktop && (
+                    <EventSlotItem
+                      key={`slot-${event.id}`}
+                      event={event}
+                      targetDate={targetDate}
+                      fluidHeight={fluidHeight}
+                      isSunday={isSunday}
+                      isSaturday={isSaturday}
+                    />
+                  )}
+                </>
+              );
+            })}
+          </div>
+
+          {/* 모바일은 점 하나만 출력 */}
+          {dayEvents.length > 0 && (
+            <div className="flex w-full justify-center md:hidden">
+              {(() => {
+                const firstEvent = dayEvents[0];
+                const style = getCategoryStyle(firstEvent.categories);
 
                 return (
-                  <div
-                    key={`desktop-${event.name}-${index}`}
-                    className={cn(
-                      "text-caption flex h-[40%] max-h-6 w-full items-center px-2 font-semibold",
-                      style.sub,
-                      style.text,
-                      isStart ? "border-l-4 " + style.border : "border-l-0",
-                      !shouldShowTitle && "text-transparent",
-                    )}
-                    title={event.name}
-                  >
-                    <span className="text-desc2 hidden truncate @[100px]:block">
-                      {shouldShowTitle ? event.name : ""}
-                    </span>
-                  </div>
+                  <div className={cn("h-1.5 w-1.5 rounded-full", style.dot)} />
                 );
-              })}
+              })()}
             </div>
-
-            {/* 모바일은 점 하나만 출력 */}
-            {dayEvents.length > 0 && (
-              <div className="flex w-full justify-center md:hidden">
-                {(() => {
-                  const firstEvent = dayEvents[0];
-                  const style = getCategoryStyle(firstEvent.categories);
-
-                  return (
-                    <div
-                      className={cn("h-1.5 w-1.5 rounded-full", style.dot)}
-                    />
-                  );
-                })()}
-              </div>
-            )}
-          </div>
+          )}
         </Button>
       </PopoverTrigger>
       {dayEvents.length > 0 && (
@@ -433,14 +481,12 @@ function CalendarDayButton({
           {/* ScrollArea 내부 뷰포트에 높이 지정해야 스크롤바 작동함  */}
           <ScrollArea className="*:data-[slot=scroll-area-viewport]:max-h-96">
             <div className="p-6">
-              {isDesktop && (
-                <MypageSelectedDateEventsCard
-                  selectedDate={activePopoverDate ?? null}
-                  events={dayEvents}
-                  viewMode={viewMode}
-                  onDetailClick={onDetailClick}
-                />
-              )}
+              <MypageSelectedDateEventsCard
+                selectedDate={activePopoverDate ?? null}
+                events={dayEvents}
+                viewMode={viewMode}
+                onDetailClick={onDetailClick}
+              />
             </div>
           </ScrollArea>
         </PopoverContent>
@@ -448,6 +494,67 @@ function CalendarDayButton({
     </Popover>
   );
 }
+
+const EventSlotItem = ({
+  event,
+  targetDate,
+  fluidHeight,
+  isSunday,
+  isSaturday,
+}: {
+  event: MypageDisplayEvent;
+  targetDate: Date;
+  fluidHeight: string;
+  isSunday: boolean;
+  isSaturday: boolean;
+}) => {
+  const style = getCategoryStyle(event.categories);
+  const isStart = isSameDay(targetDate, parseISO(event.start_date));
+  const isEnd = isSameDay(targetDate, parseISO(event.end_date));
+  const isTextStartDay = isStart || isSunday;
+
+  let eventWidth = "100%";
+  if (isTextStartDay) {
+    const saturday = new Date(
+      startOfWeek(targetDate).getTime() + 6 * 24 * 60 * 60 * 1000,
+    );
+    const actualEndView =
+      parseISO(event.end_date) < saturday ? parseISO(event.end_date) : saturday;
+    eventWidth = `${(differenceInCalendarDays(actualEndView, targetDate) + 1) * 100}%`;
+  }
+
+  const shouldTruncateToday = isSaturday || isEnd;
+
+  return (
+    <div className={cn("relative w-full overflow-visible", fluidHeight)}>
+      {/* 배경색 막대 */}
+      <div
+        className={cn(
+          "absolute inset-0 flex items-center font-semibold transition-all select-none",
+          style.sub,
+          isStart ? cn("border-l-4", style.border) : "border-l-0",
+        )}
+      />
+
+      {/* 텍스트 레이어 */}
+      {isTextStartDay && (
+        <span
+          className={cn(
+            "text-caption absolute left-0 z-20 hidden h-full items-center px-2 font-bold whitespace-nowrap @[100px]:flex",
+            style.text,
+          )}
+          style={{
+            width: eventWidth,
+            maxWidth: shouldTruncateToday ? "100%" : eventWidth,
+            minWidth: 0,
+          }}
+        >
+          <span className="block truncate">{event.name}</span>
+        </span>
+      )}
+    </div>
+  );
+};
 
 function CustomMonthCaption({
   calendarMonth,
@@ -496,7 +603,7 @@ function CustomMonthCaption({
   };
 
   return (
-    <div className="xs:justify-between xs:items-center xs:flex-row mb-4 flex w-full flex-col items-center justify-center gap-2">
+    <div className="mb-4 flex w-full flex-col items-center justify-center gap-2 md:flex-row md:items-center md:justify-between">
       <div className="flex items-center gap-2">
         {viewMode === "plan" ? (
           <Bookmark className="text-symbol-sky fill-symbol-sky size-4 md:size-6" />
@@ -514,7 +621,7 @@ function CustomMonthCaption({
         <Button
           variant="outline"
           size="sm"
-          className="md:text-desc2 text-caption h-7 bg-white px-2 font-bold md:h-8 md:px-3"
+          className="md:text-desc2 text-caption h-6 px-2 md:h-8 md:px-2"
           onClick={() =>
             onViewModeChange(viewMode === "plan" ? "like" : "plan")
           }
@@ -528,7 +635,7 @@ function CustomMonthCaption({
         <Button
           variant="outline"
           size="sm"
-          className="md:text-desc2 text-caption h-7 px-2 font-bold md:mr-2 md:h-8 md:px-3"
+          className="md:text-desc2 text-caption h-6 px-2 md:mr-2 md:h-8 md:px-2"
           onClick={handleTodayClick}
           disabled={isDisableToday}
         >
