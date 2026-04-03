@@ -3,6 +3,7 @@
 import * as React from "react";
 import {
   Bookmark,
+  CalendarDays,
   ChevronDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -608,63 +609,74 @@ function CustomMonthCaption({
   };
 
   return (
-    <div className="mb-4 flex w-full flex-col items-center justify-center gap-2 md:flex-row md:items-center md:justify-between">
-      <div className="flex items-center gap-2">
+    <div className="mb-4 flex w-full flex-col items-center justify-between gap-4 md:flex-row">
+      <div className="flex shrink-0 items-center gap-2 whitespace-nowrap">
         {viewMode === "plan" ? (
-          <Bookmark className="text-symbol-sky fill-symbol-sky size-4 md:size-6" />
+          <Bookmark className="text-symbol-sky fill-symbol-sky size-4 md:size-5" />
         ) : (
-          <Heart className="size-4 fill-red-500 text-red-500 md:size-6" />
+          <Heart className="size-4 fill-red-500 text-red-500 md:size-5" />
         )}
-
-        <span className="text-desc1 md:text-title2 font-bold">
+        <span className="text-title2 md:text-title1 font-bold">
           {viewMode === "plan"
             ? `${ownerLabel} 일정 목록`
             : `${ownerLabel} 관심 목록`}
         </span>
       </div>
-      <div className="flex items-center gap-2">
+
+      <div className="flex items-center gap-1.5">
         <Button
           variant="outline"
-          size="sm"
-          className="md:text-desc2 text-caption h-6 px-2 md:h-8 md:px-2"
+          size="icon"
+          className={cn(
+            "group size-8",
+            viewMode === "plan"
+              ? "hover:text-red-500"
+              : "hover:text-symbol-sky",
+          )}
           onClick={() =>
             onViewModeChange(viewMode === "plan" ? "like" : "plan")
           }
+          title={viewMode === "plan" ? "관심 목록 보기" : "일정 목록 보기"}
         >
           {viewMode === "plan" ? (
-            <span>관심 목록 보기</span>
+            <Heart className="size-4 transition-colors duration-300 group-hover:fill-red-500 group-hover:stroke-red-500 md:size-5" />
           ) : (
-            <span>일정 목록 보기</span>
+            <Bookmark className="group-hover:fill-symbol-sky group-hover:stroke-symbol-sky size-4 transition-colors duration-300 md:size-5" />
           )}
         </Button>
+
         <Button
           variant="outline"
-          size="sm"
-          className="md:text-desc2 text-caption h-6 px-2 md:mr-2 md:h-8 md:px-2"
+          size="icon"
+          className="size-8"
           onClick={handleTodayClick}
           disabled={isDisableToday}
+          title="오늘로 이동"
         >
-          오늘
+          <CalendarDays className="size-4 md:size-5" />
         </Button>
-        <button
-          type="button"
-          aria-label="이전 달"
-          onClick={() => handleMoveMonth(previousMonth)}
-          className="hover:bg-accent flex size-6 items-center justify-center rounded"
-        >
-          <ChevronLeftIcon className="size-4" />
-        </button>
-        <span className="text-desc2 min-w-20 text-center leading-none font-bold">
-          {y}. {m}.
-        </span>
-        <button
-          type="button"
-          aria-label="다음 달"
-          onClick={() => handleMoveMonth(nextMonth)}
-          className="hover:bg-accent flex size-6 items-center justify-center rounded"
-        >
-          <ChevronRightIcon className="size-4" />
-        </button>
+
+        <div className="flex items-center gap-2 p-1">
+          <button
+            type="button"
+            onClick={() => handleMoveMonth(previousMonth)}
+            className="flex cursor-pointer items-center justify-center"
+          >
+            <ChevronLeftIcon className="size-5 md:size-6" />
+          </button>
+
+          <span className="text-desc2 flex min-w-16 items-center font-bold">
+            {y}. {m}.
+          </span>
+
+          <button
+            type="button"
+            onClick={() => handleMoveMonth(nextMonth)}
+            className="flex cursor-pointer items-center justify-center"
+          >
+            <ChevronRightIcon className="size-5 md:size-6" />
+          </button>
+        </div>
       </div>
     </div>
   );
