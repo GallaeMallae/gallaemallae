@@ -30,7 +30,6 @@ export default function Mypage() {
   const { data: plannedEvents, isLoading: isPlannedEventLoading } =
     usePlannedEventsData();
 
-  // 행사 상세보기 모달 여는 핸들러 함수
   const handleDetailClick = (eventId: string) => {
     setSelectedEventId(eventId);
   };

@@ -138,7 +138,7 @@ function MypageCalendar({
         isDesktop,
         nickname,
         viewMode,
-        onActivePopoverDate: onActivePopoverDate!,
+        onActivePopoverDate: onActivePopoverDate ?? (() => {}),
         onDetailClick,
         onMonthChange,
         onViewModeChange,
