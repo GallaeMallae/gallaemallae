@@ -415,35 +415,40 @@ function CalendarDayButton({
           </div>
 
           {/* 이벤트 슬롯 컨테이너 */}
-          <div className="mt-1 flex w-full flex-col gap-0.5 overflow-visible">
-            {Array.from({ length: MAX_EVENTS }).map((_, slotIndex) => {
-              const event = dayEvents.find(
-                (event) =>
-                  currentWeekSlots[String(event.plan_id || event.id)] ===
-                  slotIndex,
-              );
-
-              if (!event)
-                return (
-                  <div key={slotIndex} className={cn("w-full", fluidHeight)} />
+          {isDesktop && (
+            <div className="mt-1 flex w-full flex-col gap-0.5 overflow-visible">
+              {Array.from({ length: MAX_EVENTS }).map((_, slotIndex) => {
+                const event = dayEvents.find(
+                  (event) =>
+                    currentWeekSlots[String(event.plan_id || event.id)] ===
+                    slotIndex,
                 );
 
-              return (
-                <>
-                  {isDesktop && (
-                    <EventSlotItem
-                      key={`slot-${event.id}`}
-                      event={event}
-                      targetDate={targetDate}
-                      fluidHeight={fluidHeight}
-                      isSunday={isSunday}
-                      isSaturday={isSaturday}
+                if (!event)
+                  return (
+                    <div
+                      key={slotIndex}
+                      className={cn("w-full", fluidHeight)}
                     />
-                  )}
-                </>
-              );
-            })}
-          </div>
+                  );
+
+                return (
+                  <>
+                    {isDesktop && (
+                      <EventSlotItem
+                        key={`slot-${event.id}`}
+                        event={event}
+                        targetDate={targetDate}
+                        fluidHeight={fluidHeight}
+                        isSunday={isSunday}
+                        isSaturday={isSaturday}
+                      />
+                    )}
+                  </>
+                );
+              })}
+            </div>
+          )}
 
           {/* 모바일은 점 하나만 출력 */}
           {dayEvents.length > 0 && (
