@@ -10,6 +10,7 @@ import EventCard from "@/components/common/EventCard";
 import MoreCard from "@/components/common/MoreCard";
 import { useState, useMemo } from "react";
 import { useEventsData } from "@/hooks/queries/useEventsData";
+import { useLikedEventsData } from "@/hooks/queries/useLikedEventsData";
 import { filterEventByPeriod } from "@/utils/filter";
 import { mapEventCard } from "@/utils/mapper";
 import { PeriodFilter } from "@/types/common";
@@ -22,15 +23,26 @@ export default function UpcomingEvents({
   onEventClick: (id: string) => void;
 }) {
   const { data: eventsData } = useEventsData();
+  const { data: likedEventsData } = useLikedEventsData();
 
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodFilter>("전체");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
+  const likedEventIds = useMemo(() => {
+    if (!likedEventsData) return new Set<string>();
+    return new Set(likedEventsData.map((event) => event.id));
+  }, [likedEventsData]);
+
   const eventsCardItems = useMemo(() => {
     if (!eventsData) return [];
+
     const filteredEvents = filterEventByPeriod(eventsData, selectedPeriod);
-    return mapEventCard(filteredEvents);
-  }, [eventsData, selectedPeriod]);
+
+    return mapEventCard(filteredEvents).map((event) => ({
+      ...event,
+      isLiked: likedEventIds.has(event.id),
+    }));
+  }, [eventsData, selectedPeriod, likedEventIds]);
 
   const visibleEvents = eventsCardItems.slice(0, visibleCount);
   const hasMore = eventsCardItems.length > visibleCount;

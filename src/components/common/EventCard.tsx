@@ -3,10 +3,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Heart, Calendar, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useEventLike } from "@/hooks/mutations/useEventLike";
 import { formatDateRange } from "@/utils/date";
 import { EventCardItem } from "@/types/common";
 
 export default function EventCard({
+  id,
   title,
   location,
   startDate,
@@ -15,6 +17,8 @@ export default function EventCard({
   isLiked,
   onClick,
 }: EventCardItem) {
+  const { mutate: toggleLike } = useEventLike(id);
+
   return (
     <Card className="relative cursor-pointer rounded-2xl" onClick={onClick}>
       <CardContent>
@@ -23,6 +27,10 @@ export default function EventCard({
           variant="ghost"
           size="icon"
           aria-label="좋아요"
+          onClick={(e) => {
+            e.stopPropagation();
+            toggleLike(isLiked);
+          }}
         >
           <Heart
             className={cn(

@@ -12,6 +12,7 @@ import { useMemo, useState } from "react";
 import { MapMarker } from "react-kakao-maps-sdk";
 import { useLocationStore } from "@/stores/locationStore";
 import { useEventsData } from "@/hooks/queries/useEventsData";
+import { useLikedEventsData } from "@/hooks/queries/useLikedEventsData";
 import { filterEventsByDistance } from "@/utils/filter";
 import { mapEventCard } from "@/utils/mapper";
 import { MapMode } from "@/types/common";
@@ -26,6 +27,7 @@ export default function NearEvents({
   const router = useRouter();
   const { coords, isInitialized } = useLocationStore();
   const { data: eventsData } = useEventsData();
+  const { data: likedEventsData } = useLikedEventsData();
 
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
@@ -33,6 +35,11 @@ export default function NearEvents({
     lat: coords.lat,
     lng: coords.lng,
   };
+
+  const likedEventIds = useMemo(() => {
+    if (!likedEventsData) return new Set<string>();
+    return new Set(likedEventsData.map((event) => event.id));
+  }, [likedEventsData]);
 
   const nearEventCardItems = useMemo(() => {
     if (!eventsData || !coords || !isInitialized) return [];
@@ -43,8 +50,11 @@ export default function NearEvents({
       10000, // 10km
     );
 
-    return mapEventCard(filteredByDistance);
-  }, [eventsData, coords, isInitialized]);
+    return mapEventCard(filteredByDistance).map((event) => ({
+      ...event,
+      isLiked: likedEventIds.has(event.id),
+    }));
+  }, [eventsData, coords, isInitialized, likedEventIds]);
 
   const visibleEvents = nearEventCardItems.slice(0, visibleCount);
   const hasMore = nearEventCardItems.length > visibleCount;
