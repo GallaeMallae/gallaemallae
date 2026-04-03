@@ -471,6 +471,7 @@ function CustomMonthCaption({
   const y = date.getFullYear();
   const m = String(date.getMonth() + 1).padStart(2, "0");
   const today = new Date();
+  const ownerLabel = nickname ? `${nickname}님의` : "나의";
 
   const isTodayMonth =
     date.getFullYear() === today.getFullYear() &&
@@ -505,8 +506,8 @@ function CustomMonthCaption({
 
         <span className="text-desc1 md:text-title2 font-bold">
           {viewMode === "plan"
-            ? `${nickname}님의 일정 목록`
-            : `${nickname}님의 관심 목록`}
+            ? `${ownerLabel} 일정 목록`
+            : `${ownerLabel} 관심 목록`}
         </span>
       </div>
       <div className="flex items-center gap-2">
