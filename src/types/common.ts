@@ -60,7 +60,7 @@ export interface EventCardItem {
   location: string;
   startDate: string;
   endDate: string;
-  category: Category;
+  categories: Category[];
   isLiked: boolean;
   onClick?: () => void;
 }

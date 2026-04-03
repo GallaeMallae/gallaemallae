@@ -11,7 +11,7 @@ export default function EventCard({
   location,
   startDate,
   endDate,
-  category,
+  categories,
   isLiked,
   onClick,
 }: EventCardItem) {
@@ -32,9 +32,13 @@ export default function EventCard({
           />
         </Button>
 
-        <Badge className="mb-2 rounded-sm" variant={category}>
-          {category}
-        </Badge>
+        <div className="mb-2 flex gap-1">
+          {categories.map((category) => (
+            <Badge key={category} className="rounded-sm" variant={category}>
+              {category}
+            </Badge>
+          ))}
+        </div>
 
         <h3 className="text-title2 mb-4 line-clamp-1 font-bold">{title}</h3>
 
