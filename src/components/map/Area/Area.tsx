@@ -25,7 +25,7 @@ interface AreaProps {
 
 export default function Area({ radius, category, period, search }: AreaProps) {
   const { position, moveCurrentLocation } = useCurrentLocation();
-  const { data: events = [], error: queryError } = useEventsData();
+  const { data: events = [], isLoading, isError, error } = useEventsData();
 
   const [locate, setLocate] = useState<kakao.maps.Map | null>(null);
 
@@ -80,6 +80,24 @@ export default function Area({ radius, category, period, search }: AreaProps) {
     moveCurrentLocation(locate);
     setSelectedCarousel(null);
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        데이터 불러오는 중...
+      </div>
+    );
+  }
+
+  if (isError) {
+    console.error(error);
+
+    return (
+      <div className="flex h-screen items-center justify-center">
+        데이터를 가져오는데 실패했습니다.
+      </div>
+    );
+  }
 
   return (
     <div className="relative h-[calc(100vh-57px)] overflow-hidden">
