@@ -188,6 +188,9 @@ export default function MypageProfileEditForm({
           } else {
             const result = await response.json();
             console.error("서비스 탈퇴 실패:", result.error);
+            toast.error("서비스 탈퇴 과정에서 오류가 발생했습니다.", {
+              id: "deleting",
+            });
           }
         } catch (err) {
           console.error("네트워크 오류:", err);
@@ -305,12 +308,14 @@ export default function MypageProfileEditForm({
           >
             {isPending ? "저장 중..." : "변경 내용 저장"}
           </Button>
-          <span
-            onClick={isDeleting ? undefined : handleDeleteAccount}
+          <button
+            type="button"
+            onClick={handleDeleteAccount}
+            disabled={isDeleting}
             className="text-caption text-etc hover:decoration-etc/50 cursor-pointer underline decoration-transparent underline-offset-4 transition-colors duration-300"
           >
             {isDeleting ? "서비스 탈퇴 처리 중..." : "서비스 탈퇴하기"}
-          </span>
+          </button>
         </div>
       </DialogFooter>
     </div>
