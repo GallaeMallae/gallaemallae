@@ -425,9 +425,7 @@ function CalendarDayButton({
             <div className="mt-1 flex w-full flex-col gap-0.5 overflow-visible">
               {Array.from({ length: MAX_EVENTS }).map((_, slotIndex) => {
                 const event = dayEvents.find(
-                  (event) =>
-                    currentWeekSlots[String(event.plan_id || event.id)] ===
-                    slotIndex,
+                  (event) => currentWeekSlots[event._id] === slotIndex,
                 );
 
                 if (!event)
@@ -440,7 +438,7 @@ function CalendarDayButton({
 
                 return (
                   <EventSlotItem
-                    key={`slot-${event.id}`}
+                    key={`slot-${event._id}`}
                     event={event}
                     targetDate={targetDate}
                     fluidHeight={fluidHeight}
@@ -597,11 +595,11 @@ function CustomMonthCaption({
 
   const handleTodayClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    handleMoveMonth(today);
     if (dayPickerProps.mode === "single" && dayPickerProps.onSelect) {
       dayPickerProps.onSelect(today, today, {}, e);
+      return;
     }
-    onActivePopoverDate?.(today);
+    handleMoveMonth(today);
   };
 
   return (
@@ -623,6 +621,7 @@ function CustomMonthCaption({
         <Button
           variant="outline"
           size="icon"
+          aria-label={viewMode === "plan" ? "관심 목록 보기" : "일정 목록 보기"}
           className={cn(
             "group size-8",
             viewMode === "plan"
@@ -644,6 +643,7 @@ function CustomMonthCaption({
         <Button
           variant="outline"
           size="icon"
+          aria-label="오늘로 이동"
           className="size-8"
           onClick={handleTodayClick}
           disabled={isDisableToday}
@@ -655,6 +655,7 @@ function CustomMonthCaption({
         <div className="flex items-center gap-2 p-1">
           <button
             type="button"
+            aria-label="이전 달"
             onClick={() => handleMoveMonth(previousMonth)}
             className="flex cursor-pointer items-center justify-center"
           >
@@ -667,6 +668,7 @@ function CustomMonthCaption({
 
           <button
             type="button"
+            aria-label="다음 달"
             onClick={() => handleMoveMonth(nextMonth)}
             className="flex cursor-pointer items-center justify-center"
           >
