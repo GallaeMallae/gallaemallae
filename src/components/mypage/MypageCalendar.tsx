@@ -32,16 +32,20 @@ import MypageSelectedDateEventsCard from "@/components/mypage/MypageSelectedDate
 import {
   addDays,
   differenceInCalendarDays,
-  endOfWeek,
   format,
   isSameDay,
-  isWithinInterval,
   parseISO,
   startOfDay,
   startOfWeek,
 } from "date-fns";
 import { MypageDisplayEvent } from "@/types/common";
 import { ScrollArea } from "@/components/ui/scroll-area";
+
+interface ProcessedEvent extends MypageDisplayEvent {
+  _start: Date;
+  _end: Date;
+  _id: string;
+}
 
 type CategoryKey = keyof typeof CATEGORY_NAME_MAP;
 const MAX_EVENTS = 3;
@@ -64,21 +68,23 @@ const getCategoryStyle = (categories?: string[] | null) => {
 
 const CalendarContext = React.createContext<{
   activePopoverDate: Date | null;
-  onActivePopoverDate: (date: Date | null) => void;
   calendarDisplayEvents: MypageDisplayEvent[];
   isDesktop: boolean;
-  onMonthChange?: (newMonth: Date) => void;
-  onDetailClick: (eventId: string) => void;
   nickname?: string;
   viewMode: "plan" | "like";
-  onViewModeChange: (viewMode: "plan" | "like") => void;
   weeklyEventSlots: Record<string, Record<string, number>>;
+  processedEvents: ProcessedEvent[];
+  onActivePopoverDate: (date: Date | null) => void;
+  onViewModeChange: (viewMode: "plan" | "like") => void;
+  onMonthChange?: (newMonth: Date) => void;
+  onDetailClick: (eventId: string) => void;
 } | null>(null);
 
+// 주차별 행사의 슬롯 번호 계산하는 함수
 const getWeeklyEventSlots = (events: MypageDisplayEvent[]) => {
-  if (events.length === 0) return {};
+  if (events.length === 0) return { processedEvents: [], weeklySlots: {} };
 
-  // 데이터 전처리 및 정렬
+  // 데이터 전처리(파싱, Date 객체 변환) 및 정렬
   const processedEvents = events
     .map((event) => ({
       ...event,
@@ -111,14 +117,15 @@ const getWeeklyEventSlots = (events: MypageDisplayEvent[]) => {
       }
       weekBuckets[weekKey].push(event);
       currentWeekStart = addDays(currentWeekStart, 7);
+      console.log("weekBuckets:", weekBuckets);
     }
   });
 
-  // 각 주차별로 슬롯 계산
+  // 각 주차별로 슬롯 번호 배정
   const weeklySlots: Record<string, Record<string, number>> = {};
 
   Object.entries(weekBuckets).forEach(([weekKey, weekEvents]) => {
-    const slots: Record<string, number> = {};
+    const slots: Record<string, number> = {}; //{행사 ID, 슬롯 번호}
     const occupation: { start: number; end: number }[][] = [];
 
     weekEvents.forEach((event) => {
@@ -137,6 +144,7 @@ const getWeeklyEventSlots = (events: MypageDisplayEvent[]) => {
         }
       }
 
+      // 들어갈 층이 없는 경우 새 층을 추가하고 push
       if (assignedSlot === -1) {
         assignedSlot = occupation.length;
         occupation.push([]);
@@ -149,7 +157,7 @@ const getWeeklyEventSlots = (events: MypageDisplayEvent[]) => {
     weeklySlots[weekKey] = slots;
   });
 
-  return weeklySlots;
+  return { processedEvents, weeklySlots };
 };
 
 function MypageCalendar({
@@ -212,7 +220,7 @@ function MypageCalendar({
     [],
   );
 
-  const weeklyEventSlots = React.useMemo(
+  const { processedEvents, weeklySlots } = React.useMemo(
     () => getWeeklyEventSlots(calendarDisplayEvents),
     [calendarDisplayEvents],
   );
@@ -225,7 +233,8 @@ function MypageCalendar({
         isDesktop,
         nickname,
         viewMode,
-        weeklyEventSlots,
+        weeklyEventSlots: weeklySlots,
+        processedEvents,
         onActivePopoverDate: onActivePopoverDate ?? (() => {}),
         onDetailClick,
         onMonthChange,
@@ -324,24 +333,23 @@ function CalendarDayButton({
 
   const {
     activePopoverDate,
-    calendarDisplayEvents,
     isDesktop,
     viewMode,
     weeklyEventSlots,
+    processedEvents,
     onDetailClick,
     onActivePopoverDate,
   } = context;
 
   const targetDate = startOfDay(day.date);
+  const targetTime = targetDate.getTime();
   const weekKey = format(startOfWeek(targetDate), "yyyy-MM-dd");
   const currentWeekSlots = weeklyEventSlots[weekKey] || {};
-  const isSunday = day.date.getDay() === 0;
-  const isSaturday = day.date.getDay() === 6;
 
-  const dayEvents = calendarDisplayEvents.filter((event) => {
-    const start = startOfDay(parseISO(event.start_date));
-    const end = startOfDay(parseISO(event.end_date));
-    return isWithinInterval(targetDate, { start, end });
+  const dayEvents = processedEvents.filter((event) => {
+    return (
+      targetTime >= event._start.getTime() && targetTime <= event._end.getTime()
+    );
   });
 
   const fluidHeight =
@@ -434,18 +442,12 @@ function CalendarDayButton({
                   );
 
                 return (
-                  <>
-                    {isDesktop && (
-                      <EventSlotItem
-                        key={`slot-${event.id}`}
-                        event={event}
-                        targetDate={targetDate}
-                        fluidHeight={fluidHeight}
-                        isSunday={isSunday}
-                        isSaturday={isSaturday}
-                      />
-                    )}
-                  </>
+                  <EventSlotItem
+                    key={`slot-${event.id}`}
+                    event={event}
+                    targetDate={targetDate}
+                    fluidHeight={fluidHeight}
+                  />
                 );
               })}
             </div>
@@ -501,31 +503,28 @@ function CalendarDayButton({
   );
 }
 
+// 실제로 이벤트 뱃지를 그리는 컴포넌트
 const EventSlotItem = ({
   event,
   targetDate,
   fluidHeight,
-  isSunday,
-  isSaturday,
 }: {
-  event: MypageDisplayEvent;
+  event: ProcessedEvent;
   targetDate: Date;
   fluidHeight: string;
-  isSunday: boolean;
-  isSaturday: boolean;
 }) => {
   const style = getCategoryStyle(event.categories);
-  const isStart = isSameDay(targetDate, parseISO(event.start_date));
-  const isEnd = isSameDay(targetDate, parseISO(event.end_date));
+  const isSunday = targetDate.getDay() === 0;
+  const isSaturday = targetDate.getDay() === 6;
+  const isStart = isSameDay(targetDate, event._start);
+  const isEnd = isSameDay(targetDate, event._end);
   const isTextStartDay = isStart || isSunday;
 
   let eventWidth = "100%";
   if (isTextStartDay) {
-    const saturday = new Date(
-      startOfWeek(targetDate).getTime() + 6 * 24 * 60 * 60 * 1000,
-    );
+    const saturday = addDays(startOfWeek(targetDate), 6);
     const actualEndView =
-      parseISO(event.end_date) < saturday ? parseISO(event.end_date) : saturday;
+      event._end.getTime() < saturday.getTime() ? event._end : saturday;
     eventWidth = `${(differenceInCalendarDays(actualEndView, targetDate) + 1) * 100}%`;
   }
 
