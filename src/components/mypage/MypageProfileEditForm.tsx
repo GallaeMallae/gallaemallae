@@ -18,6 +18,11 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import imageCompression from "browser-image-compression";
 import { validateEmail, validateNickname } from "@/utils/validation";
+import { useOpenAlertModal } from "@/stores/alertModalStore";
+import { useUserData } from "@/hooks/queries/useUserData";
+import { useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEYS } from "@/lib/constants";
+import { useLogout } from "@/hooks/useLogout";
 
 interface MypageProfileEditFormProps {
   profile: Profile;
@@ -35,8 +40,14 @@ export default function MypageProfileEditForm({
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [errors, setErrors] = useState({ nickname: "", email: "" });
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const { mutate: updateProfile, isPending } = useUpdateProfile();
+  const { data: user } = useUserData();
+  const { logout } = useLogout();
+  const queryClient = useQueryClient();
+
+  const openAlert = useOpenAlertModal();
 
   useEffect(() => {
     if (open) {
@@ -146,10 +157,52 @@ export default function MypageProfileEditForm({
     );
   };
 
+  const handleDeleteAccount = () => {
+    if (!user || isDeleting) return;
+
+    openAlert({
+      title: "갈래말래를 정말 떠나시겠어요?",
+      description:
+        "지금까지 모으신 소중한 일정과 관심 목록이 모두 사라집니다. 탈퇴 후에는 정보를 되찾을 수 없으니 신중히 결정해 주세요.",
+      onAction: async () => {
+        try {
+          setIsDeleting(true);
+          toast.loading("탈퇴 처리 중...", { id: "deleting" });
+
+          const response = await fetch("/api/mypage/delete-account", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userId: user.id }),
+          });
+
+          if (response.ok) {
+            onSuccess();
+            await queryClient.invalidateQueries({ queryKey: QUERY_KEYS.USER });
+            await logout({
+              message: "서비스 탈퇴 처리가 완료되었습니다.",
+              errorMessage:
+                "탈퇴 후 세션 정리 중 오류가 발생했습니다. 메인 페이지로 이동합니다.",
+              redirectTo: "/",
+              toastId: "deleting",
+            });
+          } else {
+            const result = await response.json();
+            console.error("서비스 탈퇴 실패:", result.error);
+          }
+        } catch (err) {
+          console.error("네트워크 오류:", err);
+          toast.error("서버와 통신 중 오류가 발생했습니다.");
+        } finally {
+          setIsDeleting(false);
+        }
+      },
+    });
+  };
+
   return (
     <div className="grid gap-6 py-4">
       <DialogHeader>
-        <DialogTitle className="text-title1 font-bold">프로필 수정</DialogTitle>
+        <DialogTitle className="text-title1 font-bold">프로필 관리</DialogTitle>
         <DialogDescription>
           수정하고자 하는 닉네임과 이메일을 입력하세요.
         </DialogDescription>
@@ -244,13 +297,21 @@ export default function MypageProfileEditForm({
       </div>
 
       <DialogFooter>
-        <Button
-          onClick={handleSave}
-          disabled={isPending || isFormInvalid || !isChanged}
-          className="hover:bg-symbol-sky w-full rounded-2xl font-bold text-white"
-        >
-          {isPending ? "저장 중..." : "변경 내용 저장"}
-        </Button>
+        <div className="flex w-full flex-col items-center justify-center gap-4">
+          <Button
+            onClick={handleSave}
+            disabled={isPending || isDeleting || isFormInvalid || !isChanged}
+            className="hover:bg-symbol-sky w-full rounded-2xl font-bold text-white"
+          >
+            {isPending ? "저장 중..." : "변경 내용 저장"}
+          </Button>
+          <span
+            onClick={isDeleting ? undefined : handleDeleteAccount}
+            className="text-caption text-etc hover:decoration-etc/50 cursor-pointer underline decoration-transparent underline-offset-4 transition-colors duration-300"
+          >
+            {isDeleting ? "서비스 탈퇴 처리 중..." : "서비스 탈퇴하기"}
+          </span>
+        </div>
       </DialogFooter>
     </div>
   );

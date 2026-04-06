@@ -9,21 +9,44 @@ export const useLogout = () => {
   const queryClient = useQueryClient();
   const supabase = createClient();
 
-  const logout = async () => {
-    const { error } = await supabase.auth.signOut();
+  const logout = async (options?: {
+    message?: string | null;
+    errorMessage?: string;
+    redirectTo?: string;
+    toastId?: string;
+  }) => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
 
-    if (error) {
-      toast.error("로그아웃에 실패했습니다.");
-      return;
+      if (options?.redirectTo) {
+        queryClient.clear();
+      } else {
+        queryClient.removeQueries({ queryKey: QUERY_KEYS.USER });
+        queryClient.removeQueries({ queryKey: QUERY_KEYS.PROFILE() });
+      }
+
+      if (options?.message !== null) {
+        toast.success(options?.message || "로그아웃 되었습니다.", {
+          id: options?.toastId,
+        });
+      }
+    } catch (error) {
+      toast.error(
+        options?.errorMessage || "로그아웃 처리 중 오류가 발생했습니다.",
+        { id: options?.toastId },
+      );
+      console.error(error);
+    } finally {
+      if (options?.redirectTo) {
+        setTimeout(() => {
+          window.location.href = options.redirectTo!;
+        }, 2000);
+      } else if (!options?.redirectTo) {
+        router.replace("/");
+        router.refresh();
+      }
     }
-
-    queryClient.removeQueries({ queryKey: QUERY_KEYS.USER });
-    queryClient.removeQueries({ queryKey: QUERY_KEYS.PROFILE() });
-
-    router.replace("/");
-    router.refresh(); // refresh 해야 바뀐 쿠키 상태를 반영할 수 있음
-
-    toast.success("로그아웃 되었습니다.");
   };
 
   return { logout };
