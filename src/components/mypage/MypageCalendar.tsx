@@ -111,13 +111,10 @@ const getWeeklyEventSlots = (events: MypageDisplayEvent[]) => {
     const lastWeekStart = startOfWeek(event._end);
 
     while (currentWeekStart <= lastWeekStart) {
-      const weekKey = format(currentWeekStart, "yyyy-MM-dd");
-      if (!weekBuckets[weekKey]) {
-        weekBuckets[weekKey] = [];
-      }
+      const weekKey = currentWeekStart.getTime().toString();
+      if (!weekBuckets[weekKey]) weekBuckets[weekKey] = [];
       weekBuckets[weekKey].push(event);
       currentWeekStart = addDays(currentWeekStart, 7);
-      console.log("weekBuckets:", weekBuckets);
     }
   });
 
@@ -343,7 +340,7 @@ function CalendarDayButton({
 
   const targetDate = startOfDay(day.date);
   const targetTime = targetDate.getTime();
-  const weekKey = format(startOfWeek(targetDate), "yyyy-MM-dd");
+  const weekKey = startOfWeek(targetDate).getTime().toString();
   const currentWeekSlots = weeklyEventSlots[weekKey] || {};
 
   const dayEvents = processedEvents.filter((event) => {
