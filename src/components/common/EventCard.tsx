@@ -17,7 +17,7 @@ export default function EventCard({
   isLiked,
   onClick,
 }: EventCardItem) {
-  const { mutate: toggleLike } = useEventLike(id);
+  const { mutate: toggleLike, isPending: toggleLikePending } = useEventLike(id);
 
   return (
     <Card className="relative cursor-pointer rounded-2xl" onClick={onClick}>
@@ -27,6 +27,7 @@ export default function EventCard({
           variant="ghost"
           size="icon"
           aria-label="좋아요"
+          disabled={toggleLikePending}
           onClick={(e) => {
             e.stopPropagation();
             toggleLike(isLiked);
