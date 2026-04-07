@@ -41,20 +41,26 @@ export default function NearEvents({
     return new Set(likedEventsData.map((event) => event.id));
   }, [likedEventsData]);
 
-  const nearEventCardItems = useMemo(() => {
+  // 이벤트 데이터 가공
+  const processedEvents = useMemo(() => {
     if (!eventsData || !coords || !isInitialized) return [];
 
     const filteredByDistance = filterEventsByDistance(
       eventsData,
       coords,
-      10000, // 10km
+      10000,
     );
 
-    return mapEventCard(filteredByDistance).map((event) => ({
+    return mapEventCard(filteredByDistance);
+  }, [eventsData, coords, isInitialized]);
+
+  // 좋아요 상태 매핑한 최종 아이템 카드
+  const nearEventCardItems = useMemo(() => {
+    return processedEvents.map((event) => ({
       ...event,
       isLiked: likedEventIds.has(event.id),
     }));
-  }, [eventsData, coords, isInitialized, likedEventIds]);
+  }, [processedEvents, likedEventIds]);
 
   const visibleEvents = nearEventCardItems.slice(0, visibleCount);
   const hasMore = nearEventCardItems.length > visibleCount;

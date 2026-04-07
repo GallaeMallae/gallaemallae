@@ -33,16 +33,20 @@ export default function UpcomingEvents({
     return new Set(likedEventsData.map((event) => event.id));
   }, [likedEventsData]);
 
-  const eventsCardItems = useMemo(() => {
+  // 이벤트 데이터 가공
+  const processedEvents = useMemo(() => {
     if (!eventsData) return [];
-
     const filteredEvents = filterEventByPeriod(eventsData, selectedPeriod);
+    return mapEventCard(filteredEvents);
+  }, [eventsData, selectedPeriod]);
 
-    return mapEventCard(filteredEvents).map((event) => ({
+  // 좋아요 상태 매핑한 최종 아이템 카드
+  const eventsCardItems = useMemo(() => {
+    return processedEvents.map((event) => ({
       ...event,
       isLiked: likedEventIds.has(event.id),
     }));
-  }, [eventsData, selectedPeriod, likedEventIds]);
+  }, [processedEvents, likedEventIds]);
 
   const visibleEvents = eventsCardItems.slice(0, visibleCount);
   const hasMore = eventsCardItems.length > visibleCount;
