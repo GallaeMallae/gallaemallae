@@ -3,6 +3,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Heart, Calendar, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { useOpenAlertModal } from "@/stores/alertModalStore";
+import { useProfileData } from "@/hooks/queries/useProfileData";
 import { useEventLike } from "@/hooks/mutations/useEventLike";
 import { formatDateRange } from "@/utils/date";
 import { EventCardItem } from "@/types/common";
@@ -17,7 +20,35 @@ export default function EventCard({
   isLiked,
   onClick,
 }: EventCardItem) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const openAlert = useOpenAlertModal();
+
+  const { data: profile } = useProfileData();
   const { mutate: toggleLike, isPending: toggleLikePending } = useEventLike(id);
+
+  const handleNeedLogin = () => {
+    const currentPath = `${pathname}${searchParams.toString() ? `?${searchParams.toString()}` : ""}`;
+
+    openAlert({
+      title: "로그인이 필요한 기능입니다.",
+      description: "로그인 페이지로 이동하시겠습니까?",
+      onAction: () => {
+        router.push(`/login?next=${encodeURIComponent(currentPath)}`);
+      },
+    });
+  };
+
+  const handleLikeClick = () => {
+    if (!profile?.id) {
+      handleNeedLogin();
+      return;
+    }
+
+    toggleLike(isLiked);
+  };
 
   return (
     <Card className="relative cursor-pointer rounded-2xl" onClick={onClick}>
@@ -30,7 +61,7 @@ export default function EventCard({
           disabled={toggleLikePending}
           onClick={(e) => {
             e.stopPropagation();
-            toggleLike(isLiked);
+            handleLikeClick();
           }}
         >
           <Heart
