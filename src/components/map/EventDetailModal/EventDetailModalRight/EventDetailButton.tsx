@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { useOpenAlertModal } from "@/stores/alertModalStore";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Event } from "@/types/common";
+import { useOpenVisitDateModal } from "@/stores/visitDateModalStore";
 
 type EventDetailModalButtonProps = {
   event: Event;
@@ -31,6 +32,7 @@ export default function EventDetailModalButton({
     useDeleteEventPlan();
 
   const openAlert = useOpenAlertModal();
+  const openVisitDateModal = useOpenVisitDateModal();
 
   const router = useRouter();
   const pathname = usePathname();
@@ -68,21 +70,12 @@ export default function EventDetailModalButton({
       return;
     }
 
-    const startDate = event.start_date;
-    const userId = profile.id;
-    if (!startDate) {
-      return toast.error("행사 시작일 정보가 없어 일정을 추가할 수 없습니다.");
+    if (!event.start_date || !event.end_date) {
+      return toast.error("행사 기간 정보가 없어 일정을 추가할 수 없습니다.");
     }
 
-    openAlert({
-      title: "나의 일정에 추가하기",
-      description: `${event.name}를 일정에 추가하시겠습니까?`,
-      onAction: () =>
-        addPlan({
-          userId: userId,
-          eventId: event.id,
-          visitDate: startDate,
-        }),
+    openVisitDateModal({
+      event: event,
     });
   };
 

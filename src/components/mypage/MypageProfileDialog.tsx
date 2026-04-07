@@ -19,7 +19,7 @@ export default function MypageProfileDialog({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" className="hover:bg-muted w-full font-bold">
-          프로필 수정
+          프로필 관리
         </Button>
       </DialogTrigger>
 

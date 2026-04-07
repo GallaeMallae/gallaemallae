@@ -29,7 +29,7 @@ export default function EventDetailModal({
   if (!event) return null;
 
   const categories =
-    (event.categories as CategoryId[])?.length > 0
+    (event.categories as CategoryId[]).length > 0
       ? (event.categories as CategoryId[])
       : (["etc"] as CategoryId[]);
 
@@ -42,10 +42,14 @@ export default function EventDetailModal({
               <div className="flex flex-col gap-2">
                 <div className="flex gap-2">
                   {categories.map((category) => {
-                    const categoryKo = CATEGORY_NAME_MAP[category];
+                    const categoryName = CATEGORY_NAME_MAP[category];
 
                     return (
-                      <Badge key={category} variant={categoryKo}>
+                      <Badge
+                        key={category}
+                        className="rounded-sm"
+                        variant={categoryName}
+                      >
                         {CATEGORY_NAME_MAP[category] ?? "기타"}
                       </Badge>
                     );

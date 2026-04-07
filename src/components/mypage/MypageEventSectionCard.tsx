@@ -2,22 +2,24 @@
 
 import MypageAgendaCard from "@/components/mypage/MypageAgendaCard";
 import MypageLikedCard from "@/components/mypage/MypageLikedCard";
+import MypageEventCardSkeleton from "@/components/common/skeleton/MypageEventCardSkeleton";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Bookmark, Heart, LucideIcon } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { motion, AnimatePresence, Variants } from "framer-motion";
-import { MypageDisplayEvent } from "@/types/common";
 import { cn } from "@/lib/utils";
 import { useCallback, useEffect, useRef, useState } from "react";
-import MypageEventCardSkeleton from "@/components/common/skeleton/MypageEventCardSkeleton";
+import { useIsDesktop } from "@/hooks/useIsDesktop";
+import { Event, EventPlanWithEvent, MypageDisplayEvent } from "@/types/common";
+import { parseSafeDate } from "@/utils/date";
+import { format } from "date-fns";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const ICON_MAP: Record<string, LucideIcon> = {
   bookmark: Bookmark,
   heart: Heart,
 };
-
 const LIST_NUMBER = 4;
-
 const EVENT_CARD_COMPONENTS = {
   bookmark: MypageAgendaCard,
   heart: MypageLikedCard,
@@ -27,37 +29,61 @@ interface MypageEventSectionCardProps {
   title: string;
   iconName: "bookmark" | "heart";
   iconClassName?: string;
-  isDesktop: boolean;
   isLoading: boolean;
-  events: MypageDisplayEvent[];
-  onEventClick: (date: string) => void;
+  events?: (Event | EventPlanWithEvent)[];
 }
 
 export default function MypageEventSectionCard({
   title,
   iconName,
   iconClassName,
-  isDesktop,
   isLoading,
-  events,
-  onEventClick,
+  events = [],
 }: MypageEventSectionCardProps) {
   const [visibleCount, setVisibleCount] = useState(LIST_NUMBER);
   const observerRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const searchParams = useSearchParams();
+
+  const router = useRouter();
+  const isDesktop = useIsDesktop();
 
   const Icon = ICON_MAP[iconName];
   const SelectedCard = EVENT_CARD_COMPONENTS[iconName];
 
-  const slicedEvents = events.slice(0, visibleCount);
+  const formattedEvents: MypageDisplayEvent[] = events.map((item) => {
+    if ("event" in item) {
+      return {
+        ...item.event,
+        plan_id: item.id,
+        visit_date: item.visit_date ?? undefined,
+      };
+    }
+    return item as MypageDisplayEvent;
+  });
 
-  const hasMore = visibleCount < events.length;
+  const slicedEvents = formattedEvents.slice(0, visibleCount);
+
+  const hasMore = visibleCount < formattedEvents.length;
 
   const handleLoadMore = useCallback(() => {
     if (hasMore) {
       setVisibleCount((prev) => prev + LIST_NUMBER);
     }
   }, [hasMore]);
+
+  // 일정, 관심 목록에서 행사 클릭시 달력에서 해당 날짜 선택하는 함수
+  const handleEventClick = (dateString: string) => {
+    const newDate = parseSafeDate(dateString);
+    if (newDate) {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("date", dateString);
+      params.set("month", format(newDate, "yyyy-MM"));
+      params.set("mode", iconName === "bookmark" ? "plan" : "like");
+
+      router.push(`?${params.toString()}`, { scroll: false });
+    }
+  };
 
   useEffect(() => {
     if (!isDesktop || !hasMore) return;
@@ -141,7 +167,11 @@ export default function MypageEventSectionCard({
                       >
                         <SelectedCard
                           event={event}
-                          onClick={() => onEventClick(event.display_date)}
+                          onClick={() =>
+                            handleEventClick(
+                              event.visit_date || event.start_date,
+                            )
+                          }
                         />
                       </motion.div>
                     ))}
