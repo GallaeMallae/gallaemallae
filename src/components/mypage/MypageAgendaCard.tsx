@@ -1,11 +1,11 @@
 import { Badge } from "@/components/ui/badge";
-import { Trash2Icon } from "lucide-react";
+import { CalendarCheck, CalendarClock, Trash2Icon } from "lucide-react";
 import { useDeleteEventPlan } from "@/hooks/mutations/useDeleteEventPlan";
 import { CATEGORY_NAME_MAP } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { useOpenAlertModal } from "@/stores/alertModalStore";
 import { MypageDisplayEvent } from "@/types/common";
-import { calculateDDay, formatDate } from "@/utils/date";
+import { calculateDDay } from "@/utils/date";
 
 interface MypageAgendaCardProps {
   event: MypageDisplayEvent;
@@ -24,8 +24,7 @@ export default function MypageAgendaCard({
   const { mutate: deletePlan, isPending: isDeletePlanLoading } =
     useDeleteEventPlan();
   const openAlert = useOpenAlertModal();
-  const formatVisitDate = formatDate(event.display_date);
-  const dDay = calculateDDay(event.display_date);
+  const dDay = calculateDDay(event.visit_date || event.start_date);
 
   const handleCardClick = () => {
     if (onDetailClick) {
@@ -87,9 +86,12 @@ export default function MypageAgendaCard({
       </div>
       <div>
         <div className="text-desc2 truncate font-semibold">{event.name}</div>
-        <div className="text-desc2 text-etc space-x-2 truncate">
-          <span>{formatVisitDate}</span>
-          <span>{event.venue}</span>
+        <div className="text-desc2 text-etc flex items-center gap-2 truncate">
+          <CalendarCheck className="size-4 shrink-0 -translate-y-px" />
+          <span className="truncate">
+            {event.visit_date ? event.visit_date : event.start_date} /{" "}
+            {event.venue}
+          </span>
         </div>
       </div>
     </div>

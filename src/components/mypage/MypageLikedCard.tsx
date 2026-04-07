@@ -10,6 +10,7 @@ import { Calendar, Heart } from "lucide-react";
 interface MypageLikedCardProps {
   event: MypageDisplayEvent;
   onClick?: () => void;
+  onDetailClick?: (eventId: string) => void;
 }
 
 export type CategoryKey = keyof typeof CATEGORY_NAME_MAP;
@@ -17,12 +18,18 @@ export type CategoryKey = keyof typeof CATEGORY_NAME_MAP;
 export default function MypageLikedCard({
   event,
   onClick,
+  onDetailClick,
 }: MypageLikedCardProps) {
   const dDay = calculateDDay(event.start_date);
 
   const { mutate: toggleLike } = useEventLike(event.id);
 
   const isLiked = true; // 애초에 좋아요 한 목록이니 기본값 true 설정
+
+  const handleCardClick = () => {
+    onClick?.();
+    onDetailClick?.(event.id);
+  };
 
   const handleLikeClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -32,7 +39,7 @@ export default function MypageLikedCard({
   return (
     <div
       className="hover:bg-muted flex cursor-pointer flex-col gap-1 rounded-xl p-2"
-      onClick={onClick}
+      onClick={handleCardClick}
     >
       <div className="flex items-center justify-between">
         <div className="flex gap-2">
@@ -73,9 +80,9 @@ export default function MypageLikedCard({
       </div>
       <div>
         <div className="text-desc2 truncate font-semibold">{event.name}</div>
-        <div className="text-desc2 text-etc flex items-center gap-2">
-          <Calendar className="h-4 w-4 shrink-0" />
-          <span className="truncate leading-none">
+        <div className="text-desc2 text-etc flex items-center gap-2 truncate">
+          <Calendar className="size-4 shrink-0 -translate-y-px" />
+          <span className="truncate">
             {formatDateRange(event.start_date, event.end_date)}
           </span>
         </div>

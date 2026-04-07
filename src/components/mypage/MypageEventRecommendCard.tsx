@@ -7,11 +7,11 @@ import { formatDateRange } from "@/utils/date";
 import { Event } from "@/types/common";
 import { CATEGORY_NAME_MAP } from "@/lib/constants";
 import { useEventLike } from "@/hooks/mutations/useEventLike";
-import { useEventPlan } from "@/hooks/mutations/useEventPlan";
 import { useProfileData } from "@/hooks/queries/useProfileData";
 import { toast } from "sonner";
 import { useDeleteEventPlan } from "@/hooks/mutations/useDeleteEventPlan";
 import { useOpenAlertModal } from "@/stores/alertModalStore";
+import { useOpenVisitDateModal } from "@/stores/visitDateModalStore";
 
 interface MypageEventRecommendCardProps {
   event: Event;
@@ -31,11 +31,11 @@ export default function MypageEventRecommendCard({
   const { data: profile } = useProfileData();
 
   const { mutate: toggleLike } = useEventLike(event.id);
-  const { mutate: addPlan, isPending: isPlanLoading } = useEventPlan();
   const { mutate: deletePlan, isPending: isDeletePlanLoading } =
     useDeleteEventPlan();
 
   const openAlert = useOpenAlertModal();
+  const openVisitDateModal = useOpenVisitDateModal();
 
   const handleLikeClick = () => {
     toggleLike(isLiked);
@@ -43,17 +43,8 @@ export default function MypageEventRecommendCard({
 
   const handleAddPlanClick = () => {
     if (!profile?.id) return toast.error("프로필 정보가 없습니다.");
-
-    openAlert({
-      title: "나의 일정에 추가하기",
-      description: `${event.name}를 일정에 추가하시겠습니까?`,
-      onAction: () => {
-        addPlan({
-          userId: profile.id,
-          eventId: event.id,
-          visitDate: event.start_date,
-        });
-      },
+    openVisitDateModal({
+      event: event,
     });
   };
 
@@ -64,7 +55,7 @@ export default function MypageEventRecommendCard({
     openAlert({
       title: "일정에서 제거하기",
       description: `${event.name}를 일정에서 제거하시겠습니까?`,
-      onAction: () => deletePlan(planId), // 한 줄로 깔끔하게 정리
+      onAction: () => deletePlan(planId),
     });
   };
 
@@ -143,7 +134,6 @@ export default function MypageEventRecommendCard({
               size={"sm"}
               className="bg-symbol-sky hover:bg-symbol-sky/80 text-white"
               onClick={() => handleAddPlanClick()}
-              disabled={isPlanLoading}
             >
               나의 일정에 추가
             </Button>

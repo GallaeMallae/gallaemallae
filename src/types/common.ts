@@ -74,8 +74,12 @@ export interface EventWeatherInfoCardItem {
 }
 
 export type MypageDisplayEvent = Event & {
-  display_date: string; // 관심 목록이면 start_date, 일정이면 visit_date
   plan_id?: string; // 일정 고유 ID
+  visit_date?: string; // 방문일
+};
+
+export type EventPlanWithEvent = Tables<"event_plans"> & {
+  event: Event;
 };
 
 // ==============================

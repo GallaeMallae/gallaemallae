@@ -5,16 +5,19 @@ import { MypageDisplayEvent } from "@/types/common";
 import { cn } from "@/lib/utils";
 import { CALENDAR_CATEGORY_STYLES, CATEGORY_NAME_MAP } from "@/lib/constants";
 import { formatDate } from "@/utils/date";
+import MypageLikedCard from "@/components/mypage/MypageLikedCard";
 
 interface MypageSelectedDateEventsCardProps {
   selectedDate: Date | null | undefined;
   events: MypageDisplayEvent[];
+  viewMode: "plan" | "like";
   onDetailClick?: (eventId: string) => void;
 }
 
 export default function MypageSelectedDateEventsCard({
   events,
   selectedDate,
+  viewMode,
   onDetailClick,
 }: MypageSelectedDateEventsCardProps) {
   const formattedSelectedDate = formatDate(selectedDate);
@@ -65,11 +68,18 @@ export default function MypageSelectedDateEventsCard({
               <div className={cn("mt-2 size-2 rounded-full", dotColorClass)} />
               <Card className="min-w-0 flex-1 rounded-2xl shadow-sm">
                 <CardContent>
-                  <MypageAgendaCard
-                    event={event}
-                    selectedDate={formattedSelectedDate}
-                    onDetailClick={onDetailClick}
-                  />
+                  {viewMode === "plan" ? (
+                    <MypageAgendaCard
+                      event={event}
+                      selectedDate={formattedSelectedDate}
+                      onDetailClick={onDetailClick}
+                    />
+                  ) : (
+                    <MypageLikedCard
+                      event={event}
+                      onDetailClick={onDetailClick}
+                    />
+                  )}
                 </CardContent>
               </Card>
             </div>
