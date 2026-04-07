@@ -12,6 +12,7 @@ import { useMemo, useState } from "react";
 import { MapMarker } from "react-kakao-maps-sdk";
 import { useLocationStore } from "@/stores/locationStore";
 import { useEventsData } from "@/hooks/queries/useEventsData";
+import { useLikedEventsData } from "@/hooks/queries/useLikedEventsData";
 import { filterEventsByDistance } from "@/utils/filter";
 import { mapEventCard } from "@/utils/mapper";
 import { MapMode } from "@/types/common";
@@ -26,6 +27,7 @@ export default function NearEvents({
   const router = useRouter();
   const { coords, isInitialized } = useLocationStore();
   const { data: eventsData } = useEventsData();
+  const { data: likedEventsData } = useLikedEventsData();
 
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
@@ -34,17 +36,31 @@ export default function NearEvents({
     lng: coords.lng,
   };
 
-  const nearEventCardItems = useMemo(() => {
+  const likedEventIds = useMemo(() => {
+    if (!likedEventsData) return new Set<string>();
+    return new Set(likedEventsData.map((event) => event.id));
+  }, [likedEventsData]);
+
+  // 이벤트 데이터 가공
+  const processedEvents = useMemo(() => {
     if (!eventsData || !coords || !isInitialized) return [];
 
     const filteredByDistance = filterEventsByDistance(
       eventsData,
       coords,
-      10000, // 10km
+      10000,
     );
 
     return mapEventCard(filteredByDistance);
   }, [eventsData, coords, isInitialized]);
+
+  // 좋아요 상태 매핑한 최종 아이템 카드
+  const nearEventCardItems = useMemo(() => {
+    return processedEvents.map((event) => ({
+      ...event,
+      isLiked: likedEventIds.has(event.id),
+    }));
+  }, [processedEvents, likedEventIds]);
 
   const visibleEvents = nearEventCardItems.slice(0, visibleCount);
   const hasMore = nearEventCardItems.length > visibleCount;

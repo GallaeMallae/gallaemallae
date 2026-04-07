@@ -92,7 +92,7 @@ export function mapWeatherCard(
  */
 export function mapEventCard(events: Event[]): EventCardItem[] {
   return events.map((event) => {
-    const categoryId = (event.categories?.[0] as CategoryId) ?? "etc";
+    const categoryIds = (event.categories as CategoryId[]) ?? [];
 
     const fullRegionAddress = [event.sido, event.sigungu, event.eupmyeondong]
       .filter(Boolean)
@@ -104,7 +104,7 @@ export function mapEventCard(events: Event[]): EventCardItem[] {
       location: event.venue || fullRegionAddress || "장소 정보 없음",
       startDate: event.start_date,
       endDate: event.end_date ?? event.start_date,
-      category: CATEGORY_NAME_MAP[categoryId] ?? "기타",
+      categories: categoryIds.map((id) => CATEGORY_NAME_MAP[id] ?? "기타"),
       isLiked: false,
     };
   });
