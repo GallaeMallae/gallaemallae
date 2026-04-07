@@ -3,7 +3,8 @@ import WeatherCard from "@/components/common/WeatherCard";
 import RecommendCard from "@/components/common/RecommendCard";
 import WeatherCardSkeleton from "@/components/common/skeleton/WeatherCardSkeleton";
 import RecommendCardSkeleton from "@/components/common/skeleton/RecommendCardSkeleton";
-import { Map, MapPin } from "lucide-react";
+import { EmptyStateCard } from "@/components/common/EmptyStateCard";
+import { Map, MapPin, CloudOff, TicketX } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useLocationStore } from "@/stores/locationStore";
@@ -18,10 +19,17 @@ export default function MainBanner() {
   const router = useRouter();
   const { coords, isInitialized, isDefaultLocation } = useLocationStore();
 
-  const { data: locationNameData } = useLocationNameData(coords, isInitialized);
-  const { data: weatherData } = useWeatherData(coords, isInitialized);
-  const { data: airPollutionData } = useAirPollutionData(coords, isInitialized);
-  const { data: recommendTypeData, isLoading: isRecommendTypeLoading } =
+  const { data: locationNameData, isError: isLocationNameError } =
+    useLocationNameData(coords, isInitialized);
+  const { data: weatherData, isError: isWeatherError } = useWeatherData(
+    coords,
+    isInitialized,
+  );
+  const { data: airPollutionData, isError: isAirError } = useAirPollutionData(
+    coords,
+    isInitialized,
+  );
+  const { data: recommendData, isLoading: isRecommendLoading } =
     useOutdoorRecommendData(weatherData, airPollutionData);
 
   const isWeatherReady =
@@ -37,11 +45,13 @@ export default function MainBanner() {
       )
     : null;
 
-  const recommendType = recommendTypeData?.recommendType ?? null;
+  const recommendType = recommendData?.recommendType ?? null;
 
   const handleMapClick = (mode: MapMode) => {
     router.push(`/map?mode=${mode}`);
   };
+
+  const hasError = isLocationNameError || isWeatherError || isAirError;
 
   return (
     <section>
@@ -94,12 +104,25 @@ export default function MainBanner() {
         </div>
 
         <div className="flex flex-col gap-4 md:w-90 md:gap-2">
-          {isWeatherLoading || !weather ? (
+          {hasError ? (
+            <EmptyStateCard
+              icon={CloudOff}
+              title={"날씨 정보를 불러올 수 없습니다."}
+              description={"네트워크 상태를 확인해 주세요."}
+            />
+          ) : isWeatherLoading || !weather ? (
             <WeatherCardSkeleton />
           ) : (
             <WeatherCard {...weather} />
           )}
-          {isRecommendTypeLoading || !recommendType ? (
+
+          {hasError ? (
+            <EmptyStateCard
+              icon={TicketX}
+              title={"외출을 추천할 수 없습니다."}
+              description={"네트워크 상태를 확인해 주세요."}
+            />
+          ) : isRecommendLoading || !recommendType ? (
             <RecommendCardSkeleton />
           ) : (
             <RecommendCard recommendType={recommendType} />
