@@ -57,7 +57,7 @@ export default function AuthStatusIcon() {
               </Link>
             </DropdownMenuItem>
           </DropdownMenuGroup>
-          <DropdownMenuItem variant="destructive" onSelect={logout}>
+          <DropdownMenuItem variant="destructive" onSelect={() => logout()}>
             <LogOutIcon />
             로그아웃
           </DropdownMenuItem>

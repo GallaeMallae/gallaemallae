@@ -46,7 +46,7 @@ export default function MypageProfileCard() {
             <div className="text-desc1 w-full text-center font-bold">
               {profile?.nickname || "닉네임 정보 없음"}
             </div>
-            <div className="text-muted-foreground text-caption w-full truncate text-center sm:text-left">
+            <div className="text-muted-foreground text-caption w-full truncate text-center">
               {profile?.email || "이메일 정보 없음"}
             </div>
           </div>
