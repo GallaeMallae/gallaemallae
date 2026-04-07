@@ -6,7 +6,6 @@ import EventCarousel from "@/components/map/Area/EventCarousel";
 import EventDetailModal from "@/components/map/EventDetailModal/EventDetailModal";
 import { LocateFixed } from "lucide-react";
 import { useState, useMemo } from "react";
-import { useKakaoLoader } from "react-kakao-maps-sdk";
 import { useEventsData } from "@/hooks/queries/useEventsData";
 import { useCurrentLocation } from "@/hooks/useCurrentLocation";
 import {
@@ -26,12 +25,9 @@ interface AreaProps {
 
 export default function Area({ radius, category, period, search }: AreaProps) {
   const { position, moveCurrentLocation } = useCurrentLocation();
-  const { data: events = [], isLoading, error: queryError } = useEventsData();
+  const { data: events = [], isLoading, isError, error } = useEventsData();
 
   const [locate, setLocate] = useState<kakao.maps.Map | null>(null);
-  const [loading, kakaoError] = useKakaoLoader({
-    appkey: process.env.NEXT_PUBLIC_KAKAO_JS_KEY!,
-  });
 
   const [selectedCarousel, setSelectedCarousel] = useState<string | null>(null);
   const [selectedModal, setSelectedModal] = useState<string | null>(null);
@@ -80,23 +76,28 @@ export default function Area({ radius, category, period, search }: AreaProps) {
     (event) => event.id === selectedCarousel,
   );
 
-  if (loading || isLoading)
+  const handleMoveToCurrentLocation = () => {
+    moveCurrentLocation(locate);
+    setSelectedCarousel(null);
+  };
+
+  if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
-        지도를 불러오는 중...
+        데이터 불러오는 중...
       </div>
     );
-  if (queryError || kakaoError)
+  }
+
+  if (isError) {
+    console.error(error);
+
     return (
       <div className="flex h-screen items-center justify-center">
         데이터를 가져오는데 실패했습니다.
       </div>
     );
-
-  const handleMoveToCurrentLocation = () => {
-    moveCurrentLocation(locate);
-    setSelectedCarousel(null);
-  };
+  }
 
   return (
     <div className="relative h-[calc(100vh-57px)] overflow-hidden">

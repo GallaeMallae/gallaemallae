@@ -9,6 +9,7 @@ export default function KakaoMapProvider({
 }) {
   useKakaoLoader({
     appkey: process.env.NEXT_PUBLIC_KAKAO_JS_KEY!,
+    libraries: ["clusterer"],
   });
 
   return <>{children}</>;
