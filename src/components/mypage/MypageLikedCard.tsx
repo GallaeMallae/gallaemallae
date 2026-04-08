@@ -40,10 +40,9 @@ export default function MypageLikedCard({
       onClick={handleCardClick}
     >
       <div className="flex items-center justify-between">
-        <div className="flex gap-2">
+        <div className="flex h-6 min-w-0 flex-1 flex-wrap gap-1 overflow-hidden">
           {event.categories?.map((category) => {
-            const label =
-              CATEGORY_NAME_MAP[category as CategoryId] || "기타";
+            const label = CATEGORY_NAME_MAP[category as CategoryId] || "기타";
 
             return (
               <Badge
@@ -57,8 +56,10 @@ export default function MypageLikedCard({
           })}
         </div>
 
-        <div className="flex gap-2">
-          <div className="text-desc2 text-symbol-sky font-semibold">{dDay}</div>
+        <div className="flex shrink-0 items-center gap-2">
+          <div className="text-desc2 text-symbol-sky font-semibold whitespace-nowrap">
+            {dDay}
+          </div>
           <Button
             className="flex size-5 items-center"
             variant="ghost"
