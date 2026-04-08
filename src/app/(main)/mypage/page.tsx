@@ -14,6 +14,7 @@ import { useProfileData } from "@/hooks/queries/useProfileData";
 import { useMypageRecommendEventData } from "@/hooks/queries/useMypageRecommendEventData";
 import { useLocationNameData } from "@/hooks/queries/useLocationNameData";
 import { useLocationStore } from "@/stores/locationStore";
+import { useRouter } from "next/navigation";
 
 export default function Mypage() {
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
@@ -30,6 +31,8 @@ export default function Mypage() {
     useLikedEventsData();
   const { data: plannedEvents, isLoading: isPlannedEventLoading } =
     usePlannedEventsData();
+
+  const router = useRouter();
 
   const weatherLocationInfo = {
     coords,
@@ -49,6 +52,10 @@ export default function Mypage() {
 
   const handleDetailClick = (eventId: string) => {
     setSelectedEventId(eventId);
+
+    const params = new URLSearchParams(window.location.search);
+    params.delete("date");
+    router.replace(`?${params.toString()}`, { scroll: false });
   };
 
   return (
@@ -73,7 +80,7 @@ export default function Mypage() {
         <aside className="order-2 flex flex-col gap-6 md:order-1 md:col-span-1 md:h-0 md:min-h-full">
           <Suspense
             fallback={
-              <div className="bg-muted min-h-[400px] w-full animate-pulse rounded-2xl" />
+              <div className="bg-muted min-h-100 w-full animate-pulse rounded-2xl" />
             }
           >
             <MypageEventSectionCard
