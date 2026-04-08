@@ -1,8 +1,7 @@
 import { SupabaseClient } from "@supabase/supabase-js";
-import { Database, Tables } from "@/types/supabase";
+import { Database } from "@/types/supabase";
 import { format } from "date-fns";
-import { transformEvent } from "@/utils/transform";
-import { EventPlanWithEvent } from "@/types/common";
+import { RawEventPlan } from "@/types/common";
 
 export interface AddEventPlanParams {
   userId: string;
@@ -13,7 +12,7 @@ export interface AddEventPlanParams {
 export async function fetchPlannedEvents(
   supabase: SupabaseClient<Database>,
   userId: string,
-): Promise<EventPlanWithEvent[]> {
+): Promise<RawEventPlan[]> {
   const today = format(new Date(), "yyyy-MM-dd");
   const { data, error } = await supabase
     .from("event_plans")
@@ -28,10 +27,7 @@ export async function fetchPlannedEvents(
     .order("visit_date", { ascending: true });
 
   if (error) throw new Error(error.message);
-  return (data || []).map((plan) => ({
-    ...plan,
-    event: transformEvent(plan.event as Tables<"events">),
-  })) as EventPlanWithEvent[];
+  return (data as unknown as RawEventPlan[]) || [];
 }
 
 export async function addEventPlan(

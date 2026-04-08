@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useEventLike } from "@/hooks/mutations/useEventLike";
 import { CATEGORY_NAME_MAP } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-import { MypageDisplayEvent } from "@/types/common";
+import { CategoryId, MypageDisplayEvent } from "@/types/common";
 import { calculateDDay, formatDateRange } from "@/utils/date";
 import { Calendar, Heart } from "lucide-react";
 
@@ -12,8 +12,6 @@ interface MypageLikedCardProps {
   onClick?: () => void;
   onDetailClick?: (eventId: string) => void;
 }
-
-export type CategoryKey = keyof typeof CATEGORY_NAME_MAP;
 
 export default function MypageLikedCard({
   event,
@@ -44,16 +42,16 @@ export default function MypageLikedCard({
       <div className="flex items-center justify-between">
         <div className="flex gap-2">
           {event.categories?.map((category) => {
-            const categoryLabel =
-              CATEGORY_NAME_MAP[category as CategoryKey] || "기타";
+            const label =
+              CATEGORY_NAME_MAP[category as CategoryId] || "기타";
 
             return (
               <Badge
                 key={category}
                 className="shrink-0 rounded-sm"
-                variant={categoryLabel}
+                variant={label}
               >
-                {CATEGORY_NAME_MAP[category as CategoryKey] || "기타"}
+                {label}
               </Badge>
             );
           })}

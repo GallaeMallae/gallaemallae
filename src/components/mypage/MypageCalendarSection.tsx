@@ -152,7 +152,6 @@ export default function MypageCalendarSection({
             <div className="flex h-[60dvh] max-h-128 w-full flex-col justify-center p-6">
               <ScrollArea className="min-h-0 flex-1">
                 <MypageSelectedDateEventsCard
-                  selectedDate={selectedDate}
                   events={dailyEvents}
                   viewMode={viewMode}
                   onDetailClick={onDetailClick}

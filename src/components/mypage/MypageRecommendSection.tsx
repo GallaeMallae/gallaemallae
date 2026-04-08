@@ -18,23 +18,27 @@ interface MypageRecommendSectionProps {
 export default function MypageRecommendSection({
   recommendEventData,
   isLoading,
-  likedEvents,
-  plannedEvents,
+  likedEvents = [],
+  plannedEvents = [],
   onDetailClick,
 }: MypageRecommendSectionProps) {
-  const isLiked = useMemo(() => {
-    if (!recommendEventData) return false;
-    return (likedEvents ?? []).some(
-      (event) => event.id === recommendEventData.id,
-    );
-  }, [likedEvents, recommendEventData]);
+  const likedEventIds = useMemo(
+    () => new Set(likedEvents.map((e) => e.id)),
+    [likedEvents],
+  );
+  const planMap = useMemo(
+    () => new Map(plannedEvents.map((p) => [p.event.id, p])),
+    [plannedEvents],
+  );
 
-  const matchedPlan = useMemo(() => {
-    if (!recommendEventData) return undefined;
-    return (plannedEvents ?? []).find(
-      (plan) => plan.event.id === recommendEventData.id,
-    );
-  }, [plannedEvents, recommendEventData]);
+  const { isLiked, matchedPlan } = useMemo(() => {
+    if (!recommendEventData) return { isLiked: false, matchedPlan: undefined };
+
+    return {
+      isLiked: likedEventIds.has(recommendEventData.id),
+      matchedPlan: planMap.get(recommendEventData.id),
+    };
+  }, [recommendEventData, likedEventIds, planMap]);
 
   const isPlanned = !!matchedPlan;
   const matchedPlanId = matchedPlan?.id;

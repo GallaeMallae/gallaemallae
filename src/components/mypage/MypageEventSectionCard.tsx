@@ -4,16 +4,17 @@ import MypageAgendaCard from "@/components/mypage/MypageAgendaCard";
 import MypageLikedCard from "@/components/mypage/MypageLikedCard";
 import MypageEventCardSkeleton from "@/components/common/skeleton/MypageEventCardSkeleton";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { Bookmark, Heart, LucideIcon } from "lucide-react";
+import { Bookmark, Heart, LucideIcon, PlusCircle } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useIsDesktop } from "@/hooks/useIsDesktop";
 import { Event, EventPlanWithEvent, MypageDisplayEvent } from "@/types/common";
 import { parseSafeDate } from "@/utils/date";
 import { format } from "date-fns";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 const ICON_MAP: Record<string, LucideIcon> = {
   bookmark: Bookmark,
@@ -33,6 +34,27 @@ interface MypageEventSectionCardProps {
   events?: (Event | EventPlanWithEvent)[];
 }
 
+interface EmptyStateProps {
+  icon: LucideIcon;
+  title: string;
+  description: string;
+  actionLabel?: string;
+  onAction?: () => void;
+}
+
+const formatToMypageEvent = (
+  item: Event | EventPlanWithEvent,
+): MypageDisplayEvent => {
+  if ("event" in item) {
+    return {
+      ...item.event,
+      plan_id: item.id,
+      visit_date: item.visit_date ?? undefined,
+    };
+  }
+  return item as MypageDisplayEvent;
+};
+
 export default function MypageEventSectionCard({
   title,
   iconName,
@@ -51,26 +73,24 @@ export default function MypageEventSectionCard({
   const Icon = ICON_MAP[iconName];
   const SelectedCard = EVENT_CARD_COMPONENTS[iconName];
 
-  const formattedEvents: MypageDisplayEvent[] = events.map((item) => {
-    if ("event" in item) {
-      return {
-        ...item.event,
-        plan_id: item.id,
-        visit_date: item.visit_date ?? undefined,
-      };
-    }
-    return item as MypageDisplayEvent;
-  });
+  const formattedEvents = useMemo(
+    () => events.map(formatToMypageEvent),
+    [events],
+  );
 
-  const slicedEvents = formattedEvents.slice(0, visibleCount);
+  const slicedEvents = useMemo(
+    () => formattedEvents.slice(0, visibleCount),
+    [formattedEvents, visibleCount],
+  );
 
   const hasMore = visibleCount < formattedEvents.length;
 
   const handleLoadMore = useCallback(() => {
-    if (hasMore) {
-      setVisibleCount((prev) => prev + LIST_NUMBER);
-    }
-  }, [hasMore]);
+    setVisibleCount((prev) => {
+      if (prev >= formattedEvents.length) return prev;
+      return prev + LIST_NUMBER;
+    });
+  }, [formattedEvents.length]);
 
   // 일정, 관심 목록에서 행사 클릭시 달력에서 해당 날짜 선택하는 함수
   const handleEventClick = (dateString: string) => {
@@ -89,7 +109,7 @@ export default function MypageEventSectionCard({
     if (!isDesktop || !hasMore) return;
 
     const viewport = scrollAreaRef.current?.querySelector(
-      '[data-slot="scroll-area-viewport"]',
+      "[data-radix-scroll-area-viewport]",
     );
 
     const observer = new IntersectionObserver(
@@ -100,7 +120,7 @@ export default function MypageEventSectionCard({
       },
       {
         root: viewport, // 브라우저가 아닌 ScrollArea를 기준으로 감지
-        threshold: 0.5,
+        threshold: 0.1,
         rootMargin: "20px",
       },
     );
@@ -110,7 +130,7 @@ export default function MypageEventSectionCard({
     }
 
     return () => observer.disconnect();
-  }, [isDesktop, hasMore, handleLoadMore, visibleCount]);
+  }, [isDesktop, hasMore, handleLoadMore]);
 
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -132,7 +152,7 @@ export default function MypageEventSectionCard({
   };
 
   return (
-    <Card className="flex h-full flex-col gap-2 rounded-2xl">
+    <Card className="flex flex-col gap-2 rounded-2xl md:h-full md:min-h-0 md:flex-1">
       <CardHeader className="shrink-0">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -146,7 +166,7 @@ export default function MypageEventSectionCard({
           <div className="flex w-full flex-col gap-1">
             {isLoading ? (
               <div className="flex flex-col gap-1 py-1">
-                {Array.from({ length: 3 }).map((_, i) => (
+                {Array.from({ length: LIST_NUMBER }).map((_, i) => (
                   <MypageEventCardSkeleton key={`skeleton-${i}`} />
                 ))}
               </div>
@@ -177,9 +197,21 @@ export default function MypageEventSectionCard({
                     ))}
                   </AnimatePresence>
                 ) : (
-                  <div className="text-etc text-desc2 py-4 text-center">
-                    행사를 추가해 보아요
-                  </div>
+                  <EmptyStateView
+                    icon={iconName === "bookmark" ? Bookmark : Heart}
+                    title={
+                      iconName === "bookmark"
+                        ? "아직 확정된 일정이 없어요"
+                        : "관심 목록이 비어있어요"
+                    }
+                    description={
+                      iconName === "bookmark"
+                        ? "가고 싶은 행사를 일정에 추가해 보세요."
+                        : "관심이 가는 행사를 찜해 보세요."
+                    }
+                    actionLabel="행사 찾으러 가기"
+                    onAction={() => router.push("/map")}
+                  />
                 )}
                 <div ref={observerRef} className="w-full">
                   {hasMore && !isDesktop && (
@@ -209,5 +241,36 @@ export default function MypageEventSectionCard({
         </ScrollArea>
       </CardContent>
     </Card>
+  );
+}
+
+function EmptyStateView({
+  icon: Icon,
+  title,
+  description,
+  actionLabel,
+  onAction,
+}: EmptyStateProps) {
+  return (
+    <div className="flex flex-col items-center justify-center px-4 py-12 text-center">
+      <div className="bg-muted mb-4 flex size-12 items-center justify-center rounded-full">
+        <Icon className="text-etc size-6" strokeWidth={1.5} />
+      </div>
+      <div className="text-desc1 mb-1 font-bold break-keep">{title}</div>
+      <p className="text-etc text-caption mb-6 leading-relaxed break-keep">
+        {description}
+      </p>
+      {actionLabel && (
+        <Button
+          variant="outline"
+          size="sm"
+          className="rounded-2xl border-dashed px-6"
+          onClick={onAction}
+        >
+          <PlusCircle className="mr-2 size-4" />
+          {actionLabel}
+        </Button>
+      )}
+    </div>
   );
 }

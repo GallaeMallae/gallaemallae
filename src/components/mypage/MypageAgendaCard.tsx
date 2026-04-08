@@ -1,20 +1,17 @@
 import { Badge } from "@/components/ui/badge";
-import { CalendarCheck, CalendarClock, Trash2Icon } from "lucide-react";
+import { CalendarCheck, Trash2Icon } from "lucide-react";
 import { useDeleteEventPlan } from "@/hooks/mutations/useDeleteEventPlan";
 import { CATEGORY_NAME_MAP } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { useOpenAlertModal } from "@/stores/alertModalStore";
-import { MypageDisplayEvent } from "@/types/common";
+import { CategoryId, MypageDisplayEvent } from "@/types/common";
 import { calculateDDay } from "@/utils/date";
 
 interface MypageAgendaCardProps {
   event: MypageDisplayEvent;
-  selectedDate?: string;
   onClick?: () => void;
   onDetailClick?: (eventId: string) => void;
 }
-
-export type CategoryKey = keyof typeof CATEGORY_NAME_MAP;
 
 export default function MypageAgendaCard({
   event,
@@ -23,15 +20,15 @@ export default function MypageAgendaCard({
 }: MypageAgendaCardProps) {
   const { mutate: deletePlan, isPending: isDeletePlanLoading } =
     useDeleteEventPlan();
+
   const openAlert = useOpenAlertModal();
-  const dDay = calculateDDay(event.visit_date || event.start_date);
+
+  const displayDate = event.visit_date || event.start_date;
+  const dDay = calculateDDay(displayDate);
 
   const handleCardClick = () => {
-    if (onDetailClick) {
-      onDetailClick(event.id);
-    } else if (onClick) {
-      onClick();
-    }
+    if (onDetailClick) return onDetailClick(event.id);
+    onClick?.();
   };
 
   const handleDeleteClick = (e: React.MouseEvent) => {
@@ -39,34 +36,32 @@ export default function MypageAgendaCard({
     e.stopPropagation();
 
     if (event.plan_id) {
-      const planId = event.plan_id;
-
       openAlert({
         title: "일정에서 제거하기",
         description: `${event.name}를 일정에서 제거하시겠습니까?`,
-        onAction: () => deletePlan(planId),
+        onAction: () => deletePlan(event.plan_id!),
       });
     }
   };
 
   return (
     <div
+      role="button"
       className="hover:bg-muted flex cursor-pointer flex-col gap-1 rounded-xl p-2"
       onClick={handleCardClick}
     >
       <div className="flex items-center justify-between">
         <div className="flex gap-2">
-          {event.categories?.map((category) => {
-            const categoryLabel =
-              CATEGORY_NAME_MAP[category as CategoryKey] || "기타";
+          {event.categories?.map((category, index) => {
+            const label = CATEGORY_NAME_MAP[category as CategoryId] || "기타";
 
             return (
               <Badge
-                key={category}
+                key={`${category}-${index}`}
                 className="shrink-0 rounded-sm"
-                variant={categoryLabel}
+                variant={label}
               >
-                {CATEGORY_NAME_MAP[category as CategoryKey] || "기타"}
+                {label}
               </Badge>
             );
           })}
@@ -89,8 +84,7 @@ export default function MypageAgendaCard({
         <div className="text-desc2 text-etc flex items-center gap-2 truncate">
           <CalendarCheck className="size-4 shrink-0 -translate-y-px" />
           <span className="truncate">
-            {event.visit_date ? event.visit_date : event.start_date} /{" "}
-            {event.venue}
+            {displayDate} / {event.venue}
           </span>
         </div>
       </div>

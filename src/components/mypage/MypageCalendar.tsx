@@ -485,7 +485,6 @@ function CalendarDayButton({
           <ScrollArea className="*:data-[slot=scroll-area-viewport]:max-h-96">
             <div className="p-6">
               <MypageSelectedDateEventsCard
-                selectedDate={activePopoverDate ?? null}
                 events={dayEvents}
                 viewMode={viewMode}
                 onDetailClick={onDetailClick}
@@ -612,8 +611,8 @@ function CustomMonthCaption({
         )}
         <span className="text-title2 md:text-title1 font-bold">
           {viewMode === "plan"
-            ? `${ownerLabel} 일정 목록`
-            : `${ownerLabel} 관심 목록`}
+            ? `${ownerLabel} 일정`
+            : `${ownerLabel} 관심 행사`}
         </span>
       </div>
 

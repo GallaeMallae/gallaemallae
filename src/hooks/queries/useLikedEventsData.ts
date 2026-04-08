@@ -5,16 +5,21 @@ import { createClient } from "@/utils/supabase/client";
 import { fetchLikedEvents } from "@/lib/api/events";
 import { QUERY_KEYS } from "@/lib/constants";
 import { useUserData } from "./useUserData";
-import { Event } from "@/types/common";
+import { Event, LikedEventRaw } from "@/types/common";
+import { transformEvent } from "@/utils/transform";
 
 export function useLikedEventsData() {
   const { data: user } = useUserData();
   const supabase = createClient();
 
-  return useQuery<Event[]>({
+  return useQuery<LikedEventRaw[], Error, Event[]>({
     queryKey: QUERY_KEYS.LIKED_EVENTS(user?.id),
     queryFn: () => fetchLikedEvents(supabase, user!.id),
     enabled: !!user?.id,
+    select: (rawData) =>
+      rawData
+        .map((item) => transformEvent(item.events))
+        .filter((event): event is Event => event !== null),
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 30,
   });
