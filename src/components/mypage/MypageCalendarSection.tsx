@@ -6,7 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
 import { useIsDesktop } from "@/hooks/useIsDesktop";
 import { Event, EventPlanWithEvent, Profile } from "@/types/common";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import {
   format,
   isWithinInterval,
@@ -79,20 +79,7 @@ export default function MypageCalendarSection({
     });
   }, [selectedDate, calendarDisplayEvents]);
 
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [prevDateParam, setPrevDateParam] = useState<string | null>(dateParam);
-
-  if (dateParam !== prevDateParam) {
-    setPrevDateParam(dateParam);
-
-    const hasEvents = dailyEvents.length > 0;
-
-    if (!isDesktop && dateParam && hasEvents) {
-      setIsDrawerOpen(true);
-    } else if (!dateParam) {
-      setIsDrawerOpen(false);
-    }
-  }
+  const isDrawerOpen = !isDesktop && !!dateParam && dailyEvents.length > 0;
 
   const updateURL = (date?: Date, month?: Date, mode?: CalendarMode) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -120,7 +107,6 @@ export default function MypageCalendarSection({
     updateURL(date ?? undefined);
   };
   const handleDrawerChange = (open: boolean) => {
-    setIsDrawerOpen(open);
     if (!open) updateURL(undefined);
   };
 
@@ -146,7 +132,12 @@ export default function MypageCalendarSection({
       </div>
 
       {!isDesktop && (
-        <Drawer open={isDrawerOpen} onOpenChange={handleDrawerChange}>
+        <Drawer
+          open={isDrawerOpen}
+          onOpenChange={(open) => {
+            if (!open) handleDrawerChange(false);
+          }}
+        >
           <DrawerTitle className="sr-only">선택한 날짜 일정</DrawerTitle>
           <DrawerContent>
             <div className="flex h-[60dvh] max-h-128 w-full flex-col justify-center p-6">
