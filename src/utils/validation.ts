@@ -13,7 +13,8 @@ export const validateNickname = (nickname: string) => {
 
 export const validateEmail = (email: string) => {
   if (!email.trim()) return "이메일을 입력해 주세요.";
-  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  const emailRegex =
+    /^(?!.*\.\.)[a-zA-Z0-9._%+-]+@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/;
   if (!emailRegex.test(email)) return "올바른 이메일 형식이 아닙니다.";
   return "";
 };

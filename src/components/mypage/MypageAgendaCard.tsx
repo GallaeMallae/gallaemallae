@@ -47,8 +47,15 @@ export default function MypageAgendaCard({
   return (
     <div
       role="button"
+      tabIndex={0}
       className="hover:bg-muted flex cursor-pointer flex-col gap-1 rounded-xl p-2"
       onClick={handleCardClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          handleCardClick();
+        }
+      }}
     >
       <div className="flex items-center justify-between">
         <div className="flex h-6 min-w-0 flex-1 flex-wrap gap-1 overflow-hidden">

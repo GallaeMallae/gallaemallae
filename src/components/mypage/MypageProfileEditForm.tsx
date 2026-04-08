@@ -101,6 +101,7 @@ export default function MypageProfileEditForm({
 
     if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
       toast.error("지원하지 않는 파일 형식입니다. (JPG, PNG, WebP만 가능)");
+      e.target.value = "";
       return;
     }
 
