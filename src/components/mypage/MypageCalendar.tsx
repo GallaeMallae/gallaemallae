@@ -440,7 +440,12 @@ const EventSlotItem = ({
   const shouldTruncateToday = isSaturday || isEnd;
 
   return (
-    <div className={cn("relative w-full overflow-visible", fluidHeight)}>
+    <div
+      className={cn(
+        "pointer-events-none relative w-full overflow-visible",
+        fluidHeight,
+      )}
+    >
       {/* 배경색 막대 */}
       <div
         className={cn(
