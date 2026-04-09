@@ -84,13 +84,18 @@ export default function VisitDateModal() {
             locale={ko}
             autoFocus
           />
+          {!date && (
+            <p className="text-destructive text-caption mt-2">
+              방문하실 날짜를 달력에서 선택해 주세요.
+            </p>
+          )}
         </div>
 
         <DialogFooter>
           <Button variant="outline" onClick={close}>
             취소
           </Button>
-          <Button onClick={handleConfirm} disabled={isPending}>
+          <Button onClick={handleConfirm} disabled={isPending || !date}>
             {isPending ? "추가 중..." : "확인"}
           </Button>
         </DialogFooter>

@@ -1,6 +1,5 @@
 import { CATEGORY_NAME_MAP } from "@/lib/constants";
 import { Event } from "@/types/common";
-import { Tables } from "@/types/supabase";
 import { getKstNow } from "@/utils/date";
 import { createClient } from "@/utils/supabase/server";
 import { transformEvent } from "@/utils/transform";
@@ -214,7 +213,15 @@ export async function POST(request: Request) {
     const completion = await openai.chat.completions.create({
       model: "gpt-4.1-mini",
       response_format: { type: "json_object" },
-      messages: [{ role: "user", content: prompt }],
+      messages: [
+        {
+          role: "system",
+          content:
+            "당신은 한국의 축제와 행사를 전문적으로 추천하는 유능한 비서입니다.",
+        },
+        { role: "user", content: prompt },
+      ],
+      temperature: 0.7,
     });
 
     const aiResult = JSON.parse(completion.choices[0].message.content || "{}");

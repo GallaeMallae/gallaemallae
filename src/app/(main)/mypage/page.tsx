@@ -6,13 +6,15 @@ import EventDetailModal from "@/components/map/EventDetailModal/EventDetailModal
 import MypageCalendarSection from "@/components/mypage/MypageCalendarSection";
 import MypageWeatherSection from "@/components/mypage/MypageWeatherSection";
 import MypageRecommendSection from "@/components/mypage/MypageRecommendSection";
-import { useState } from "react";
+import MypageEventCardSkeleton from "@/components/common/skeleton/MypageEventCardSkeleton";
+import { Suspense, useState } from "react";
 import { useLikedEventsData } from "@/hooks/queries/useLikedEventsData";
 import { usePlannedEventsData } from "@/hooks/queries/usePlannedEventsData";
 import { useProfileData } from "@/hooks/queries/useProfileData";
 import { useMypageRecommendEventData } from "@/hooks/queries/useMypageRecommendEventData";
 import { useLocationNameData } from "@/hooks/queries/useLocationNameData";
 import { useLocationStore } from "@/stores/locationStore";
+import { useRouter } from "next/navigation";
 
 export default function Mypage() {
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
@@ -30,70 +32,82 @@ export default function Mypage() {
   const { data: plannedEvents, isLoading: isPlannedEventLoading } =
     usePlannedEventsData();
 
+  const router = useRouter();
+
+  const weatherLocationInfo = {
+    coords,
+    isInitialized,
+    locationNameData,
+    isLocationError,
+    isLoading: isLocationLoading,
+    isDefaultLocation,
+  };
+
+  const isRecommendSectionLoading =
+    !profile?.id ||
+    !locationNameData ||
+    isRecommendEventCardLoading ||
+    isLikedEventLoading ||
+    isPlannedEventLoading;
+
   const handleDetailClick = (eventId: string) => {
     setSelectedEventId(eventId);
+
+    const params = new URLSearchParams(window.location.search);
+    params.delete("date");
+    router.replace(`?${params.toString()}`, { scroll: false });
   };
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
+      <section className="grid grid-cols-1 gap-6 md:grid-cols-4">
         <div className="md:col-span-1">
           <MypageProfileCard />
         </div>
-
         <div className="grid grid-cols-1 gap-6 md:col-span-3 md:grid-cols-2">
-          <MypageWeatherSection
-            coords={coords}
-            isInitialized={isInitialized}
-            locationNameData={locationNameData}
-            isLocationError={isLocationError}
-            isLoading={isLocationLoading}
-            isDefaultLocation={isDefaultLocation}
-          />
+          <MypageWeatherSection {...weatherLocationInfo} />
           <MypageRecommendSection
             recommendEventData={recommendEventData}
-            isLoading={
-              !profile?.id ||
-              !locationNameData ||
-              isRecommendEventCardLoading ||
-              isLikedEventLoading ||
-              isPlannedEventLoading
-            }
+            isLoading={isRecommendSectionLoading}
             likedEvents={likedEvents}
             plannedEvents={plannedEvents}
             onDetailClick={handleDetailClick}
           />
         </div>
-      </div>
+      </section>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-4 md:items-stretch">
-        <div className="order-2 flex flex-col gap-6 md:order-1 md:col-span-1 md:h-0 md:min-h-full">
-          <div className="min-h-0 md:flex-1">
+      <section className="grid grid-cols-1 gap-6 md:grid-cols-4 md:items-stretch">
+        <aside className="order-2 flex flex-col gap-6 md:order-1 md:col-span-1 md:h-0 md:min-h-full">
+          <Suspense
+            fallback={
+              <div className="bg-muted min-h-100 w-full animate-pulse rounded-2xl" />
+            }
+          >
             <MypageEventSectionCard
-              title="나의 일정 목록"
+              title="일정 목록"
               iconName="bookmark"
               iconClassName="text-symbol-sky fill-symbol-sky"
               isLoading={isPlannedEventLoading}
               events={plannedEvents ?? []}
             />
-          </div>
-          <div className="min-h-0 md:flex-1">
             <MypageEventSectionCard
-              title="나의 관심 목록"
+              title="관심 목록"
               iconName="heart"
               iconClassName="text-red-500 fill-red-500"
               isLoading={isLikedEventLoading}
               events={likedEvents ?? []}
             />
-          </div>
+          </Suspense>
+        </aside>
+        <div className="order-1 md:order-2 md:col-span-3">
+          <MypageCalendarSection
+            plannedEvents={plannedEvents ?? []}
+            likedEvents={likedEvents ?? []}
+            profile={profile ?? undefined}
+            onDetailClick={handleDetailClick}
+          />
         </div>
-        <MypageCalendarSection
-          plannedEvents={plannedEvents ?? []}
-          likedEvents={likedEvents ?? []}
-          profile={profile ?? undefined}
-          onDetailClick={handleDetailClick}
-        />
-      </div>
+      </section>
 
       {selectedEventId && (
         <EventDetailModal

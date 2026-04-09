@@ -46,12 +46,31 @@ export interface RecommendCardConfigItem {
 // ==============================
 // 행사 카드 관련 타입
 // ==============================
+export type RawEvent = Tables<"events">;
+
+export type LikedEventRaw = {
+  events: RawEvent;
+};
+
+export type RawEventPlan = Tables<"event_plans"> & {
+  event: RawEvent;
+};
+
+export type EventPlanWithEvent = Tables<"event_plans"> & {
+  event: Event;
+};
+
 export type Event = Omit<Tables<"events">, "categories" | "visitor_count"> & {
   // 테이블에서 jsonb 사용하게 되면서 [0]처럼 인덱스 접근 불가
   // type Event를 만들때 categories의 타입을 string[]으로 변경하여 사용
   // 방문객 수를 1,000,000명 처럼 ,로 끊고 string으로 변경하여 사용
   categories: string[];
   visitor_count: string;
+};
+
+export type MypageDisplayEvent = Event & {
+  plan_id?: string; // 일정 고유 ID
+  visit_date?: string; // 방문일
 };
 
 export interface EventCardItem {
@@ -72,15 +91,6 @@ export interface EventWeatherInfoCardItem {
   wet: string;
   fineDust: string;
 }
-
-export type MypageDisplayEvent = Event & {
-  plan_id?: string; // 일정 고유 ID
-  visit_date?: string; // 방문일
-};
-
-export type EventPlanWithEvent = Tables<"event_plans"> & {
-  event: Event;
-};
 
 // ==============================
 // 날씨 카드 관련 타입

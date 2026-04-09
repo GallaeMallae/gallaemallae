@@ -34,18 +34,12 @@ import {
   differenceInCalendarDays,
   format,
   isSameDay,
-  parseISO,
   startOfDay,
   startOfWeek,
 } from "date-fns";
 import { MypageDisplayEvent } from "@/types/common";
 import { ScrollArea } from "@/components/ui/scroll-area";
-
-interface ProcessedEvent extends MypageDisplayEvent {
-  _start: Date;
-  _end: Date;
-  _id: string;
-}
+import { getWeeklyEventSlots, ProcessedEvent } from "@/utils/calendar";
 
 type CategoryKey = keyof typeof CATEGORY_NAME_MAP;
 const MAX_EVENTS = 3;
@@ -74,88 +68,12 @@ const CalendarContext = React.createContext<{
   viewMode: "plan" | "like";
   weeklyEventSlots: Record<string, Record<string, number>>;
   processedEvents: ProcessedEvent[];
+  dailyEventsMap: Record<string, ProcessedEvent[]>;
   onActivePopoverDate: (date: Date | null) => void;
   onViewModeChange: (viewMode: "plan" | "like") => void;
   onMonthChange?: (newMonth: Date) => void;
   onDetailClick: (eventId: string) => void;
 } | null>(null);
-
-// 주차별 행사의 슬롯 번호 계산하는 함수
-const getWeeklyEventSlots = (events: MypageDisplayEvent[]) => {
-  if (events.length === 0) return { processedEvents: [], weeklySlots: {} };
-
-  // 데이터 전처리(파싱, Date 객체 변환) 및 정렬
-  const processedEvents = events
-    .map((event) => ({
-      ...event,
-      _start: startOfDay(parseISO(event.start_date)),
-      _end: startOfDay(parseISO(event.end_date)),
-      _id: String(event.plan_id || event.id),
-    }))
-    .sort((a, b) => {
-      const diff = a._start.getTime() - b._start.getTime();
-      if (diff !== 0) return diff;
-      // 시작일이 같으면 기간이 긴 순서대로
-      return (
-        b._end.getTime() -
-        b._start.getTime() -
-        (a._end.getTime() - a._start.getTime())
-      );
-    });
-
-  // 주차별로 이벤트 그룹화
-  const weekBuckets: Record<string, typeof processedEvents> = {};
-
-  processedEvents.forEach((event) => {
-    let currentWeekStart = startOfWeek(event._start);
-    const lastWeekStart = startOfWeek(event._end);
-
-    while (currentWeekStart <= lastWeekStart) {
-      const weekKey = currentWeekStart.getTime().toString();
-      if (!weekBuckets[weekKey]) weekBuckets[weekKey] = [];
-      weekBuckets[weekKey].push(event);
-      currentWeekStart = addDays(currentWeekStart, 7);
-    }
-  });
-
-  // 각 주차별로 슬롯 번호 배정
-  const weeklySlots: Record<string, Record<string, number>> = {};
-
-  Object.entries(weekBuckets).forEach(([weekKey, weekEvents]) => {
-    const slots: Record<string, number> = {}; //{행사 ID, 슬롯 번호}
-    const occupation: { start: number; end: number }[][] = [];
-
-    weekEvents.forEach((event) => {
-      const startTs = event._start.getTime();
-      const endTs = event._end.getTime();
-      let assignedSlot = -1;
-
-      // 이미 정렬된 상태이므로 순서대로 슬롯 찾기
-      for (let i = 0; i < occupation.length; i++) {
-        const hasOverlap = occupation[i].some(
-          (occ) => startTs <= occ.end && endTs >= occ.start,
-        );
-        if (!hasOverlap) {
-          assignedSlot = i;
-          break;
-        }
-      }
-
-      // 들어갈 층이 없는 경우 새 층을 추가하고 push
-      if (assignedSlot === -1) {
-        assignedSlot = occupation.length;
-        occupation.push([]);
-      }
-
-      occupation[assignedSlot].push({ start: startTs, end: endTs });
-      slots[event._id] = assignedSlot;
-    });
-
-    weeklySlots[weekKey] = slots;
-  });
-
-  return { processedEvents, weeklySlots };
-};
 
 function MypageCalendar({
   viewMode,
@@ -217,7 +135,7 @@ function MypageCalendar({
     [],
   );
 
-  const { processedEvents, weeklySlots } = React.useMemo(
+  const { processedEvents, weeklySlots, dailyEventsMap } = React.useMemo(
     () => getWeeklyEventSlots(calendarDisplayEvents),
     [calendarDisplayEvents],
   );
@@ -232,6 +150,7 @@ function MypageCalendar({
         viewMode,
         weeklyEventSlots: weeklySlots,
         processedEvents,
+        dailyEventsMap,
         onActivePopoverDate: onActivePopoverDate ?? (() => {}),
         onDetailClick,
         onMonthChange,
@@ -333,21 +252,17 @@ function CalendarDayButton({
     isDesktop,
     viewMode,
     weeklyEventSlots,
-    processedEvents,
+    dailyEventsMap,
     onDetailClick,
     onActivePopoverDate,
   } = context;
 
   const targetDate = startOfDay(day.date);
-  const targetTime = targetDate.getTime();
+  const targetTimeKey = targetDate.getTime().toString();
   const weekKey = startOfWeek(targetDate).getTime().toString();
   const currentWeekSlots = weeklyEventSlots[weekKey] || {};
 
-  const dayEvents = processedEvents.filter((event) => {
-    return (
-      targetTime >= event._start.getTime() && targetTime <= event._end.getTime()
-    );
-  });
+  const dayEvents = dailyEventsMap[targetTimeKey] || [];
 
   const fluidHeight =
     "@[100px]:h-[clamp(4px,18cqw,36px)] h-[clamp(4px,10cqw,36px)]";
@@ -468,6 +383,7 @@ function CalendarDayButton({
           className="w-full min-w-100 overflow-hidden p-0"
           align="start"
           side="bottom"
+          onOpenAutoFocus={(e) => e.preventDefault()}
         >
           <div className="p-6">
             <div className="text-desc1 font-bold">
@@ -485,7 +401,6 @@ function CalendarDayButton({
           <ScrollArea className="*:data-[slot=scroll-area-viewport]:max-h-96">
             <div className="p-6">
               <MypageSelectedDateEventsCard
-                selectedDate={activePopoverDate ?? null}
                 events={dayEvents}
                 viewMode={viewMode}
                 onDetailClick={onDetailClick}
@@ -526,7 +441,12 @@ const EventSlotItem = ({
   const shouldTruncateToday = isSaturday || isEnd;
 
   return (
-    <div className={cn("relative w-full overflow-visible", fluidHeight)}>
+    <div
+      className={cn(
+        "pointer-events-none relative w-full overflow-visible",
+        fluidHeight,
+      )}
+    >
       {/* 배경색 막대 */}
       <div
         className={cn(
@@ -566,13 +486,7 @@ function CustomMonthCaption({
 
   const context = React.useContext(CalendarContext);
   if (!context) return <></>;
-  const {
-    nickname,
-    onMonthChange,
-    onActivePopoverDate,
-    viewMode,
-    onViewModeChange,
-  } = context;
+  const { nickname, onMonthChange, viewMode, onViewModeChange } = context;
 
   const date = calendarMonth.date;
   const y = date.getFullYear();
@@ -612,8 +526,8 @@ function CustomMonthCaption({
         )}
         <span className="text-title2 md:text-title1 font-bold">
           {viewMode === "plan"
-            ? `${ownerLabel} 일정 목록`
-            : `${ownerLabel} 관심 목록`}
+            ? `${ownerLabel} 일정`
+            : `${ownerLabel} 관심 행사`}
         </span>
       </div>
 

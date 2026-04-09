@@ -15,7 +15,8 @@ export async function proxy(request: NextRequest) {
     if (!user) {
       const loginUrl = new URL("/login", request.url);
       loginUrl.searchParams.set("error", "unauthorized");
-      loginUrl.searchParams.set("next", request.nextUrl.pathname);
+      const fullPath = request.nextUrl.pathname + request.nextUrl.search;
+      loginUrl.searchParams.set("next", fullPath);
 
       const redirectResponse = NextResponse.redirect(loginUrl);
 

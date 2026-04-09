@@ -1,32 +1,13 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { Database } from "@/types/supabase";
-import { Category, Event } from "@/types/common";
 import { format as formatDate } from "date-fns";
-import { transformEvent } from "@/utils/transform";
-
-export type EventCategory = Exclude<Category, "전체">;
+import { LikedEventRaw, RawEvent } from "@/types/common";
 
 const getToday = () => formatDate(new Date(), "yyyy-MM-dd");
 
-export async function fetchEventById(
-  supabase: SupabaseClient<Database>,
-  eventId: string,
-): Promise<Event | null> {
-  const { data, error } = await supabase
-    .from("events")
-    .select("*")
-    .eq("id", eventId)
-    .maybeSingle();
-
-  if (error) throw new Error(error.message);
-  if (!data) return null;
-
-  return transformEvent(data);
-}
-
 export async function fetchEvents(
   supabase: SupabaseClient<Database>,
-): Promise<Event[]> {
+): Promise<RawEvent[]> {
   const { data, error } = await supabase
     .from("events")
     .select("*")
@@ -35,13 +16,13 @@ export async function fetchEvents(
 
   if (error) throw new Error(error.message);
 
-  return (data || []).map(transformEvent);
+  return data || [];
 }
 
 export async function fetchLikedEvents(
   supabase: SupabaseClient<Database>,
   userId: string,
-): Promise<Event[]> {
+): Promise<LikedEventRaw[]> {
   const { data, error } = await supabase
     .from("event_likes")
     .select(
@@ -55,9 +36,5 @@ export async function fetchLikedEvents(
 
   if (error) throw new Error(error.message);
 
-  // Supabase 조인 결과는 [{ events: {...} }, { events: {...} }] 형태
-  // 사용하기 편하게 [ {...}, {...} ] 형태로 가공하여 반환
-  return (data || [])
-    .map((item) => transformEvent(item.events))
-    .filter((event) => event !== null);
+  return data || [];
 }
