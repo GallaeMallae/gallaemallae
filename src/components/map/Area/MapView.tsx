@@ -12,13 +12,14 @@ type Marker = {
   id: number | string;
   lat: number;
   lng: number;
-  category: CategoryId;
+  categories: CategoryId[];
 };
 
 interface MapViewProps {
   center: Position | null;
   radius: number | null;
   markers: Marker[];
+  selectedCategory: CategoryId[];
   setLocate: (map: kakao.maps.Map) => void;
   onMarkerClick: (id: string) => void;
 
@@ -32,10 +33,27 @@ interface MapViewProps {
     | undefined;
 }
 
+function getMarkerCategory(
+  categories: CategoryId[],
+  selected: CategoryId[],
+): Exclude<CategoryId, "all"> {
+  if (!categories.length) return "etc";
+
+  const safeCategories = categories.filter((c) => c !== "all");
+
+  if (selected.includes("all")) {
+    return (safeCategories[0] ?? "etc") as Exclude<CategoryId, "all">;
+  }
+
+  const match = safeCategories.find((c) => selected.includes(c));
+  return (match ?? safeCategories[0] ?? "etc") as Exclude<CategoryId, "all">;
+}
+
 export default function MapView({
   center,
   radius,
   markers,
+  selectedCategory,
   setLocate,
   onMarkerClick,
   locate,
@@ -80,6 +98,7 @@ export default function MapView({
           strokeColor="#0da3e4"
         />
       )}
+
       <MarkerClusterer
         averageCenter={true}
         minLevel={6}
@@ -97,12 +116,15 @@ export default function MapView({
             boxShadow: `
               0 0 0 4px #ffffff,   
               0 0 0 7px var(--color-symbol-sky) 
-              `,
+            `,
           },
         ]}
       >
         {filteredMarkers.map((m) => {
-          const markerCategory = m.category === "all" ? "etc" : m.category;
+          const markerCategory = getMarkerCategory(
+            m.categories,
+            selectedCategory,
+          );
 
           return (
             <MapMarker

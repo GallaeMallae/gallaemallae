@@ -57,13 +57,11 @@ export default function Area({ radius, category, period, search }: AreaProps) {
     return filteredEvents
       .filter((event) => event.latitude && event.longitude)
       .map((event) => {
-        const category = (event.categories?.[0] as CategoryId) ?? "etc";
-
         return {
           id: event.id,
           lat: Number(event.latitude),
           lng: Number(event.longitude),
-          category,
+          categories: (event.categories ?? []) as CategoryId[],
         };
       });
   }, [filteredEvents]);
@@ -105,6 +103,7 @@ export default function Area({ radius, category, period, search }: AreaProps) {
         center={position}
         radius={radius}
         markers={markers}
+        selectedCategory={category}
         setLocate={setLocate}
         onMarkerClick={(id) => {
           setSelectedModal(id);
