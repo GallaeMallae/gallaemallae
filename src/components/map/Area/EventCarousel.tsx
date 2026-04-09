@@ -33,7 +33,6 @@ export default function EventCarousel({
       }
     };
     api.on("select", handleSelect);
-    handleSelect();
     return () => {
       api.off("select", handleSelect);
     };
