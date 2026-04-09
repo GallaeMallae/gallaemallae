@@ -1,7 +1,7 @@
 import { Database } from "@/types/supabase";
 import { getKstNow } from "@/utils/date";
 import { createClient, QueryData } from "@supabase/supabase-js";
-import { addDays, format } from "date-fns";
+import { addDays, format, parseISO } from "date-fns";
 import { ko } from "date-fns/locale";
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
@@ -23,7 +23,6 @@ export async function GET(req: Request) {
   );
 
   try {
-    // 배포 이후 Vercel에서 TZ: Asia/Seoul 설정만 해두면 new Date() 써도 문제없음
     const targetDate = format(addDays(getKstNow(), 7), "yyyy-MM-dd");
 
     const query = supabase
@@ -66,26 +65,30 @@ export async function GET(req: Request) {
       },
     });
 
+    let attempted = 0;
+    let skipped = 0;
+    let failed = 0;
+    const failures: unknown[] = [];
+
     const sendResults = await Promise.allSettled(
       (list as ReminderItems).map(async (item) => {
-        if (!item.visit_date) return;
+        if (!item.visit_date)
+          return { type: "skipped", reason: "Missing visit_date" };
 
         const profile = Array.isArray(item.profiles)
           ? item.profiles[0]
           : item.profiles;
         const e = Array.isArray(item.events) ? item.events[0] : item.events;
 
-        if (!profile || !e) return;
+        if (!profile || !e)
+          return { type: "skipped", reason: "Missing profile or event data" };
 
-        const { email, nickname } = profile;
         const displayVisitDate = format(
-          new Date(item.visit_date),
+          parseISO(item.visit_date),
           "M월 d일 (eeee)",
-          {
-            locale: ko,
-          },
+          { locale: ko },
         );
-
+        const { email, nickname } = profile;
         const dateParam = item.visit_date;
         const monthParam = item.visit_date.slice(0, 7);
         const fullAddress =
@@ -93,11 +96,12 @@ export async function GET(req: Request) {
           "주소 정보 없음";
         const mypageUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/mypage?date=${dateParam}&month=${monthParam}`;
 
-        return transporter.sendMail({
-          from: `갈래말래 <${process.env.GOOGLE_USER}>`,
-          to: email,
-          subject: `[D-7] ${nickname}님, '${e.name}' 방문 일주일 전입니다!`,
-          html: `
+        try {
+          await transporter.sendMail({
+            from: `갈래말래 <${process.env.GOOGLE_USER}>`,
+            to: email,
+            subject: `[D-7] ${nickname}님, '${e.name}' 방문 일주일 전입니다!`,
+            html: `
             <div style="max-width: 560px; margin: 0 auto; font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; background-color: #ffffff; border: 1px solid #ebebeb; border-radius: 20px; overflow: hidden;">
               <div style="background-color: #0da3e4; padding: 40px 24px; text-align: center;">
                 <h1 style="color: #ffffff; margin: 0; font-size: 28px; line-height: 1.3; font-weight: 600;">방문 리마인드 알림</h1>
@@ -169,15 +173,46 @@ export async function GET(req: Request) {
               </div>
             </div>
           `,
-        });
+          });
+
+          return { type: "sent", to: email };
+        } catch (err) {
+          throw err;
+        }
       }),
     );
 
-    return NextResponse.json({
-      message: "발송 작업 완료",
-      total: list.length,
-      results: sendResults.map((result) => result.status),
+    sendResults.forEach((result) => {
+      if (result.status === "fulfilled") {
+        // 성공한 프로미스 중 'skipped'와 'sent' 구분
+        if (result.value.type === "skipped") {
+          skipped++;
+        } else {
+          attempted++; // 실제 발송 시도(성공)
+        }
+      } else {
+        failed++;
+        attempted++; // 발송을 시도했으나 실패함
+        failures.push(result.reason);
+      }
     });
+
+    // 실패 건수가 하나라도 있으면 500 혹은 207(Multi-Status) 반환
+    const status = failed > 0 ? 500 : 200;
+
+    return NextResponse.json(
+      {
+        message: failed > 0 ? "일부 발송 실패 발생" : "작업 완료",
+        metrics: {
+          total_records: list.length,
+          sent: attempted - failed,
+          skipped: skipped,
+          failed: failed,
+        },
+        errors: failures.length > 0 ? failures : undefined,
+      },
+      { status },
+    );
   } catch (error: unknown) {
     const errorMessage =
       error instanceof Error
