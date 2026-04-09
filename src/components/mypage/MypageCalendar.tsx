@@ -383,6 +383,7 @@ function CalendarDayButton({
           className="w-full min-w-100 overflow-hidden p-0"
           align="start"
           side="bottom"
+          onOpenAutoFocus={(e) => e.preventDefault()}
         >
           <div className="p-6">
             <div className="text-desc1 font-bold">
@@ -485,13 +486,7 @@ function CustomMonthCaption({
 
   const context = React.useContext(CalendarContext);
   if (!context) return <></>;
-  const {
-    nickname,
-    onMonthChange,
-    onActivePopoverDate,
-    viewMode,
-    onViewModeChange,
-  } = context;
+  const { nickname, onMonthChange, viewMode, onViewModeChange } = context;
 
   const date = calendarMonth.date;
   const y = date.getFullYear();
