@@ -8,14 +8,12 @@ export function useMapFilter() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // 🔹 query 읽기
   const mode = searchParams.get("mode") ?? "all";
   const categoryParam = searchParams.get("category");
   const periodParam = searchParams.get("period");
   const distanceParam = searchParams.get("distance");
   const searchParam = searchParams.get("search");
 
-  // 🔹 state 초기화
   const [radius, setRadius] = useState<number | null>(() => {
     if (distanceParam) return Number(distanceParam);
     return mode === "near" ? 5000 : null;
@@ -32,7 +30,6 @@ export function useMapFilter() {
 
   const [search, setSearch] = useState(searchParam ?? "");
 
-  // 🔹 state → URL 동기화
   useEffect(() => {
     const params = new URLSearchParams();
 
