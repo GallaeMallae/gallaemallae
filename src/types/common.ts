@@ -47,12 +47,15 @@ export interface RecommendCardConfigItem {
 // 행사 카드 관련 타입
 // ==============================
 export type RawEvent = Tables<"events">;
+
 export type LikedEventRaw = {
   events: RawEvent;
 };
+
 export type RawEventPlan = Tables<"event_plans"> & {
   event: RawEvent;
 };
+
 export type EventPlanWithEvent = Tables<"event_plans"> & {
   event: Event;
 };
@@ -64,6 +67,7 @@ export type Event = Omit<Tables<"events">, "categories" | "visitor_count"> & {
   categories: string[];
   visitor_count: string;
 };
+
 export type MypageDisplayEvent = Event & {
   plan_id?: string; // 일정 고유 ID
   visit_date?: string; // 방문일
