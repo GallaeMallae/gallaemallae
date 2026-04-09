@@ -6,6 +6,7 @@ export default function MoreCard({ onClick }: { onClick: () => void }) {
     <Card
       className="cursor-pointer rounded-2xl"
       role="button"
+      tabIndex={0}
       onClick={onClick}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {

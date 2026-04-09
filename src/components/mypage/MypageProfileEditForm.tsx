@@ -30,6 +30,10 @@ interface MypageProfileEditFormProps {
   onSuccess: () => void;
 }
 
+const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
+const MAX_FILE_SIZE_MB = 2;
+const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+
 export default function MypageProfileEditForm({
   profile,
   open,
@@ -70,14 +74,12 @@ export default function MypageProfileEditForm({
   }, [previewUrl]);
 
   const displayImageUrl = previewUrl || profile.avatar_url;
-
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const isChanged =
     nickname !== (profile.nickname || "") ||
     email !== (profile.email || "") ||
     avatarFile !== null;
-
   const isFormInvalid =
     !!errors.nickname || !!errors.email || !nickname.trim() || !email.trim();
 
@@ -97,26 +99,21 @@ export default function MypageProfileEditForm({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
-    if (!allowedTypes.includes(file.type)) {
+    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
       toast.error("지원하지 않는 파일 형식입니다. (JPG, PNG, WebP만 가능)");
+      e.target.value = "";
       return;
     }
 
-    const options = {
-      maxSizeMB: 2,
-      useWebWorker: true,
-    };
-    const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB 제한 설정 (1MB = 1024 * 1024 bytes)
-
     try {
       toast.loading("이미지 최적화 중...", { id: "compressing" });
-
-      const compressedFile = await imageCompression(file, options);
-
+      const compressedFile = await imageCompression(file, {
+        maxSizeMB: MAX_FILE_SIZE_MB,
+        useWebWorker: true,
+      });
       toast.dismiss("compressing");
 
-      if (compressedFile.size > MAX_FILE_SIZE) {
+      if (compressedFile.size > MAX_FILE_SIZE_BYTES) {
         toast.error("최적화 후에도 파일이 너무 큽니다.");
         return;
       }
@@ -203,101 +200,88 @@ export default function MypageProfileEditForm({
   };
 
   return (
-    <div className="grid gap-6 py-4">
-      <DialogHeader>
-        <DialogTitle className="text-title1 font-bold">프로필 관리</DialogTitle>
-        <DialogDescription>
-          수정하고자 하는 닉네임과 이메일을 입력하세요.
-        </DialogDescription>
+    <div className="grid gap-6">
+      <DialogHeader className="relative flex flex-col items-start justify-center">
+        <div className="flex flex-col items-start gap-1 text-left">
+          <DialogTitle className="text-title1 font-bold">
+            프로필 관리
+          </DialogTitle>
+          <DialogDescription>
+            수정하고자 하는 닉네임과 이메일을 입력하세요.
+          </DialogDescription>
+        </div>
+        <Button
+          aria-label="닫기"
+          variant="ghost"
+          size="icon"
+          onClick={onSuccess}
+          className="absolute top-0 right-0 size-6 shrink-0"
+        >
+          <X className="size-4" />
+        </Button>
       </DialogHeader>
 
-      <div className="grid gap-6 py-4">
-        <div className="flex flex-col items-center gap-4">
-          <div className="relative size-30 md:size-20">
-            <div className="bg-etc-sub relative h-full w-full overflow-hidden rounded-full border">
-              {displayImageUrl ? (
-                <Image
-                  src={displayImageUrl}
-                  alt="프로필"
-                  fill
-                  className="object-cover"
-                />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center">
-                  <User strokeWidth={1.2} className="text-etc h-10 w-10" />
-                </div>
-              )}
-            </div>
-            {previewUrl && (
-              <button
-                type="button"
-                onClick={handleRemovePreview}
-                className="transition-hover hover:bg-etc-sub absolute -top-1 -right-1 z-10 flex size-7 cursor-pointer items-center justify-center rounded-full border bg-white"
-              >
-                <X size={16} />
-              </button>
+      <section className="flex flex-col items-center gap-4">
+        <div className="relative size-24 md:size-20">
+          <div className="bg-etc-sub relative h-full w-full overflow-hidden rounded-full border">
+            {displayImageUrl ? (
+              <Image
+                src={displayImageUrl}
+                alt="프로필"
+                fill
+                className="object-cover"
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center">
+                <User strokeWidth={1.2} className="text-etc h-10 w-10" />
+              </div>
             )}
           </div>
-
-          {/* 파일 업로드를 위한 투명 input */}
-          <input
-            type="file"
-            ref={fileInputRef}
-            className="hidden"
-            accept="image/jpeg, image/png, image/webp"
-            onChange={handleFileChange}
-          />
-
-          <Button
-            variant="outline"
-            onClick={() => fileInputRef.current?.click()}
-            className="hover:bg-muted w-full rounded-2xl font-bold"
-          >
-            이미지 변경
-          </Button>
+          {previewUrl && (
+            <button
+              type="button"
+              onClick={handleRemovePreview}
+              className="transition-hover hover:bg-etc-sub absolute -top-1 -right-1 z-10 flex size-7 cursor-pointer items-center justify-center rounded-full border bg-white"
+            >
+              <X size={16} />
+            </button>
+          )}
         </div>
 
-        <div className="space-y-4">
-          <div className="grid gap-2">
-            <Label htmlFor="nickname" className="text-desc2 font-semibold">
-              닉네임
-            </Label>
-            <Input
-              id="nickname"
-              value={nickname}
-              onChange={handleNicknameChange}
-              className={cn(
-                "rounded-2xl outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
-                "focus-visible:border-symbol-sky focus-visible:border-2",
-                errors.nickname &&
-                  "border-destructive focus-visible:border-destructive border-2",
-              )}
-            />
-            {errors.nickname && (
-              <p className="text-destructive text-caption">{errors.nickname}</p>
-            )}
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="email" className="text-desc2 font-semibold">
-              이메일
-            </Label>
-            <Input
-              id="email"
-              value={email}
-              onChange={handleEmailChange}
-              className={cn(
-                "rounded-2xl outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
-                "focus-visible:border-symbol-sky border focus-visible:border-2",
-                errors.email &&
-                  "border-destructive focus-visible:border-destructive border-2",
-              )}
-            />
-            {errors.email && (
-              <p className="text-destructive text-caption">{errors.email}</p>
-            )}
-          </div>
-        </div>
-      </div>
+        {/* 파일 업로드를 위한 투명 input */}
+        <input
+          type="file"
+          ref={fileInputRef}
+          className="hidden"
+          accept="image/jpeg, image/png, image/webp"
+          onChange={handleFileChange}
+        />
+
+        <Button
+          variant="outline"
+          onClick={() => fileInputRef.current?.click()}
+          className="hover:bg-muted w-full rounded-2xl font-bold"
+        >
+          이미지 변경
+        </Button>
+      </section>
+
+      <section className="space-y-4">
+        <FormInputField
+          id="nickname"
+          label="닉네임"
+          value={nickname}
+          error={errors.nickname}
+          onChange={handleNicknameChange}
+        />
+        <FormInputField
+          id="email"
+          label="이메일"
+          value={email}
+          error={errors.email}
+          onChange={handleEmailChange}
+        />
+      </section>
 
       <DialogFooter>
         <div className="flex w-full flex-col items-center justify-center gap-4">
@@ -318,6 +302,40 @@ export default function MypageProfileEditForm({
           </button>
         </div>
       </DialogFooter>
+    </div>
+  );
+}
+
+function FormInputField({
+  id,
+  label,
+  value,
+  error,
+  onChange,
+}: {
+  id: string;
+  label: string;
+  value: string;
+  error?: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}) {
+  return (
+    <div className="grid gap-2">
+      <Label htmlFor={id} className="text-desc2 font-semibold">
+        {label}
+      </Label>
+      <Input
+        id={id}
+        value={value}
+        onChange={onChange}
+        className={cn(
+          "rounded-2xl border-2 transition-all outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
+          error
+            ? "border-destructive focus-visible:border-destructive"
+            : "focus-visible:border-symbol-sky",
+        )}
+      />
+      {error && <p className="text-destructive text-caption">{error}</p>}
     </div>
   );
 }
