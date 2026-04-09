@@ -1,12 +1,10 @@
 "use client";
 
-import Sidebar from "@/components/map/Sidebar/Sidebar";
-import Area from "@/components/map/Area/Area";
 import { useEffect, useState } from "react";
-import { CategoryId, PeriodFilter } from "@/types/common";
 import { useRouter, useSearchParams } from "next/navigation";
+import { CategoryId, PeriodFilter } from "@/types/common";
 
-export default function MapPage() {
+export function useMapFilter() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -23,7 +21,7 @@ export default function MapPage() {
 
   const [category, setCategory] = useState<CategoryId[]>(() => {
     if (!categoryParam) return ["all"];
-    return categoryParam.split(",") as CategoryId[];
+    return [categoryParam as CategoryId];
   });
 
   const [period, setPeriod] = useState<PeriodFilter>(
@@ -35,8 +33,8 @@ export default function MapPage() {
   useEffect(() => {
     const params = new URLSearchParams();
     if (mode) params.set("mode", mode);
-    if (category.length && category[0] !== "all") {
-      params.set("category", category.join(","));
+    if (category[0] !== "all") {
+      params.set("category", category[0]);
     }
     if (period !== "전체") {
       params.set("period", period);
@@ -50,29 +48,15 @@ export default function MapPage() {
     router.replace(`/map?${params.toString()}`);
   }, [mode, category, period, radius, search, router]);
 
-  return (
-    <div className="relative w-full overflow-hidden md:flex">
-      <div className="absolute top-0 left-0 z-20 w-full md:relative md:block md:w-90 md:shrink-0">
-        <Sidebar
-          radius={radius}
-          setRadius={setRadius}
-          category={category}
-          setCategory={setCategory}
-          period={period}
-          setPeriod={setPeriod}
-          search={search}
-          setSearch={setSearch}
-        />
-      </div>
-
-      <div className="flex-1">
-        <Area
-          radius={radius}
-          category={category}
-          period={period}
-          search={search}
-        />
-      </div>
-    </div>
-  );
+  return {
+    mode,
+    radius,
+    setRadius,
+    category,
+    setCategory,
+    period,
+    setPeriod,
+    search,
+    setSearch,
+  };
 }
