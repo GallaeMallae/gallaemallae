@@ -7,6 +7,7 @@ import EventDetailModal from "@/components/map/EventDetailModal/EventDetailModal
 import { LocateFixed } from "lucide-react";
 import { useState, useMemo } from "react";
 import { useEventsData } from "@/hooks/queries/useEventsData";
+import { useLikedEventsData } from "@/hooks/queries/useLikedEventsData";
 import { useCurrentLocation } from "@/hooks/useCurrentLocation";
 import {
   filterEventsByCategory,
@@ -26,16 +27,20 @@ interface AreaProps {
 export default function Area({ radius, category, period, search }: AreaProps) {
   const { position, moveCurrentLocation } = useCurrentLocation();
   const { data: events = [], isLoading, isError, error } = useEventsData();
+  const { data: likedEvents = [] } = useLikedEventsData();
 
   const [locate, setLocate] = useState<kakao.maps.Map | null>(null);
 
   const [selectedCarousel, setSelectedCarousel] = useState<string | null>(null);
   const [selectedModal, setSelectedModal] = useState<string | null>(null);
 
+  const likedEventIds = useMemo(() => {
+    return new Set(likedEvents.map((event) => event.id));
+  }, [likedEvents]);
+
   const filteredEvents = useMemo(() => {
     let result = filterEventsByCategory(events, category);
     result = filterEventByPeriod(result, period);
-
     result = filterEventsByDistance(result, position, radius);
 
     if (search.trim()) {
@@ -48,9 +53,17 @@ export default function Area({ radius, category, period, search }: AreaProps) {
     return result;
   }, [events, category, period, search, position, radius]);
 
-  const carouselEvents = useMemo(() => {
+  const processedEvents = useMemo(() => {
     return mapEventCard(filteredEvents);
   }, [filteredEvents]);
+
+  // 좋아요 상태 매핑한 최종 캐러셀 아이템
+  const carouselEvents = useMemo(() => {
+    return processedEvents.map((event) => ({
+      ...event,
+      isLiked: likedEventIds.has(event.id),
+    }));
+  }, [processedEvents, likedEventIds]);
 
   // 지도 마커 데이터 생성
   const markers = useMemo(() => {
