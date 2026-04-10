@@ -33,7 +33,7 @@ export default function EventCarousel({
       }
     };
     api.on("select", handleSelect);
-    handleSelect();
+
     return () => {
       api.off("select", handleSelect);
     };
@@ -52,17 +52,31 @@ export default function EventCarousel({
     <div className="absolute right-0 bottom-6 left-0 z-5 px-4">
       <Carousel setApi={setApi} opts={{ align: "center" }}>
         <CarouselContent className="-ml-4">
-          {events.map((event) => (
-            <CarouselItem
-              key={event.id}
-              className="basis-[80%] pl-4 md:basis-86"
-              onClick={() => onSelectCarousel(event.id)}
-            >
-              <div onClick={() => onCarouselClick(event.id)}>
-                <EventCard {...event} />
-              </div>
-            </CarouselItem>
-          ))}
+          {events.map((event) => {
+            const isSelected = selectedId === event.id;
+            return (
+              <CarouselItem
+                key={event.id}
+                className="basis-[80%] pl-4 md:basis-86"
+                onClick={() => onSelectCarousel(event.id)}
+              >
+                <div
+                  className={`transition-all duration-300 ${
+                    isSelected ? "scale-95" : "scale-90"
+                  }`}
+                >
+                  <div
+                    onClick={() => onCarouselClick(event.id)}
+                    className={`overflow-hidden rounded-2xl bg-white ${
+                      isSelected ? "ring-symbol-sky shadow-xl ring-4" : ""
+                    }`}
+                  >
+                    <EventCard {...event} />
+                  </div>
+                </div>
+              </CarouselItem>
+            );
+          })}
         </CarouselContent>
       </Carousel>
     </div>
