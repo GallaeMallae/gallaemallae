@@ -63,9 +63,9 @@ export default function EventCarousel({
                 <div
                   className={`overflow-hidden rounded-2xl transition-all duration-300 ${
                     isSelected
-                      ? "border-symbol-sky scale-105 border-r-4 border-l-4 shadow-xl"
-                      : "scale-95 opacity-60"
-                  } `}
+                      ? "border-symbol-sky border-4 shadow-xl"
+                      : "scale-95"
+                  }`}
                 >
                   <div onClick={() => onCarouselClick(event.id)}>
                     <EventCard {...event} />
